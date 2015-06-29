@@ -1,0 +1,1 @@
+C:\Users\Erik\Documents\GitHub\Youtube-Download-Helper\YoutubeExtractor\YoutubeExtractor\YoutubeExtractor.Tests\obj\Debug\YoutubeExtractor.Tests.csprojResolveAssemblyReference.cache

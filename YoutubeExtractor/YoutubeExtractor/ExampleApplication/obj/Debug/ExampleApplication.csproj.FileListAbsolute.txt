@@ -1,0 +1,10 @@
+C:\Users\Erik\Documents\GitHub\Youtube-Download-Helper\YoutubeExtractor\YoutubeExtractor\ExampleApplication\bin\Debug\Newtonsoft.Json.dll
+C:\Users\Erik\Documents\GitHub\Youtube-Download-Helper\YoutubeExtractor\YoutubeExtractor\ExampleApplication\bin\Debug\YoutubeExtractor.dll
+C:\Users\Erik\Documents\GitHub\Youtube-Download-Helper\YoutubeExtractor\YoutubeExtractor\ExampleApplication\bin\Debug\YoutubeExtractor.pdb
+C:\Users\Erik\Documents\GitHub\Youtube-Download-Helper\YoutubeExtractor\YoutubeExtractor\ExampleApplication\bin\Debug\Newtonsoft.Json.xml
+C:\Users\Erik\Documents\GitHub\Youtube-Download-Helper\YoutubeExtractor\YoutubeExtractor\ExampleApplication\obj\Debug\ExampleApplication.csprojResolveAssemblyReference.cache
+C:\Users\Erik\Documents\GitHub\Youtube-Download-Helper\YoutubeExtractor\YoutubeExtractor\ExampleApplication\bin\Debug\ExampleApplication.exe.config
+C:\Users\Erik\Documents\GitHub\Youtube-Download-Helper\YoutubeExtractor\YoutubeExtractor\ExampleApplication\bin\Debug\ExampleApplication.exe
+C:\Users\Erik\Documents\GitHub\Youtube-Download-Helper\YoutubeExtractor\YoutubeExtractor\ExampleApplication\bin\Debug\ExampleApplication.pdb
+C:\Users\Erik\Documents\GitHub\Youtube-Download-Helper\YoutubeExtractor\YoutubeExtractor\ExampleApplication\obj\Debug\ExampleApplication.exe
+C:\Users\Erik\Documents\GitHub\Youtube-Download-Helper\YoutubeExtractor\YoutubeExtractor\ExampleApplication\obj\Debug\ExampleApplication.pdb
