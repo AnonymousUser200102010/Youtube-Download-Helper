@@ -44,6 +44,10 @@ namespace YoutubeDownloadHelper
 		private System.Windows.Forms.Button changeTemporaryLocation;
 		private System.Windows.Forms.FolderBrowserDialog tempLocationDialog;
 		private System.Windows.Forms.Button downloadButton;
+		private System.Windows.Forms.Label label5;
+		private System.Windows.Forms.ComboBox newUrlFormat;
+		private System.Windows.Forms.Label label6;
+		private System.Windows.Forms.ComboBox formatToModify;
 		
 		/// <summary>
 		/// Disposes resources used by the form.
@@ -73,12 +77,16 @@ namespace YoutubeDownloadHelper
 			this.deleteUrlFromQueue = new System.Windows.Forms.Button();
 			this.tabControl1 = new System.Windows.Forms.TabControl();
 			this.tabPage1 = new System.Windows.Forms.TabPage();
+			this.label5 = new System.Windows.Forms.Label();
+			this.newUrlFormat = new System.Windows.Forms.ComboBox();
 			this.label4 = new System.Windows.Forms.Label();
 			this.label1 = new System.Windows.Forms.Label();
 			this.newUrlRes = new System.Windows.Forms.NumericUpDown();
 			this.addURLButton = new System.Windows.Forms.Button();
 			this.newURL = new System.Windows.Forms.TextBox();
 			this.tabPage2 = new System.Windows.Forms.TabPage();
+			this.label6 = new System.Windows.Forms.Label();
+			this.formatToModify = new System.Windows.Forms.ComboBox();
 			this.label3 = new System.Windows.Forms.Label();
 			this.label2 = new System.Windows.Forms.Label();
 			this.resolutionToModify = new System.Windows.Forms.NumericUpDown();
@@ -123,7 +131,7 @@ namespace YoutubeDownloadHelper
 			// 
 			this.videoDownloadProgressBar.Location = new System.Drawing.Point(0, 495);
 			this.videoDownloadProgressBar.Name = "videoDownloadProgressBar";
-			this.videoDownloadProgressBar.Size = new System.Drawing.Size(672, 32);
+			this.videoDownloadProgressBar.Size = new System.Drawing.Size(670, 32);
 			this.videoDownloadProgressBar.Step = 1;
 			this.videoDownloadProgressBar.Style = System.Windows.Forms.ProgressBarStyle.Continuous;
 			this.videoDownloadProgressBar.TabIndex = 3;
@@ -135,7 +143,7 @@ namespace YoutubeDownloadHelper
 			this.queueDownloadsTab.Location = new System.Drawing.Point(0, 8);
 			this.queueDownloadsTab.Name = "queueDownloadsTab";
 			this.queueDownloadsTab.SelectedIndex = 0;
-			this.queueDownloadsTab.Size = new System.Drawing.Size(672, 416);
+			this.queueDownloadsTab.Size = new System.Drawing.Size(670, 416);
 			this.queueDownloadsTab.TabIndex = 4;
 			// 
 			// tabPage3
@@ -146,7 +154,7 @@ namespace YoutubeDownloadHelper
 			this.tabPage3.Location = new System.Drawing.Point(4, 25);
 			this.tabPage3.Name = "tabPage3";
 			this.tabPage3.Padding = new System.Windows.Forms.Padding(3);
-			this.tabPage3.Size = new System.Drawing.Size(664, 387);
+			this.tabPage3.Size = new System.Drawing.Size(662, 387);
 			this.tabPage3.TabIndex = 0;
 			this.tabPage3.Text = "Queue";
 			this.tabPage3.UseVisualStyleBackColor = true;
@@ -155,7 +163,7 @@ namespace YoutubeDownloadHelper
 			// 
 			this.deleteUrlFromQueue.Location = new System.Drawing.Point(0, 352);
 			this.deleteUrlFromQueue.Name = "deleteUrlFromQueue";
-			this.deleteUrlFromQueue.Size = new System.Drawing.Size(664, 32);
+			this.deleteUrlFromQueue.Size = new System.Drawing.Size(662, 32);
 			this.deleteUrlFromQueue.TabIndex = 8;
 			this.deleteUrlFromQueue.Text = "Delete Selected Entry";
 			this.deleteUrlFromQueue.UseVisualStyleBackColor = true;
@@ -165,14 +173,16 @@ namespace YoutubeDownloadHelper
 			// 
 			this.tabControl1.Controls.Add(this.tabPage1);
 			this.tabControl1.Controls.Add(this.tabPage2);
-			this.tabControl1.Location = new System.Drawing.Point(8, 8);
+			this.tabControl1.Location = new System.Drawing.Point(3, 8);
 			this.tabControl1.Name = "tabControl1";
 			this.tabControl1.SelectedIndex = 0;
-			this.tabControl1.Size = new System.Drawing.Size(656, 96);
+			this.tabControl1.Size = new System.Drawing.Size(661, 96);
 			this.tabControl1.TabIndex = 7;
 			// 
 			// tabPage1
 			// 
+			this.tabPage1.Controls.Add(this.label5);
+			this.tabPage1.Controls.Add(this.newUrlFormat);
 			this.tabPage1.Controls.Add(this.label4);
 			this.tabPage1.Controls.Add(this.label1);
 			this.tabPage1.Controls.Add(this.newUrlRes);
@@ -181,10 +191,33 @@ namespace YoutubeDownloadHelper
 			this.tabPage1.Location = new System.Drawing.Point(4, 25);
 			this.tabPage1.Name = "tabPage1";
 			this.tabPage1.Padding = new System.Windows.Forms.Padding(3);
-			this.tabPage1.Size = new System.Drawing.Size(648, 67);
+			this.tabPage1.Size = new System.Drawing.Size(653, 67);
 			this.tabPage1.TabIndex = 0;
 			this.tabPage1.Text = "Add";
 			this.tabPage1.UseVisualStyleBackColor = true;
+			// 
+			// label5
+			// 
+			this.label5.Location = new System.Drawing.Point(0, 36);
+			this.label5.Name = "label5";
+			this.label5.Size = new System.Drawing.Size(64, 24);
+			this.label5.TabIndex = 19;
+			this.label5.Text = "Format:";
+			this.label5.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
+			// 
+			// newUrlFormat
+			// 
+			this.newUrlFormat.FormattingEnabled = true;
+			this.newUrlFormat.Items.AddRange(new object[] {
+			"Mp4",
+			"Flash",
+			"Mobile",
+			"WebM"});
+			this.newUrlFormat.Location = new System.Drawing.Point(64, 36);
+			this.newUrlFormat.Name = "newUrlFormat";
+			this.newUrlFormat.Size = new System.Drawing.Size(96, 24);
+			this.newUrlFormat.TabIndex = 18;
+			this.newUrlFormat.Text = "Mp4";
 			// 
 			// label4
 			// 
@@ -197,7 +230,7 @@ namespace YoutubeDownloadHelper
 			// 
 			// label1
 			// 
-			this.label1.Location = new System.Drawing.Point(0, 40);
+			this.label1.Location = new System.Drawing.Point(168, 40);
 			this.label1.Name = "label1";
 			this.label1.Size = new System.Drawing.Size(80, 16);
 			this.label1.TabIndex = 14;
@@ -206,14 +239,13 @@ namespace YoutubeDownloadHelper
 			// 
 			// newUrlRes
 			// 
-			this.newUrlRes.Enabled = false;
 			this.newUrlRes.Font = new System.Drawing.Font("Microsoft Sans Serif", 7.8F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
 			this.newUrlRes.Increment = new decimal(new int[] {
 			144,
 			0,
 			0,
 			0});
-			this.newUrlRes.Location = new System.Drawing.Point(84, 38);
+			this.newUrlRes.Location = new System.Drawing.Point(252, 38);
 			this.newUrlRes.Maximum = new decimal(new int[] {
 			5000,
 			0,
@@ -237,7 +269,7 @@ namespace YoutubeDownloadHelper
 			this.addURLButton.Name = "addURLButton";
 			this.addURLButton.Size = new System.Drawing.Size(148, 24);
 			this.addURLButton.TabIndex = 12;
-			this.addURLButton.Text = "add URL";
+			this.addURLButton.Text = "Add URL";
 			this.addURLButton.UseVisualStyleBackColor = true;
 			this.addURLButton.Click += new System.EventHandler(this.AddURLButtonClick);
 			// 
@@ -246,7 +278,7 @@ namespace YoutubeDownloadHelper
 			this.newURL.Font = new System.Drawing.Font("Microsoft Sans Serif", 7.8F, System.Drawing.FontStyle.Italic, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
 			this.newURL.Location = new System.Drawing.Point(40, 8);
 			this.newURL.Name = "newURL";
-			this.newURL.Size = new System.Drawing.Size(600, 22);
+			this.newURL.Size = new System.Drawing.Size(608, 22);
 			this.newURL.TabIndex = 11;
 			this.newURL.Text = "Example: https://www.youtube.com/watch?v=ft6rWcJIlpU";
 			this.newURL.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
@@ -255,6 +287,8 @@ namespace YoutubeDownloadHelper
 			// 
 			// tabPage2
 			// 
+			this.tabPage2.Controls.Add(this.label6);
+			this.tabPage2.Controls.Add(this.formatToModify);
 			this.tabPage2.Controls.Add(this.label3);
 			this.tabPage2.Controls.Add(this.label2);
 			this.tabPage2.Controls.Add(this.resolutionToModify);
@@ -263,10 +297,33 @@ namespace YoutubeDownloadHelper
 			this.tabPage2.Location = new System.Drawing.Point(4, 25);
 			this.tabPage2.Name = "tabPage2";
 			this.tabPage2.Padding = new System.Windows.Forms.Padding(3);
-			this.tabPage2.Size = new System.Drawing.Size(648, 67);
+			this.tabPage2.Size = new System.Drawing.Size(653, 67);
 			this.tabPage2.TabIndex = 1;
 			this.tabPage2.Text = "Modify";
 			this.tabPage2.UseVisualStyleBackColor = true;
+			// 
+			// label6
+			// 
+			this.label6.Location = new System.Drawing.Point(0, 38);
+			this.label6.Name = "label6";
+			this.label6.Size = new System.Drawing.Size(64, 24);
+			this.label6.TabIndex = 21;
+			this.label6.Text = "Format:";
+			this.label6.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
+			// 
+			// formatToModify
+			// 
+			this.formatToModify.FormattingEnabled = true;
+			this.formatToModify.Items.AddRange(new object[] {
+			"Mp4",
+			"Flash",
+			"Mobile",
+			"WebM"});
+			this.formatToModify.Location = new System.Drawing.Point(64, 38);
+			this.formatToModify.Name = "formatToModify";
+			this.formatToModify.Size = new System.Drawing.Size(96, 24);
+			this.formatToModify.TabIndex = 20;
+			this.formatToModify.Text = "Mp4";
 			// 
 			// label3
 			// 
@@ -279,7 +336,7 @@ namespace YoutubeDownloadHelper
 			// 
 			// label2
 			// 
-			this.label2.Location = new System.Drawing.Point(0, 40);
+			this.label2.Location = new System.Drawing.Point(168, 40);
 			this.label2.Name = "label2";
 			this.label2.Size = new System.Drawing.Size(80, 16);
 			this.label2.TabIndex = 14;
@@ -288,13 +345,12 @@ namespace YoutubeDownloadHelper
 			// 
 			// resolutionToModify
 			// 
-			this.resolutionToModify.Enabled = false;
 			this.resolutionToModify.Increment = new decimal(new int[] {
 			120,
 			0,
 			0,
 			0});
-			this.resolutionToModify.Location = new System.Drawing.Point(84, 38);
+			this.resolutionToModify.Location = new System.Drawing.Point(252, 38);
 			this.resolutionToModify.Maximum = new decimal(new int[] {
 			5000,
 			0,
@@ -325,7 +381,7 @@ namespace YoutubeDownloadHelper
 			// 
 			this.urlToModify.Location = new System.Drawing.Point(40, 8);
 			this.urlToModify.Name = "urlToModify";
-			this.urlToModify.Size = new System.Drawing.Size(600, 22);
+			this.urlToModify.Size = new System.Drawing.Size(608, 22);
 			this.urlToModify.TabIndex = 11;
 			// 
 			// queuedBox
@@ -333,9 +389,9 @@ namespace YoutubeDownloadHelper
 			this.queuedBox.FormattingEnabled = true;
 			this.queuedBox.HorizontalScrollbar = true;
 			this.queuedBox.ItemHeight = 16;
-			this.queuedBox.Location = new System.Drawing.Point(8, 104);
+			this.queuedBox.Location = new System.Drawing.Point(3, 104);
 			this.queuedBox.Name = "queuedBox";
-			this.queuedBox.Size = new System.Drawing.Size(656, 244);
+			this.queuedBox.Size = new System.Drawing.Size(659, 244);
 			this.queuedBox.TabIndex = 6;
 			this.queuedBox.SelectedIndexChanged += new System.EventHandler(this.QueuedBoxSelectedIndexChanged);
 			// 
@@ -346,7 +402,7 @@ namespace YoutubeDownloadHelper
 			this.tabPage4.Location = new System.Drawing.Point(4, 25);
 			this.tabPage4.Name = "tabPage4";
 			this.tabPage4.Padding = new System.Windows.Forms.Padding(3);
-			this.tabPage4.Size = new System.Drawing.Size(664, 387);
+			this.tabPage4.Size = new System.Drawing.Size(662, 387);
 			this.tabPage4.TabIndex = 1;
 			this.tabPage4.Text = "Options";
 			this.tabPage4.UseVisualStyleBackColor = true;
@@ -416,7 +472,6 @@ namespace YoutubeDownloadHelper
 			// 
 			// changeTemporaryLocation
 			// 
-			this.changeTemporaryLocation.BackgroundImage = ((System.Drawing.Image)(resources.GetObject("changeTemporaryLocation.BackgroundImage")));
 			this.changeTemporaryLocation.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Stretch;
 			this.changeTemporaryLocation.Location = new System.Drawing.Point(8, 8);
 			this.changeTemporaryLocation.Name = "changeTemporaryLocation";
@@ -484,9 +539,9 @@ namespace YoutubeDownloadHelper
 			// 
 			// downloadButton
 			// 
-			this.downloadButton.Location = new System.Drawing.Point(8, 432);
+			this.downloadButton.Location = new System.Drawing.Point(0, 424);
 			this.downloadButton.Name = "downloadButton";
-			this.downloadButton.Size = new System.Drawing.Size(656, 23);
+			this.downloadButton.Size = new System.Drawing.Size(670, 30);
 			this.downloadButton.TabIndex = 9;
 			this.downloadButton.Text = "Start Downloading";
 			this.downloadButton.UseVisualStyleBackColor = true;
@@ -495,10 +550,11 @@ namespace YoutubeDownloadHelper
 			// downloadingLabel
 			// 
 			this.downloadingLabel.AutoEllipsis = true;
+			this.downloadingLabel.BackColor = System.Drawing.SystemColors.Control;
 			this.downloadingLabel.Enabled = false;
-			this.downloadingLabel.Location = new System.Drawing.Point(0, 463);
+			this.downloadingLabel.Location = new System.Drawing.Point(3, 463);
 			this.downloadingLabel.Name = "downloadingLabel";
-			this.downloadingLabel.Size = new System.Drawing.Size(672, 24);
+			this.downloadingLabel.Size = new System.Drawing.Size(665, 24);
 			this.downloadingLabel.TabIndex = 10;
 			this.downloadingLabel.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
 			// 

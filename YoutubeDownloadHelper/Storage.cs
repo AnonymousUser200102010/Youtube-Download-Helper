@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using Microsoft.Win32;
+using YoutubeExtractor;
 
 namespace YoutubeDownloadHelper
 {
@@ -90,9 +91,9 @@ namespace YoutubeDownloadHelper
 				for (int count = 0, GlobalVariablesfinishedUrlListCount = GlobalVariables.finishedUrlList.Count; count < GlobalVariablesfinishedUrlListCount; count++)
 				{
 					
-					KeyValuePair<string, int> url = GlobalVariables.finishedUrlList[count];
+					Tuple<string, int, VideoType> url = GlobalVariables.finishedUrlList[count];
 					
-					outfile.Write(string.Format("{0} {1}\n", url.Key, url.Value));
+					outfile.Write(string.Format("{0} {1} {2}\n", url.Item1, url.Item2, url.Item3));
 					
 				}
 				
@@ -113,9 +114,9 @@ namespace YoutubeDownloadHelper
 				for (int count = 0, GlobalVariablesurlListCount = GlobalVariables.accessUrlList.Count; count < GlobalVariablesurlListCount; count++)
 				{
 					
-					KeyValuePair<string, int> url = GlobalVariables.accessUrlList[count];
+					Tuple<string, int, VideoType> url = GlobalVariables.accessUrlList[count];
 					
-					outfile.Write(string.Format("{0} {1}\n", url.Key, url.Value));
+					outfile.Write(string.Format("{0} {1} {2}\n", url.Item1, url.Item2, url.Item3));
 					
 				}
 				
@@ -145,6 +146,7 @@ namespace YoutubeDownloadHelper
 					
 						string[] stringBuilder = {
 							null,
+							null,
 							null
 						};
 						
@@ -170,7 +172,7 @@ namespace YoutubeDownloadHelper
 							if (i >= line.Length - 1)
 							{
 								
-								GlobalVariables.urlList.Add(new KeyValuePair<string, int>(stringBuilder[0], int.Parse(stringBuilder[1])));
+								GlobalVariables.urlList.Add(new Tuple<string, int, VideoType>(stringBuilder[0], int.Parse(stringBuilder[1]), MainForm.getVideoFormat(stringBuilder[2])));
 								
 							}
 							

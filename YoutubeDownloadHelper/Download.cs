@@ -10,7 +10,7 @@ namespace YoutubeDownloadHelper
     public static class Download
     {
     	
-    	public static void delegate_DownloadVideos()
+    	public static void delegate_DownloadVideos(int retryCount)
     	{
     		
     		int previouslySelectedIndex = MainForm.selectedQueueIndex;
@@ -30,8 +30,8 @@ namespace YoutubeDownloadHelper
 						
 						try
 						{
-						
-							KeyValuePair<string, int> url = GlobalVariables.urlList[count];
+							
+							Tuple<string, int, VideoType> url = GlobalVariables.urlList[count];
 							
 							MainForm.selectedQueueIndex = position;
 							
@@ -45,9 +45,23 @@ namespace YoutubeDownloadHelper
 						catch(Exception ex)
 						{
 						
-							var exceptionMessage = ex.Message;
 							
-							MainForm.statusBar = exceptionMessage.Length <= 18 ? exceptionMessage : string.Format("{0}[...]", exceptionMessage.Substring(0, 18)).ToLower();
+							if(retryCount <= 3)
+							{
+								
+								MainForm.statusBar = string.Format("URL {0}: An error has occurred. Retrying.... ({1})", count, retryCount < 3 ? (retryCount + 1).ToString() : "Final Try");
+								
+								delegate_DownloadVideos(retryCount + 1);
+								
+							}
+							else
+							{
+								
+								var exceptionMessage = ex.Message;
+								
+								MainForm.statusBar = exceptionMessage.Length <= 100 ? exceptionMessage : string.Format("{0}[...]", exceptionMessage.Substring(0, 100)).ToLower();
+								
+							}
 						
 						}
 						
@@ -65,71 +79,109 @@ namespace YoutubeDownloadHelper
     		
     	}
     	
-        private static void setup_DownloadVideos (KeyValuePair<string, int> url, int position)
+        private static void setup_DownloadVideos (Tuple<string, int, VideoType> url, int position)
         {
         	
         	int previouslySelectedIndex = MainForm.selectedQueueIndex;
+        	
+        	bool restricted = false;
  					
             MainForm.downloadFinishedPercent = 0;
             		
-            MainForm.downloadLabel = string.Format("Beginning download from '{0}'", url.Key);
+            MainForm.downloadLabel = string.Format("Beginning download from '{0}'", url.Item1);
 		
            /*
 		    * Get the available video formats.
 		    * We'll work with them in the video and audio download examples.
 		    */
-       		IEnumerable<VideoInfo> videoInfos = DownloadUrlResolver.GetDownloadUrls(url.Key, false);
+       		IEnumerable<VideoInfo> videoInfos = DownloadUrlResolver.GetDownloadUrls(url.Item1, false);
 		    
        		if(MainForm.currentlyDownloading)
 			{  
 		    	
-	            if(videoInfos.Any(info => info.Resolution == url.Value))
+       			if((url.Item3 != VideoType.Mp4 && videoInfos.Any(info => (info.Resolution == url.Item2 && info.VideoType == url.Item3)) || url.Item3 == VideoType.Mp4 && url.Item2 == 360))
 	            {
-	                    	
-	            	VideoInfo tempVideo = videoInfos.First(info => info.VideoType == VideoType.Mp4 && info.Resolution == url.Value);
-			            
-	            	MainForm.downloadLabel = string.Format("Downloading '{0}{1}' at {2}p resolution", (tempVideo.Title.Length <= 56 ? tempVideo.Title : string.Format("{0}[...]", tempVideo.Title.Substring(0, 56))).ToLower(), tempVideo.VideoExtension, tempVideo.Resolution);
-				
-		            //DownloadAudio(videoInfos);
-		                    
-		            DownloadVideo(videoInfos, url.Value);
+       				
+		            VideoInfo tempVideo = videoInfos.First(info => info.VideoType == url.Item3 && info.Resolution == url.Item2);
 				            
-		            GlobalVariables.finishedUrlList.Add(url);
-				           
-		            Storage.WriteUrlsToBackupFile();
+		            MainForm.downloadLabel = string.Format("Downloading '{0}{1}' at {2}p resolution", (tempVideo.Title.Length <= 56 ? tempVideo.Title : string.Format("{0}[...]", tempVideo.Title.Substring(0, 56))).ToLower(), tempVideo.VideoExtension, tempVideo.Resolution);
+				
+			        //DownloadAudio(videoInfos);
+			                   
+			        DownloadVideo(videoInfos, url.Item2, url.Item3);
+					           
+			        GlobalVariables.finishedUrlList.Add(url);
+					          
+			        Storage.WriteUrlsToBackupFile();
 	                    	
 	            }
-	            else
-	            {
-	                   	
-		            string acceptableResolutions = null;
+       			else
+       			{
+       				
+       				restricted = true;
+       				
+       			}
+	            
+	            if (videoInfos.Where(info => info.VideoType == url.Item3).All(info => info.Resolution != url.Item2) || restricted)
+				{
 		                    	
-		            List<int> resolutionsEstablished = new List<int>();
+					List<int> resolutionsEstablished = new List<int>();
+					
+					List<VideoType> formatsEstablished = new List<VideoType>();
+		             
+					using (StreamWriter outfile = new StreamWriter("Acceptable Options.txt"))
+					{
+						
+						outfile.Write(string.Format("This file will show you all formats available for the current URL, as well as the resolutions that are acceptable for that URL.\n\n{0}:\n", url.Item1));
+						
+						foreach (VideoType format in videoInfos.Where(info => info.VideoType != VideoType.Unknown && formatsEstablished.All(format => info.VideoType != format)).Select(info => info.VideoType))
+						{		
+							
+							if(format == VideoType.Mp4)
+							{
+								
+								outfile.Write(string.Format("Format: {0} | Resolution: {1}p\n", format, "360"));
+								
+							}
+							else
+							{
+								
+								foreach (int resolution in videoInfos.Where(info => info.Resolution >= 144 && info.Resolution < 720 && resolutionsEstablished.All(res => info.Resolution != res) && info.VideoType == format).Select(info => info.Resolution))
+								{
+					                    		
+									outfile.Write(string.Format("Format: {0} | Resolution: {1}p\n", format, resolution));
+					               		
+									resolutionsEstablished.Add(resolution);
+					               		
+								}
+								
+							}
+							
+							resolutionsEstablished.Clear();
+							
+							formatsEstablished.Add(format);
+							
+						}
+						
+					}
 		                    	
-		            foreach(int resolution in videoInfos.Where(info => info.Resolution >= 144 && info.Resolution < 720 && resolutionsEstablished.All(res => info.Resolution != res)).Select(info => info.Resolution))
-		            {
-		                    		
-		            	acceptableResolutions += string.Format("{0}p ", resolution);
-		               		
-		            	resolutionsEstablished.Add(resolution);
-		               		
-		             }
-		                    	
-		             MainForm.statusBar = string.Format("resolution for URL #{0} is not corrent. Please choose any of the following: {1}", position, acceptableResolutions);
+					MainForm.statusBar = "An acceptable options file has been exported to the program's root folder. Check there for more information.";
+					
+					MainForm.currentlyDownloading = false;
 	                    	
-	            }
+				}
 	            
 		    }
 			
         }
 
-        private static void DownloadVideo (IEnumerable<VideoInfo> videoInfos, int resolution)
+        private static void DownloadVideo (IEnumerable<VideoInfo> videoInfos, int resolution, VideoType format)
         {
             /*
              * Select the first .mp4 video with 360p resolution
              */
             VideoInfo video = videoInfos
-                .First(info => info.VideoType == VideoType.Mp4 && info.Resolution == resolution);
+                .First(info => info.VideoType == format && info.Resolution == resolution);
 
             /*
              * If the video has a decrypted signature, decipher it

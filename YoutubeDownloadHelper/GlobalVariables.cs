@@ -1,27 +1,27 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
+using YoutubeExtractor;
 
 namespace YoutubeDownloadHelper
 {
 	public static class GlobalVariables
 	{
 		
-		public static Collection<KeyValuePair<string, int>> urlList = new Collection<KeyValuePair<string, int>>();
+		public static Collection<Tuple<string, int, VideoType>> urlList = new Collection<Tuple<string, int, VideoType>>();
 		
-		public static Collection<KeyValuePair<string, int>> accessUrlList
+		public static Collection<Tuple<string, int, VideoType>> accessUrlList
 		{
 			
 			get 
 			{ 
 				
-				Collection<KeyValuePair<string, int>> returnValue = new Collection<KeyValuePair<string, int>>();
+				Collection<Tuple<string, int, VideoType>> returnValue = new Collection<Tuple<string, int, VideoType>>();
 				
 				for (int count = 0, GlobalVariablesurlListCount = GlobalVariables.urlList.Count; count < GlobalVariablesurlListCount; count++)
 				{
 					
-					KeyValuePair<string, int> url = GlobalVariables.urlList[count];
+					Tuple<string, int, VideoType> url = GlobalVariables.urlList[count];
 					
 					if(finishedUrlList.Count <= 0)
 					{
@@ -29,7 +29,7 @@ namespace YoutubeDownloadHelper
 						returnValue.Add(url);
 						
 					}
-					else if (!finishedUrlList.Any(item => item.Key.Equals(url.Key)))
+					else if (!finishedUrlList.Any(item => item.Item1.Equals(url.Item1)))
 					{
 						
 						returnValue.Add(url);
@@ -44,7 +44,7 @@ namespace YoutubeDownloadHelper
 			
 		}
 		
-		public static Collection<KeyValuePair<string, int>> finishedUrlList = new Collection<KeyValuePair<string, int>>();
+		public static Collection<Tuple<string, int, VideoType>> finishedUrlList = new Collection<Tuple<string, int, VideoType>>();
 		
 		public static bool DownloadImmediately;
 		

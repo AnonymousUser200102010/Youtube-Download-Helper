@@ -22,7 +22,15 @@ namespace YoutubeDownloadHelper
 		private static void Main(string[] args)
 		{
 			
-			if (Process.GetProcessesByName(Path.GetFileNameWithoutExtension(FileVersionInfo.GetVersionInfo(Assembly.GetExecutingAssembly().Location).InternalName)).Count() <= 1)
+			bool debug = false;
+			
+			#if DEBUG
+			
+			debug = true;
+			
+			#endif
+			
+			if (Process.GetProcessesByName(Path.GetFileNameWithoutExtension(FileVersionInfo.GetVersionInfo(Assembly.GetExecutingAssembly().Location).InternalName)).Count() <= 1 || debug)
 			{
 				
 				#if DEBUG
