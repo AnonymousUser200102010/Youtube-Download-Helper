@@ -241,13 +241,18 @@ namespace YoutubeDownloadHelper
 			// 
 			this.newUrlRes.Font = new System.Drawing.Font("Microsoft Sans Serif", 7.8F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
 			this.newUrlRes.Increment = new decimal(new int[] {
-			144,
+			120,
 			0,
 			0,
 			0});
 			this.newUrlRes.Location = new System.Drawing.Point(252, 38);
 			this.newUrlRes.Maximum = new decimal(new int[] {
-			5000,
+			600,
+			0,
+			0,
+			0});
+			this.newUrlRes.Minimum = new decimal(new int[] {
+			144,
 			0,
 			0,
 			0});
@@ -267,7 +272,7 @@ namespace YoutubeDownloadHelper
 			this.addURLButton.Font = new System.Drawing.Font("Microsoft Sans Serif", 7.8F);
 			this.addURLButton.Location = new System.Drawing.Point(336, 38);
 			this.addURLButton.Name = "addURLButton";
-			this.addURLButton.Size = new System.Drawing.Size(148, 24);
+			this.addURLButton.Size = new System.Drawing.Size(304, 24);
 			this.addURLButton.TabIndex = 12;
 			this.addURLButton.Text = "Add URL";
 			this.addURLButton.UseVisualStyleBackColor = true;
@@ -371,7 +376,7 @@ namespace YoutubeDownloadHelper
 			// 
 			this.submitModificationButton.Location = new System.Drawing.Point(336, 38);
 			this.submitModificationButton.Name = "submitModificationButton";
-			this.submitModificationButton.Size = new System.Drawing.Size(148, 24);
+			this.submitModificationButton.Size = new System.Drawing.Size(304, 24);
 			this.submitModificationButton.TabIndex = 12;
 			this.submitModificationButton.Text = "Modify Entry";
 			this.submitModificationButton.UseVisualStyleBackColor = true;
@@ -472,6 +477,7 @@ namespace YoutubeDownloadHelper
 			// 
 			// changeTemporaryLocation
 			// 
+			this.changeTemporaryLocation.BackgroundImage = ((System.Drawing.Image)(resources.GetObject("changeTemporaryLocation.BackgroundImage")));
 			this.changeTemporaryLocation.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Stretch;
 			this.changeTemporaryLocation.Location = new System.Drawing.Point(8, 8);
 			this.changeTemporaryLocation.Name = "changeTemporaryLocation";

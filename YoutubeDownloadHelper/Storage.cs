@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using Microsoft.Win32;
@@ -12,32 +11,50 @@ namespace YoutubeDownloadHelper
 		
 		private static readonly string tempURLListdat = "Temp\\URLList.dat";
 		
-		private const string RegistryAppendedValue = "SOFTWARE\\Wow6432Node\\";
+		private static string registryValue
+		{
+			
+			get 
+			{ 
+				
+				string returnValue = "SOFTWARE\\Wow6432Node\\YDH\\";
+				
+				#if DEBUG
+				returnValue += "Debug\\";
+				#else
+				returnValue += Environment.UserName;
+				#endif
+				
+				return returnValue;
+			
+			}
+			
+		}
 		
 		public static void ReadFromRegistry()
 		{
 			
-			if (Registry.LocalMachine.OpenSubKey(string.Format("{0}YDH\\", RegistryAppendedValue)) == null)
+			if (Registry.LocalMachine.OpenSubKey(registryValue) == null)
 			{
 				
-				Registry.LocalMachine.CreateSubKey(string.Format("{0}YDH\\", RegistryAppendedValue));
+				Registry.LocalMachine.CreateSubKey(registryValue);
 				
 			}
 			
 			string[] tempStrings = new string[5];
 			
-			using (RegistryKey tempKey = Registry.LocalMachine.OpenSubKey(string.Format("{0}YDH\\", RegistryAppendedValue), true))
+			using (RegistryKey tempKey = Registry.LocalMachine.OpenSubKey(registryValue, true))
 			{
 				
-				tempStrings[0] = (string)tempKey.GetValue("Download Location");
+				tempStrings[0] = string.IsNullOrEmpty((string)tempKey.GetValue("Download Location")) ? "C:\\" : (string)tempKey.GetValue("Download Location");
 				
-				tempStrings[1] = (string)tempKey.GetValue("Temporary Download Location");
+				tempStrings[1] = string.IsNullOrEmpty((string)tempKey.GetValue("Temporary Download Location")) ? "C:\\" : (string)tempKey.GetValue("Temporary Download Location");
 				
-				tempStrings[2] = (string)tempKey.GetValue("Schedual Downloads");
+				tempStrings[2] = string.IsNullOrEmpty((string)tempKey.GetValue("Schedual Downloads")) ? false.ToString() : (string)tempKey.GetValue("Schedual Downloads");
 				
-				tempStrings[3] = (string)tempKey.GetValue("Schedual Time Start");
+				tempStrings[3] = string.IsNullOrEmpty((string)tempKey.GetValue("Schedual Time Start")) ? DateTime.Now.ToString() : (string)tempKey.GetValue("Schedual Time Start");
 				
-				tempStrings[4] = (string)tempKey.GetValue("Schedual Time End");
+				tempStrings[4] = string.IsNullOrEmpty((string)tempKey.GetValue("Schedual Time End")) ? DateTime.Now.AddMinutes(1).ToString() : (string)tempKey.GetValue("Schedual Time End");
 				
 			}
 			
@@ -56,14 +73,14 @@ namespace YoutubeDownloadHelper
 		public static void WriteToRegistry()
 		{
 			
-			if (Registry.LocalMachine.OpenSubKey(string.Format("{0}YDH\\", RegistryAppendedValue)) == null)
+			if (Registry.LocalMachine.OpenSubKey(registryValue) == null)
 			{
 				
-				Registry.LocalMachine.CreateSubKey(string.Format("{0}YDH\\", RegistryAppendedValue));
+				Registry.LocalMachine.CreateSubKey(registryValue);
 				
 			}
 			
-			using (RegistryKey tempKey = Registry.LocalMachine.OpenSubKey(string.Format("{0}YDH\\", RegistryAppendedValue), true))
+			using (RegistryKey tempKey = Registry.LocalMachine.OpenSubKey(registryValue, true))
 			{
 				
 				tempKey.SetValue("Download Location", MainForm.downloadLocation);

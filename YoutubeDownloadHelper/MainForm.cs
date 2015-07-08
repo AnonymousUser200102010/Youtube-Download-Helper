@@ -22,10 +22,17 @@ namespace YoutubeDownloadHelper
 
         private const string exampleLink = "Example: https://www.youtube.com/watch?v=ft6rWcJIlpU";
         
-        private string[] defaultFormats = {
-        	string.Format("{0}\n{1}\n{2}\n{3}", "Mp4", "Flash", "Mobile", "WebM"),
-        	string.Format("{0}\n{1}\n{2}", "Mp3", "Aac", "Vorbis")
-        	
+        private string[] videoFormats = {
+        	"Mp4", 
+        	"Flash", 
+        	"Mobile", 
+        	"WebM"
+        };
+        
+        private static string[] audioFormats = {
+        	"Mp3", 
+        	"Aac", 
+        	"Vorbis"
         };
 
         private const decimal defaultResolution = 360;
@@ -385,8 +392,17 @@ namespace YoutubeDownloadHelper
 
             if (!string.IsNullOrWhiteSpace(newURL.Text) && !newURL.Text.Contains(exampleLink) && newUrlRes.Value >= 144 && newUrlRes.Value < 720)
             {
+            	
+            	int resolutionReal = 360;
+            	
+            	if(this.queuedBox.SelectedIndex > 0)
+            	{
+            		
+            		resolutionReal = (int)(getVideoFormat(GlobalVariables.urlList[this.queuedBox.SelectedIndex].Item3).Contains("Mp4", StringComparison.OrdinalIgnoreCase) ? 360 : this.newUrlRes.Value);
+            		
+            	}
 				
-            	var newUrlTuple = new Tuple<string, int, VideoType>(this.newURL.Text, (int)this.newUrlRes.Value, getVideoFormat(this.newUrlFormat.Text));
+            	var newUrlTuple = new Tuple<string, int, VideoType>(this.newURL.Text, resolutionReal, getVideoFormat(this.newUrlFormat.Text));
 				
 				addToQueue(newUrlTuple);
 			
@@ -480,6 +496,8 @@ namespace YoutubeDownloadHelper
                 this.resolutionToModify.Value = GlobalVariables.urlList [this.queuedBox.SelectedIndex].Item2;
                 
                 this.formatToModify.SelectedItem = getVideoFormat(GlobalVariables.urlList [this.queuedBox.SelectedIndex].Item3);
+                
+				this.resolutionToModify.Enabled = !getVideoFormat(GlobalVariables.urlList[this.queuedBox.SelectedIndex].Item3).Contains("Mp4", StringComparison.OrdinalIgnoreCase);
           	  
             }
 			
