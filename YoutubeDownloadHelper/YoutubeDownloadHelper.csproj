@@ -7,7 +7,7 @@
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
     <OutputType>WinExe</OutputType>
     <RootNamespace>YoutubeDownloadHelper</RootNamespace>
-    <AssemblyName>Youtube_Download_Helper</AssemblyName>
+    <AssemblyName>YoutubeDownloadHelper</AssemblyName>
     <TargetFrameworkVersion>v4.5.1</TargetFrameworkVersion>
     <AppDesignerFolder>Properties</AppDesignerFolder>
     <TargetFrameworkProfile />
@@ -20,10 +20,12 @@
     <TreatWarningsAsErrors>False</TreatWarningsAsErrors>
     <IntermediateOutputPath>obj\$(Configuration)\</IntermediateOutputPath>
     <WarningLevel>4</WarningLevel>
-    <RunCodeAnalysis>False</RunCodeAnalysis>
+    <RunCodeAnalysis>True</RunCodeAnalysis>
     <SourceAnalysisOverrideSettingsFile>C:\Users\Erik\AppData\Roaming\ICSharpCode\SharpDevelop5\Settings.SourceAnalysis</SourceAnalysisOverrideSettingsFile>
-    <ApplicationIcon>YDHIcon.ico</ApplicationIcon>
+    <ApplicationIcon>Assets\YDHIcon.ico</ApplicationIcon>
     <StartupObject>YoutubeDownloadHelper.Program</StartupObject>
+    <AssemblyOriginatorKeyFile>YoutubeDownloadHelper.snk</AssemblyOriginatorKeyFile>
+    <AssemblyOriginatorKeyMode>File</AssemblyOriginatorKeyMode>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)' == 'Debug' ">
     <OutputPath>bin\Debug\</OutputPath>
@@ -55,6 +57,7 @@
     <GenerateSerializationAssemblies>Auto</GenerateSerializationAssemblies>
     <FileAlignment>4096</FileAlignment>
     <Prefer32Bit>False</Prefer32Bit>
+    <StartAction>Project</StartAction>
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="Microsoft.CSharp">
@@ -77,6 +80,9 @@
     <Reference Include="System.Xml.Linq">
       <RequiredTargetFramework>3.5</RequiredTargetFramework>
     </Reference>
+    <Reference Include="UniversalFormsHandlerLibrary">
+      <HintPath>G:\Moved User Files\Project Files\UniversalHandlersLibrary\UniversalFormsHandlerLibrary\bin\Release\UniversalFormsHandlerLibrary.exe</HintPath>
+    </Reference>
     <Reference Include="UniversalHandlersLibrary">
       <HintPath>G:\Moved User Files\Project Files\UniversalHandlersLibrary\bin\Release\UniversalHandlersLibrary.dll</HintPath>
     </Reference>
@@ -85,39 +91,52 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Download.cs">
+    <Compile Include="code\Download.cs">
       <DependentUpon>MainForm.cs</DependentUpon>
     </Compile>
-    <Compile Include="GlobalVariables.cs">
+    <Compile Include="code\GlobalVariables.cs">
       <DependentUpon>MainForm.cs</DependentUpon>
     </Compile>
-    <Compile Include="MainForm.cs">
+    <Compile Include="code\MainForm.cs">
       <DependentUpon>Program.cs</DependentUpon>
+      <CopyToOutputDirectory>Never</CopyToOutputDirectory>
     </Compile>
-    <Compile Include="MainForm.Designer.cs">
+    <Compile Include="code\MainForm.Designer.cs">
       <DependentUpon>MainForm.cs</DependentUpon>
     </Compile>
-    <Compile Include="Program.cs">
+    <Compile Include="code\Program.cs">
       <DependentUpon>app.config</DependentUpon>
     </Compile>
+    <Compile Include="code\Storage.cs">
+      <DependentUpon>MainForm.cs</DependentUpon>
+    </Compile>
+    <Compile Include="code\Validation.cs">
+      <DependentUpon>MainForm.cs</DependentUpon>
+    </Compile>
+    <Compile Include="code\YDHInterface.cs">
+      <DependentUpon>MainForm.cs</DependentUpon>
+    </Compile>
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="Storage.cs">
-      <DependentUpon>MainForm.cs</DependentUpon>
-    </Compile>
-    <Compile Include="Validation.cs">
-      <DependentUpon>MainForm.cs</DependentUpon>
-    </Compile>
-    <Compile Include="YDHInterface.cs">
-      <DependentUpon>MainForm.cs</DependentUpon>
-    </Compile>
   </ItemGroup>
   <ItemGroup>
-    <None Include="app.config" />
+    <None Include="Assets\FolderIcon.ico">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Include="Assets\YDHIcon.ico">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Include="code\app.config" />
   </ItemGroup>
   <ItemGroup>
-    <EmbeddedResource Include="MainForm.resx">
+    <EmbeddedResource Include="code\MainForm.resx">
       <DependentUpon>MainForm.cs</DependentUpon>
+      <Generator>ResXFileCodeGenerator</Generator>
+      <LastGenOutput>MainForm.Designer1.cs</LastGenOutput>
     </EmbeddedResource>
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="Assets" />
+    <Folder Include="code" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

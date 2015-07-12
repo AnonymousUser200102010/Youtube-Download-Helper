@@ -2,6 +2,7 @@
 
 using System;
 using System.Reflection;
+using System.Resources;
 using System.Runtime.InteropServices;
 
 #endregion
@@ -10,17 +11,19 @@ using System.Runtime.InteropServices;
 // set of attributes. Change these attribute values to modify the information
 // associated with an assembly.
 [assembly: AssemblyTitle("YoutubeDownloadHelper")]
-[assembly: AssemblyDescription("")]
+[assembly: AssemblyDescription("Youtube Download Helper is a program whose main purpose is to batch download Youtube videos.")]
 [assembly: AssemblyConfiguration("")]
 [assembly: AssemblyCompany("")]
 [assembly: AssemblyProduct("YoutubeDownloadHelper")]
-[assembly: AssemblyCopyright("Copyright 2015")]
+[assembly: AssemblyCopyright("The GNU Public License, Version 3+ (2015)")]
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]
 
 // This sets the default COM visibility of types in the assembly to invisible.
 // If you need to expose a type to COM, use [ComVisible(true)] on that type.
 [assembly: ComVisible(false)]
+[assembly: CLSCompliant(true)]
+[assembly: NeutralResourcesLanguage("en-US", UltimateResourceFallbackLocation.MainAssembly)]
 
 // The assembly version has following format :
 //
@@ -28,4 +31,4 @@ using System.Runtime.InteropServices;
 //
 // You can specify all the values or you can use the default the Revision and 
 // Build Numbers by using the '*' as shown below:
-[assembly: AssemblyVersion("0.1.*")]
+[assembly: AssemblyVersion("0.2.*")]

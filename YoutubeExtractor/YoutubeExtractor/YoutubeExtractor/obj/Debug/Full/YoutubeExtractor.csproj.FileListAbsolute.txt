@@ -1,7 +1,0 @@
-C:\Users\Erik\Documents\GitHub\Youtube-Download-Helper\YoutubeExtractor\YoutubeExtractor\YoutubeExtractor\obj\Debug\Full\YoutubeExtractor.csprojResolveAssemblyReference.cache
-C:\Users\Erik\Documents\GitHub\Youtube-Download-Helper\YoutubeExtractor\YoutubeExtractor\YoutubeExtractor\bin\Debug\Full\YoutubeExtractor.dll
-C:\Users\Erik\Documents\GitHub\Youtube-Download-Helper\YoutubeExtractor\YoutubeExtractor\YoutubeExtractor\bin\Debug\Full\YoutubeExtractor.pdb
-C:\Users\Erik\Documents\GitHub\Youtube-Download-Helper\YoutubeExtractor\YoutubeExtractor\YoutubeExtractor\obj\Debug\Full\YoutubeExtractor.dll
-C:\Users\Erik\Documents\GitHub\Youtube-Download-Helper\YoutubeExtractor\YoutubeExtractor\YoutubeExtractor\obj\Debug\Full\YoutubeExtractor.pdb
-C:\Users\Erik\Documents\GitHub\Youtube-Download-Helper\YoutubeExtractor\YoutubeExtractor\YoutubeExtractor\bin\Debug\Full\Newtonsoft.Json.dll
-C:\Users\Erik\Documents\GitHub\Youtube-Download-Helper\YoutubeExtractor\YoutubeExtractor\YoutubeExtractor\bin\Debug\Full\Newtonsoft.Json.xml

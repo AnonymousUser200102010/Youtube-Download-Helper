@@ -1,0 +1,89 @@
+July 11 08:15:32 AM:
+Exception Message:
+C:\Users\Erik\Documents\GitHub\Youtube-Download-Helper\YoutubeDownloadHelper\bin\Debug\Assets\YDHIcon.ico
+
+Exception Stack Trace:
+   at System.Drawing.Icon.ExtractAssociatedIcon(String filePath, Int32 index)
+   at YoutubeDownloadHelper.MainForm..ctor(Boolean downloadImmediately) in c:\Users\Erik\Documents\GitHub\Youtube-Download-Helper\YoutubeDownloadHelper\code\MainForm.cs:line 38
+   at YoutubeDownloadHelper.Program.Main(String[] args) in c:\Users\Erik\Documents\GitHub\Youtube-Download-Helper\YoutubeDownloadHelper\code\Program.cs:line 50
+
+July 11 07:52:15 AM:
+Exception Message:
+Could not find any resources appropriate for the specified culture or the neutral culture.  Make sure "YoutubeDownloadHelper.code.MainForm.resources" was correctly embedded or linked into assembly "YoutubeDownloadHelper" at compile time, or that all the satellite assemblies required are loadable and fully signed.
+
+Exception Stack Trace:
+   at System.Resources.ManifestBasedResourceGroveler.HandleResourceStreamMissing(String fileName)
+   at System.Resources.ManifestBasedResourceGroveler.GrovelForResourceSet(CultureInfo culture, Dictionary`2 localResourceSets, Boolean tryParents, Boolean createIfNotExists, StackCrawlMark& stackMark)
+   at System.Resources.ResourceManager.InternalGetResourceSet(CultureInfo requestedCulture, Boolean createIfNotExists, Boolean tryParents, StackCrawlMark& stackMark)
+   at System.Resources.ResourceManager.InternalGetResourceSet(CultureInfo culture, Boolean createIfNotExists, Boolean tryParents)
+   at System.Resources.ResourceManager.GetObject(String name, CultureInfo culture, Boolean wrapUnmanagedMemStream)
+   at System.Resources.ResourceManager.GetObject(String name, CultureInfo culture)
+   at YoutubeDownloadHelper.code.MainForm.get_changeLocationImage() in c:\Users\Erik\Documents\GitHub\Youtube-Download-Helper\YoutubeDownloadHelper\code\MainForm.Designer1.cs:line 68
+   at YoutubeDownloadHelper.MainForm.InitializeComponent() in c:\Users\Erik\Documents\GitHub\Youtube-Download-Helper\YoutubeDownloadHelper\code\MainForm.Designer.cs:line 455
+   at YoutubeDownloadHelper.MainForm..ctor(Boolean downloadImmediately) in c:\Users\Erik\Documents\GitHub\Youtube-Download-Helper\YoutubeDownloadHelper\code\MainForm.cs:line 53
+   at YoutubeDownloadHelper.Program.Main(String[] args) in c:\Users\Erik\Documents\GitHub\Youtube-Download-Helper\YoutubeDownloadHelper\code\Program.cs:line 50
+
+July 11 07:50:42 AM:
+Exception Message:
+Could not find any resources appropriate for the specified culture or the neutral culture.  Make sure "YoutubeDownloadHelper.code.MainForm.resources" was correctly embedded or linked into assembly "YoutubeDownloadHelper" at compile time, or that all the satellite assemblies required are loadable and fully signed.
+
+Exception Stack Trace:
+   at System.Resources.ManifestBasedResourceGroveler.HandleResourceStreamMissing(String fileName)
+   at System.Resources.ManifestBasedResourceGroveler.GrovelForResourceSet(CultureInfo culture, Dictionary`2 localResourceSets, Boolean tryParents, Boolean createIfNotExists, StackCrawlMark& stackMark)
+   at System.Resources.ResourceManager.InternalGetResourceSet(CultureInfo requestedCulture, Boolean createIfNotExists, Boolean tryParents, StackCrawlMark& stackMark)
+   at System.Resources.ResourceManager.InternalGetResourceSet(CultureInfo culture, Boolean createIfNotExists, Boolean tryParents)
+   at System.Resources.ResourceManager.GetObject(String name, CultureInfo culture, Boolean wrapUnmanagedMemStream)
+   at System.Resources.ResourceManager.GetObject(String name, CultureInfo culture)
+   at YoutubeDownloadHelper.code.MainForm.get_changeLocationImage() in c:\Users\Erik\Documents\GitHub\Youtube-Download-Helper\YoutubeDownloadHelper\code\MainForm.Designer1.cs:line 68
+   at YoutubeDownloadHelper.MainForm.InitializeComponent() in c:\Users\Erik\Documents\GitHub\Youtube-Download-Helper\YoutubeDownloadHelper\code\MainForm.Designer.cs:line 455
+   at YoutubeDownloadHelper.MainForm..ctor(Boolean downloadImmediately) in c:\Users\Erik\Documents\GitHub\Youtube-Download-Helper\YoutubeDownloadHelper\code\MainForm.cs:line 53
+   at YoutubeDownloadHelper.Program.Main(String[] args) in c:\Users\Erik\Documents\GitHub\Youtube-Download-Helper\YoutubeDownloadHelper\code\Program.cs:line 50
+
+July 11 07:45:03 AM:
+Exception Message:
+Could not find any resources appropriate for the specified culture or the neutral culture.  Make sure "YoutubeDownloadHelper.code.MainForm.resources" was correctly embedded or linked into assembly "YoutubeDownloadHelper" at compile time, or that all the satellite assemblies required are loadable and fully signed.
+
+Exception Stack Trace:
+   at System.Resources.ManifestBasedResourceGroveler.HandleResourceStreamMissing(String fileName)
+   at System.Resources.ManifestBasedResourceGroveler.GrovelForResourceSet(CultureInfo culture, Dictionary`2 localResourceSets, Boolean tryParents, Boolean createIfNotExists, StackCrawlMark& stackMark)
+   at System.Resources.ResourceManager.InternalGetResourceSet(CultureInfo requestedCulture, Boolean createIfNotExists, Boolean tryParents, StackCrawlMark& stackMark)
+   at System.Resources.ResourceManager.InternalGetResourceSet(CultureInfo culture, Boolean createIfNotExists, Boolean tryParents)
+   at System.Resources.ResourceManager.GetObject(String name, CultureInfo culture, Boolean wrapUnmanagedMemStream)
+   at System.Resources.ResourceManager.GetObject(String name, CultureInfo culture)
+   at YoutubeDownloadHelper.code.MainForm.get_changeLocationImage() in c:\Users\Erik\Documents\GitHub\Youtube-Download-Helper\YoutubeDownloadHelper\code\MainForm.Designer1.cs:line 68
+   at YoutubeDownloadHelper.MainForm.InitializeComponent() in c:\Users\Erik\Documents\GitHub\Youtube-Download-Helper\YoutubeDownloadHelper\code\MainForm.Designer.cs:line 455
+   at YoutubeDownloadHelper.MainForm..ctor(Boolean downloadImmediately) in c:\Users\Erik\Documents\GitHub\Youtube-Download-Helper\YoutubeDownloadHelper\code\MainForm.cs:line 53
+   at YoutubeDownloadHelper.Program.Main(String[] args) in c:\Users\Erik\Documents\GitHub\Youtube-Download-Helper\YoutubeDownloadHelper\code\Program.cs:line 50
+
+July 11 07:44:55 AM:
+Exception Message:
+Could not find any resources appropriate for the specified culture or the neutral culture.  Make sure "YoutubeDownloadHelper.code.MainForm.resources" was correctly embedded or linked into assembly "YoutubeDownloadHelper" at compile time, or that all the satellite assemblies required are loadable and fully signed.
+
+Exception Stack Trace:
+   at System.Resources.ManifestBasedResourceGroveler.HandleResourceStreamMissing(String fileName)
+   at System.Resources.ManifestBasedResourceGroveler.GrovelForResourceSet(CultureInfo culture, Dictionary`2 localResourceSets, Boolean tryParents, Boolean createIfNotExists, StackCrawlMark& stackMark)
+   at System.Resources.ResourceManager.InternalGetResourceSet(CultureInfo requestedCulture, Boolean createIfNotExists, Boolean tryParents, StackCrawlMark& stackMark)
+   at System.Resources.ResourceManager.InternalGetResourceSet(CultureInfo culture, Boolean createIfNotExists, Boolean tryParents)
+   at System.Resources.ResourceManager.GetObject(String name, CultureInfo culture, Boolean wrapUnmanagedMemStream)
+   at System.Resources.ResourceManager.GetObject(String name, CultureInfo culture)
+   at YoutubeDownloadHelper.code.MainForm.get_changeLocationImage() in c:\Users\Erik\Documents\GitHub\Youtube-Download-Helper\YoutubeDownloadHelper\code\MainForm.Designer1.cs:line 68
+   at YoutubeDownloadHelper.MainForm.InitializeComponent() in c:\Users\Erik\Documents\GitHub\Youtube-Download-Helper\YoutubeDownloadHelper\code\MainForm.Designer.cs:line 455
+   at YoutubeDownloadHelper.MainForm..ctor(Boolean downloadImmediately) in c:\Users\Erik\Documents\GitHub\Youtube-Download-Helper\YoutubeDownloadHelper\code\MainForm.cs:line 53
+   at YoutubeDownloadHelper.Program.Main(String[] args) in c:\Users\Erik\Documents\GitHub\Youtube-Download-Helper\YoutubeDownloadHelper\code\Program.cs:line 50
+
+July 11 07:44:14 AM:
+Exception Message:
+Could not find any resources appropriate for the specified culture or the neutral culture.  Make sure "YoutubeDownloadHelper.code.MainForm.resources" was correctly embedded or linked into assembly "YoutubeDownloadHelper" at compile time, or that all the satellite assemblies required are loadable and fully signed.
+
+Exception Stack Trace:
+   at System.Resources.ManifestBasedResourceGroveler.HandleResourceStreamMissing(String fileName)
+   at System.Resources.ManifestBasedResourceGroveler.GrovelForResourceSet(CultureInfo culture, Dictionary`2 localResourceSets, Boolean tryParents, Boolean createIfNotExists, StackCrawlMark& stackMark)
+   at System.Resources.ResourceManager.InternalGetResourceSet(CultureInfo requestedCulture, Boolean createIfNotExists, Boolean tryParents, StackCrawlMark& stackMark)
+   at System.Resources.ResourceManager.InternalGetResourceSet(CultureInfo culture, Boolean createIfNotExists, Boolean tryParents)
+   at System.Resources.ResourceManager.GetObject(String name, CultureInfo culture, Boolean wrapUnmanagedMemStream)
+   at System.Resources.ResourceManager.GetObject(String name, CultureInfo culture)
+   at YoutubeDownloadHelper.code.MainForm.get_changeLocationImage() in c:\Users\Erik\Documents\GitHub\Youtube-Download-Helper\YoutubeDownloadHelper\code\MainForm.Designer1.cs:line 68
+   at YoutubeDownloadHelper.MainForm.InitializeComponent() in c:\Users\Erik\Documents\GitHub\Youtube-Download-Helper\YoutubeDownloadHelper\code\MainForm.Designer.cs:line 455
+   at YoutubeDownloadHelper.MainForm..ctor(Boolean downloadImmediately) in c:\Users\Erik\Documents\GitHub\Youtube-Download-Helper\YoutubeDownloadHelper\code\MainForm.cs:line 53
+   at YoutubeDownloadHelper.Program.Main(String[] args) in c:\Users\Erik\Documents\GitHub\Youtube-Download-Helper\YoutubeDownloadHelper\code\Program.cs:line 50
+

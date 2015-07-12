@@ -1,7 +1,0 @@
-This file will show you all formats available for the current URL, as well as the resolutions that are acceptable for that URL.
-http://www.youtube.com/watch?v=O3UBOOZw-FE:
-Format: Mp4 | Resolution: 360p
-Format: WebM | Resolution: 360p
-Format: Flash | Resolution: 240p
-Format: Mobile | Resolution: 240p
-Format: Mobile | Resolution: 144p

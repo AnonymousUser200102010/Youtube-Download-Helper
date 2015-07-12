@@ -1,12 +1,8 @@
-C:\Users\Erik\Documents\GitHub\Youtube-Download-Helper\YoutubeDownloadHelper\bin\Release\Newtonsoft.Json.dll
 C:\Users\Erik\Documents\GitHub\Youtube-Download-Helper\YoutubeDownloadHelper\bin\Release\UniversalHandlersLibrary.dll
-C:\Users\Erik\Documents\GitHub\Youtube-Download-Helper\YoutubeDownloadHelper\bin\Release\YoutubeExtractor.dll
-C:\Users\Erik\Documents\GitHub\Youtube-Download-Helper\YoutubeDownloadHelper\bin\Release\Newtonsoft.Json.xml
 C:\Users\Erik\Documents\GitHub\Youtube-Download-Helper\YoutubeDownloadHelper\bin\Release\UniversalHandlersLibrary.xml
-C:\Users\Erik\Documents\GitHub\Youtube-Download-Helper\YoutubeDownloadHelper\bin\Release\YoutubeExtractor.pdb
 C:\Users\Erik\Documents\GitHub\Youtube-Download-Helper\YoutubeDownloadHelper\obj\Release\YoutubeDownloadHelper.csprojResolveAssemblyReference.cache
 C:\Users\Erik\Documents\GitHub\Youtube-Download-Helper\YoutubeDownloadHelper\obj\Release\YoutubeDownloadHelper.MainForm.resources
 C:\Users\Erik\Documents\GitHub\Youtube-Download-Helper\YoutubeDownloadHelper\obj\Release\YoutubeDownloadHelper.csproj.GenerateResource.Cache
-C:\Users\Erik\Documents\GitHub\Youtube-Download-Helper\YoutubeDownloadHelper\bin\Release\Youtube_Download_Helper.exe.config
-C:\Users\Erik\Documents\GitHub\Youtube-Download-Helper\YoutubeDownloadHelper\bin\Release\Youtube_Download_Helper.exe
-C:\Users\Erik\Documents\GitHub\Youtube-Download-Helper\YoutubeDownloadHelper\obj\Release\Youtube_Download_Helper.exe
+C:\Users\Erik\Documents\GitHub\Youtube-Download-Helper\YoutubeDownloadHelper\bin\Release\YoutubeDownloadHelper.exe.config
+C:\Users\Erik\Documents\GitHub\Youtube-Download-Helper\YoutubeDownloadHelper\bin\Release\YoutubeDownloadHelper.exe
+C:\Users\Erik\Documents\GitHub\Youtube-Download-Helper\YoutubeDownloadHelper\obj\Release\YoutubeDownloadHelper.exe
