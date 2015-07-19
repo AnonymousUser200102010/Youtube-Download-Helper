@@ -1,0 +1,37 @@
+<?xml version="1.0"?>
+<doc>
+    <assembly>
+        <name>UniversalFormsHandlerLibrary</name>
+    </assembly>
+    <members>
+        <member name="T:UniversalFormsHandlerLibrary.MainForm">
+            <summary>
+            FOR TESTING PURPOSES ONLY! DO NOT USE ON A REGULAR BASIS!
+            </summary>
+        </member>
+        <member name="M:UniversalFormsHandlerLibrary.MainForm.#ctor">
+            <summary>
+            FOR TESTING PURPOSES ONLY! DO NOT USE ON A REGULAR BASIS!
+            </summary>
+        </member>
+        <member name="T:UniversalFormsHandlerLibrary.BackEnd">
+            <summary>
+            Functions for use in the background or before the start of the program.
+            </summary>
+        </member>
+        <member name="M:UniversalFormsHandlerLibrary.BackEnd.CheckBeginningParameters(System.String,System.Windows.Forms.Form,System.Boolean)">
+            <summary>
+            A way to check for required parameters you generally always use before the start of a program.
+            </summary>
+            <param name="applicationName">
+            Name of the parent program.
+            </param>
+            <param name="debugMode">
+            Is the parent program debugging?
+            </param>
+            <param name="formToLoad">
+            The form you wish to load if all required parameters are met.
+            </param>
+        </member>
+    </members>
+</doc>

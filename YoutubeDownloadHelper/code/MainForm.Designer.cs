@@ -453,6 +453,7 @@ namespace YoutubeDownloadHelper
 			// 
 			// changeSaveLocation
 			// 
+			this.changeSaveLocation.BackgroundImage = ((System.Drawing.Image)(resources.GetObject("FolderImage")));
 			this.changeSaveLocation.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Stretch;
 			this.changeSaveLocation.Location = new System.Drawing.Point(8, 8);
 			this.changeSaveLocation.Name = "changeSaveLocation";
@@ -484,6 +485,7 @@ namespace YoutubeDownloadHelper
 			// 
 			// changeTemporaryLocation
 			// 
+			this.changeTemporaryLocation.BackgroundImage = ((System.Drawing.Image)(resources.GetObject("FolderImage")));
 			this.changeTemporaryLocation.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Stretch;
 			this.changeTemporaryLocation.Location = new System.Drawing.Point(8, 8);
 			this.changeTemporaryLocation.Name = "changeTemporaryLocation";

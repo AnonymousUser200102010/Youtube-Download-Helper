@@ -18,6 +18,8 @@ namespace YoutubeDownloadHelper
     public partial class MainForm : Form, IMainForm
     {
 		
+    	private MainForm mainForm;
+    	
         private IMainForm iMainForm;
         
         private IValidation Validation;
@@ -41,10 +43,11 @@ namespace YoutubeDownloadHelper
             "Vorbis"
         };
         
-        private readonly Image[] formImage = {
-			Image.FromFile("Assets\\FolderIcon.ico"),
-			Image.FromFile("Assets\\YDHIcon.ico")
-		};
+        private readonly Icon formIcon = (new System.ComponentModel.ComponentResourceManager(typeof(MainForm)).GetObject("$this.Icon")) as Icon;
+        
+        private readonly Image[] imageList = {
+        	(new System.ComponentModel.ComponentResourceManager(typeof(MainForm)).GetObject("FolderImage") as Image)
+        };
 
         private const decimal defaultResolution = 360;
 
@@ -58,15 +61,15 @@ namespace YoutubeDownloadHelper
             //
             InitializeComponent();
             
-            //this.Icon = formImage[1];
+            this.Icon = formIcon;
             
-            this.changeSaveLocation.BackgroundImage = formImage[0];
+            this.changeSaveLocation.BackgroundImage = imageList[0];
             
-            this.changeTemporaryLocation.BackgroundImage = formImage[0];
+            this.changeTemporaryLocation.BackgroundImage = imageList[0];
 			
             this.iMainForm = (this as IMainForm);
             
-            this.mainForm = (this as MainForm);
+            this.mainForm = this;
             
             this.Validation = (new Validation() as IValidation);
             
@@ -220,16 +223,16 @@ namespace YoutubeDownloadHelper
         private string NewQueuedText
         {
         	
-            get { return mainForm.newURL.Text; }
+            get { return this.newURL.Text; }
         	
             set
             { 
         		
-                mainForm.newURL.Text = value;
+                this.newURL.Text = value;
         			
-                mainForm.newURL.TextAlign = HorizontalAlignment.Center;
+                this.newURL.TextAlign = HorizontalAlignment.Center;
         		
-                mainForm.newURL.Font = new Font ("Microsoft Sans Serif", 7.8f, FontStyle.Italic);
+                this.newURL.Font = new Font ("Microsoft Sans Serif", 7.8f, FontStyle.Italic);
         			
             }
         	
@@ -238,8 +241,6 @@ namespace YoutubeDownloadHelper
         #endregion
 
         #region Public Properties and Independant Methods
-
-        private MainForm mainForm;
 
         public int UrlListNumberItems
         {

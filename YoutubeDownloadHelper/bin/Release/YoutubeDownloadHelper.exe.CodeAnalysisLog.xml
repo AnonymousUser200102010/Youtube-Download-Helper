@@ -6,7 +6,7 @@
    <Modules>
     <Module Name="youtubedownloadhelper.exe">
      <Messages>
-      <Message TypeName="AssembliesShouldHaveValidStrongNames" Category="Microsoft.Design" CheckId="CA2210" Status="Active" Created="2015-07-11 13:56:10Z" FixCategory="NonBreaking">
+      <Message TypeName="AssembliesShouldHaveValidStrongNames" Category="Microsoft.Design" CheckId="CA2210" Status="Active" Created="2015-07-19 17:32:02Z" FixCategory="NonBreaking">
        <Issue Name="NoStrongName" Certainty="95" Level="CriticalError">Sign 'YoutubeDownloadHelper.exe' with a strong name key.</Issue>
       </Message>
      </Messages>
@@ -17,7 +17,7 @@
          <Members>
           <Member Name="#SetupDownloadingProcess(System.Int32,System.Collections.ObjectModel.Collection`1&lt;System.Tuple`3&lt;System.String,System.Int32,YoutubeExtractor.VideoType&gt;&gt;)" Kind="Method" Static="False" Accessibility="Public" ExternallyVisible="True">
            <Messages>
-            <Message TypeName="DoNotCatchGeneralExceptionTypes" Category="Microsoft.Design" CheckId="CA1031" Status="Active" Created="2015-07-11 13:56:10Z" FixCategory="NonBreaking">
+            <Message TypeName="DoNotCatchGeneralExceptionTypes" Category="Microsoft.Design" CheckId="CA1031" Status="Active" Created="2015-07-19 17:32:02Z" FixCategory="NonBreaking">
              <Issue Certainty="95" Level="CriticalError">Modify 'Download.SetupDownloadingProcess(int, Collection&lt;Tuple&lt;string, int, VideoType&gt;&gt;)' to catch a more specific exception than 'Exception' or rethrow the exception.</Issue>
             </Message>
            </Messages>
@@ -28,10 +28,10 @@
          <Members>
           <Member Name="#urlList" Kind="Field" Static="True" Accessibility="Public" ExternallyVisible="True">
            <Messages>
-            <Message TypeName="DoNotNestGenericTypesInMemberSignatures" Category="Microsoft.Design" CheckId="CA1006" Status="Active" Created="2015-07-11 13:56:10Z" FixCategory="Breaking">
+            <Message TypeName="DoNotNestGenericTypesInMemberSignatures" Category="Microsoft.Design" CheckId="CA1006" Status="Active" Created="2015-07-19 17:32:02Z" FixCategory="Breaking">
              <Issue Certainty="95" Level="CriticalError">Consider a design where 'GlobalVariables.urlList' doesn't nest generic type 'Collection&lt;Tuple&lt;string, int, VideoType&gt;&gt;'.</Issue>
             </Message>
-            <Message TypeName="NonConstantFieldsShouldNotBeVisible" Category="Microsoft.Usage" CheckId="CA2211" Status="Active" Created="2015-07-11 13:56:10Z" FixCategory="Breaking">
+            <Message TypeName="NonConstantFieldsShouldNotBeVisible" Category="Microsoft.Usage" CheckId="CA2211" Status="Active" Created="2015-07-19 17:32:02Z" FixCategory="Breaking">
              <Issue Certainty="90" Level="Warning">Consider making 'GlobalVariables.urlList' non-public or a constant.</Issue>
             </Message>
            </Messages>
@@ -42,7 +42,7 @@
          <Members>
           <Member Name="#SetupDownloadingProcess(System.Int32,System.Collections.ObjectModel.Collection`1&lt;System.Tuple`3&lt;System.String,System.Int32,YoutubeExtractor.VideoType&gt;&gt;)" Kind="Method" Static="False" Accessibility="Public" ExternallyVisible="True">
            <Messages>
-            <Message TypeName="DoNotNestGenericTypesInMemberSignatures" Category="Microsoft.Design" CheckId="CA1006" Status="Active" Created="2015-07-11 13:56:10Z" FixCategory="Breaking">
+            <Message TypeName="DoNotNestGenericTypesInMemberSignatures" Category="Microsoft.Design" CheckId="CA1006" Status="Active" Created="2015-07-19 17:32:02Z" FixCategory="Breaking">
              <Issue Certainty="95" Level="CriticalError">Consider a design where 'IDownload.SetupDownloadingProcess(int, Collection&lt;Tuple&lt;string, int, VideoType&gt;&gt;)' doesn't nest generic type 'Collection&lt;Tuple&lt;string, int, VideoType&gt;&gt;'.</Issue>
             </Message>
            </Messages>
@@ -53,21 +53,21 @@
          <Members>
           <Member Name="#DownloadFinishedPercent" Kind="Property" Static="False" Accessibility="Public" ExternallyVisible="True">
            <Messages>
-            <Message TypeName="PropertiesShouldNotBeWriteOnly" Category="Microsoft.Design" CheckId="CA1044" Status="Active" Created="2015-07-11 13:56:10Z" FixCategory="DependsOnFix">
+            <Message TypeName="PropertiesShouldNotBeWriteOnly" Category="Microsoft.Design" CheckId="CA1044" Status="Active" Created="2015-07-19 17:32:02Z" FixCategory="DependsOnFix">
              <Issue Name="AddGetter" Certainty="95" Level="Error">Because property 'IMainForm.DownloadFinishedPercent' is write-only, either add a property getter with an accessibility that is greater than or equal to its setter or convert this property into a method.</Issue>
             </Message>
            </Messages>
           </Member>
           <Member Name="#DownloadLabel" Kind="Property" Static="False" Accessibility="Public" ExternallyVisible="True">
            <Messages>
-            <Message TypeName="PropertiesShouldNotBeWriteOnly" Category="Microsoft.Design" CheckId="CA1044" Status="Active" Created="2015-07-11 13:56:10Z" FixCategory="DependsOnFix">
+            <Message TypeName="PropertiesShouldNotBeWriteOnly" Category="Microsoft.Design" CheckId="CA1044" Status="Active" Created="2015-07-19 17:32:02Z" FixCategory="DependsOnFix">
              <Issue Name="AddGetter" Certainty="95" Level="Error">Because property 'IMainForm.DownloadLabel' is write-only, either add a property getter with an accessibility that is greater than or equal to its setter or convert this property into a method.</Issue>
             </Message>
            </Messages>
           </Member>
           <Member Name="#StatusBar" Kind="Property" Static="False" Accessibility="Public" ExternallyVisible="True">
            <Messages>
-            <Message TypeName="PropertiesShouldNotBeWriteOnly" Category="Microsoft.Design" CheckId="CA1044" Status="Active" Created="2015-07-11 13:56:10Z" FixCategory="DependsOnFix">
+            <Message TypeName="PropertiesShouldNotBeWriteOnly" Category="Microsoft.Design" CheckId="CA1044" Status="Active" Created="2015-07-19 17:32:02Z" FixCategory="DependsOnFix">
              <Issue Name="AddGetter" Certainty="95" Level="Error">Because property 'IMainForm.StatusBar' is write-only, either add a property getter with an accessibility that is greater than or equal to its setter or convert this property into a method.</Issue>
             </Message>
            </Messages>
@@ -78,14 +78,14 @@
          <Members>
           <Member Name="#ReadUrlList()" Kind="Method" Static="False" Accessibility="Public" ExternallyVisible="True">
            <Messages>
-            <Message TypeName="DoNotNestGenericTypesInMemberSignatures" Category="Microsoft.Design" CheckId="CA1006" Status="Active" Created="2015-07-11 13:56:10Z" FixCategory="Breaking">
+            <Message TypeName="DoNotNestGenericTypesInMemberSignatures" Category="Microsoft.Design" CheckId="CA1006" Status="Active" Created="2015-07-19 17:32:02Z" FixCategory="Breaking">
              <Issue Certainty="95" Level="CriticalError">Consider a design where 'IStorage.ReadUrlList()' doesn't nest generic type 'Collection&lt;Tuple&lt;string, int, VideoType&gt;&gt;'.</Issue>
             </Message>
            </Messages>
           </Member>
           <Member Name="#WriteUrlsToFile(System.Collections.ObjectModel.Collection`1&lt;System.Tuple`3&lt;System.String,System.Int32,YoutubeExtractor.VideoType&gt;&gt;,System.Boolean)" Kind="Method" Static="False" Accessibility="Public" ExternallyVisible="True">
            <Messages>
-            <Message TypeName="DoNotNestGenericTypesInMemberSignatures" Category="Microsoft.Design" CheckId="CA1006" Status="Active" Created="2015-07-11 13:56:10Z" FixCategory="Breaking">
+            <Message TypeName="DoNotNestGenericTypesInMemberSignatures" Category="Microsoft.Design" CheckId="CA1006" Status="Active" Created="2015-07-19 17:32:02Z" FixCategory="Breaking">
              <Issue Certainty="95" Level="CriticalError">Consider a design where 'IStorage.WriteUrlsToFile(Collection&lt;Tuple&lt;string, int, VideoType&gt;&gt;, bool)' doesn't nest generic type 'Collection&lt;Tuple&lt;string, int, VideoType&gt;&gt;'.</Issue>
             </Message>
            </Messages>
@@ -96,7 +96,7 @@
          <Members>
           <Member Name="#.ctor(System.Boolean)" Kind="Method" Static="False" Accessibility="Public" ExternallyVisible="True">
            <Messages>
-            <Message TypeName="DoNotIndirectlyExposeMethodsWithLinkDemands" Category="Microsoft.Security" CheckId="CA2122" Status="Active" Created="2015-07-11 13:56:10Z" FixCategory="NonBreaking">
+            <Message TypeName="DoNotIndirectlyExposeMethodsWithLinkDemands" Category="Microsoft.Security" CheckId="CA2122" Status="Active" Created="2015-07-19 17:32:02Z" FixCategory="NonBreaking">
              <Issue Certainty="33" Level="CriticalError">'MainForm.MainForm(bool)' calls into 'FileVersionInfo.FileVersion.get()' which has a LinkDemand. By making this call, 'FileVersionInfo.FileVersion.get()' is indirectly exposed to user code. Review the following call stack that might expose a way to circumvent security protection: &#xD;&#xA;   -&gt;'MainForm.MainForm(bool)'&#xD;&#xA;   -&gt;'MainForm.MainForm(bool)'</Issue>
              <Issue Certainty="33" Level="CriticalError">'MainForm.MainForm(bool)' calls into 'FileVersionInfo.GetVersionInfo(string)' which has a LinkDemand. By making this call, 'FileVersionInfo.GetVersionInfo(string)' is indirectly exposed to user code. Review the following call stack that might expose a way to circumvent security protection: &#xD;&#xA;   -&gt;'MainForm.MainForm(bool)'&#xD;&#xA;   -&gt;'MainForm.MainForm(bool)'</Issue>
             </Message>
@@ -104,7 +104,7 @@
           </Member>
           <Member Name="#AddURLButtonClick(System.Object,System.EventArgs)" Kind="Method" Static="False" Accessibility="Private" ExternallyVisible="False">
            <Messages>
-            <Message TypeName="SpecifyMessageBoxOptions" Category="Microsoft.Globalization" CheckId="CA1300" Status="Active" Created="2015-07-11 13:56:10Z" FixCategory="NonBreaking">
+            <Message TypeName="SpecifyMessageBoxOptions" Category="Microsoft.Globalization" CheckId="CA1300" Status="Active" Created="2015-07-19 17:32:02Z" FixCategory="NonBreaking">
              <Issue Certainty="95" Level="Error">Change 'MainForm.AddURLButtonClick(object, EventArgs)' to call the MessageBox.Show overload that specifies MessageBoxOptions, and make sure to set MessageBoxOptions.RightAlign and MessageBoxOptions.RtlReading if RightToLeft is set to RightToLeft.Yes on the parent control.</Issue>
              <Issue Certainty="95" Level="Error">Change 'MainForm.AddURLButtonClick(object, EventArgs)' to call the MessageBox.Show overload that specifies MessageBoxOptions, and make sure to set MessageBoxOptions.RightAlign and MessageBoxOptions.RtlReading if RightToLeft is set to RightToLeft.Yes on the parent control.</Issue>
             </Message>
@@ -112,22 +112,22 @@
           </Member>
           <Member Name="#audioFormats" Kind="Field" Static="False" Accessibility="Private" ExternallyVisible="False">
            <Messages>
-            <Message TypeName="AvoidUnusedPrivateFields" Category="Microsoft.Performance" CheckId="CA1823" Status="Active" Created="2015-07-11 13:56:10Z" FixCategory="NonBreaking">
+            <Message TypeName="AvoidUnusedPrivateFields" Category="Microsoft.Performance" CheckId="CA1823" Status="Active" Created="2015-07-19 17:32:02Z" FixCategory="NonBreaking">
              <Issue Certainty="75" Level="Warning">It appears that field 'MainForm.audioFormats' is never used or is only ever assigned to. Use this field or remove it.</Issue>
             </Message>
            </Messages>
           </Member>
-          <Member Name="#Button2Click(System.Object,System.EventArgs)" Kind="Method" Static="False" Accessibility="Private" ExternallyVisible="False">
+          <Member Name="#DeleteButtonClick(System.Object,System.EventArgs)" Kind="Method" Static="False" Accessibility="Private" ExternallyVisible="False">
            <Messages>
-            <Message TypeName="SpecifyMessageBoxOptions" Category="Microsoft.Globalization" CheckId="CA1300" Status="Active" Created="2015-07-11 13:56:10Z" FixCategory="NonBreaking">
-             <Issue Certainty="95" Level="Error">Change 'MainForm.Button2Click(object, EventArgs)' to call the MessageBox.Show overload that specifies MessageBoxOptions, and make sure to set MessageBoxOptions.RightAlign and MessageBoxOptions.RtlReading if RightToLeft is set to RightToLeft.Yes on the parent control.</Issue>
-             <Issue Certainty="95" Level="Error">Change 'MainForm.Button2Click(object, EventArgs)' to call the MessageBox.Show overload that specifies MessageBoxOptions, and make sure to set MessageBoxOptions.RightAlign and MessageBoxOptions.RtlReading if RightToLeft is set to RightToLeft.Yes on the parent control.</Issue>
+            <Message TypeName="SpecifyMessageBoxOptions" Category="Microsoft.Globalization" CheckId="CA1300" Status="Active" Created="2015-07-19 17:32:02Z" FixCategory="NonBreaking">
+             <Issue Certainty="95" Level="Error">Change 'MainForm.DeleteButtonClick(object, EventArgs)' to call the MessageBox.Show overload that specifies MessageBoxOptions, and make sure to set MessageBoxOptions.RightAlign and MessageBoxOptions.RtlReading if RightToLeft is set to RightToLeft.Yes on the parent control.</Issue>
+             <Issue Certainty="95" Level="Error">Change 'MainForm.DeleteButtonClick(object, EventArgs)' to call the MessageBox.Show overload that specifies MessageBoxOptions, and make sure to set MessageBoxOptions.RightAlign and MessageBoxOptions.RtlReading if RightToLeft is set to RightToLeft.Yes on the parent control.</Issue>
             </Message>
            </Messages>
           </Member>
           <Member Name="#SubmitModificationButtonClick(System.Object,System.EventArgs)" Kind="Method" Static="False" Accessibility="Private" ExternallyVisible="False">
            <Messages>
-            <Message TypeName="SpecifyMessageBoxOptions" Category="Microsoft.Globalization" CheckId="CA1300" Status="Active" Created="2015-07-11 13:56:10Z" FixCategory="NonBreaking">
+            <Message TypeName="SpecifyMessageBoxOptions" Category="Microsoft.Globalization" CheckId="CA1300" Status="Active" Created="2015-07-19 17:32:02Z" FixCategory="NonBreaking">
              <Issue Certainty="95" Level="Error">Change 'MainForm.SubmitModificationButtonClick(object, EventArgs)' to call the MessageBox.Show overload that specifies MessageBoxOptions, and make sure to set MessageBoxOptions.RightAlign and MessageBoxOptions.RtlReading if RightToLeft is set to RightToLeft.Yes on the parent control.</Issue>
              <Issue Certainty="95" Level="Error">Change 'MainForm.SubmitModificationButtonClick(object, EventArgs)' to call the MessageBox.Show overload that specifies MessageBoxOptions, and make sure to set MessageBoxOptions.RightAlign and MessageBoxOptions.RtlReading if RightToLeft is set to RightToLeft.Yes on the parent control.</Issue>
             </Message>
@@ -135,7 +135,7 @@
           </Member>
           <Member Name="#videoFormats" Kind="Field" Static="False" Accessibility="Private" ExternallyVisible="False">
            <Messages>
-            <Message TypeName="AvoidUnusedPrivateFields" Category="Microsoft.Performance" CheckId="CA1823" Status="Active" Created="2015-07-11 13:56:10Z" FixCategory="NonBreaking">
+            <Message TypeName="AvoidUnusedPrivateFields" Category="Microsoft.Performance" CheckId="CA1823" Status="Active" Created="2015-07-19 17:32:02Z" FixCategory="NonBreaking">
              <Issue Certainty="75" Level="Warning">It appears that field 'MainForm.videoFormats' is never used or is only ever assigned to. Use this field or remove it.</Issue>
             </Message>
            </Messages>
@@ -146,19 +146,8 @@
          <Members>
           <Member Name="#Invoke(System.Int32,System.Collections.ObjectModel.Collection`1&lt;System.Tuple`3&lt;System.String,System.Int32,YoutubeExtractor.VideoType&gt;&gt;)" Kind="Method" Static="False" Accessibility="Public" ExternallyVisible="True">
            <Messages>
-            <Message TypeName="DoNotNestGenericTypesInMemberSignatures" Category="Microsoft.Design" CheckId="CA1006" Status="Active" Created="2015-07-11 13:56:10Z" FixCategory="Breaking">
+            <Message TypeName="DoNotNestGenericTypesInMemberSignatures" Category="Microsoft.Design" CheckId="CA1006" Status="Active" Created="2015-07-19 17:32:02Z" FixCategory="Breaking">
              <Issue Certainty="95" Level="CriticalError">Consider a design where 'MainForm.DDown.Invoke(int, Collection&lt;Tuple&lt;string, int, VideoType&gt;&gt;)' doesn't nest generic type 'Collection&lt;Tuple&lt;string, int, VideoType&gt;&gt;'.</Issue>
-            </Message>
-           </Messages>
-          </Member>
-         </Members>
-        </Type>
-        <Type Name="Program" Kind="Class" Accessibility="Assembly" ExternallyVisible="False">
-         <Members>
-          <Member Name="#Main(System.String[])" Kind="Method" Static="True" Accessibility="Private" ExternallyVisible="False">
-           <Messages>
-            <Message TypeName="SpecifyMessageBoxOptions" Category="Microsoft.Globalization" CheckId="CA1300" Status="Active" Created="2015-07-11 13:56:10Z" FixCategory="NonBreaking">
-             <Issue Certainty="95" Level="Error">Change 'Program.Main(string[])' to call the MessageBox.Show overload that specifies MessageBoxOptions, and make sure to set MessageBoxOptions.RightAlign and MessageBoxOptions.RtlReading if RightToLeft is set to RightToLeft.Yes on the parent control.</Issue>
             </Message>
            </Messages>
           </Member>

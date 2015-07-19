@@ -24,8 +24,10 @@ namespace YoutubeDownloadHelper
         	this.Validation = valid;
         	
         }
+        
+        private const string folderToUse = "Files\\";
 
-        private readonly string tempURLListdat = "Temp\\URLList.dat";
+        private readonly string tempURLListdat = string.Format(CultureInfo.InvariantCulture, "{0}URLList.dat", folderToUse);
 
         private static string registryValue
         {
@@ -116,7 +118,7 @@ namespace YoutubeDownloadHelper
         public void WriteUrlsToFile (Collection<Tuple<string, int, VideoType>> urlList, bool backup)
         {
 			
-            Validation.CheckOrCreateFolder("Files\\");
+            Validation.CheckOrCreateFolder(folderToUse);
 			
             using (StreamWriter outfile = new StreamWriter (string.Format(CultureInfo.InstalledUICulture, "{0}{1}", tempURLListdat, (backup ? ".bak" : null))))
             {
@@ -139,7 +141,7 @@ namespace YoutubeDownloadHelper
         public Collection<Tuple<string, int, VideoType>> ReadUrlList ()
         {
 			
-            Validation.CheckOrCreateFolder("Files\\");
+            Validation.CheckOrCreateFolder(folderToUse);
 			
             Collection<Tuple<string, int, VideoType>> returnValue = new Collection<Tuple<string, int, VideoType>> ();
 			

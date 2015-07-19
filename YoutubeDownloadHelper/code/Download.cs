@@ -118,7 +118,7 @@ namespace YoutubeDownloadHelper
 							if(retryCount <= 3)
 							{
 								
-								MainForm.StatusBar = string.Format(CultureInfo.InstalledUICulture, "URL {0}: {1}. Retrying.... ({2})", count, Trunicate(exceptionMessage, 50), retryCount < 3 ? (retryCount + 1).ToString(CultureInfo.CurrentCulture) : "Final Try");
+								MainForm.StatusBar = string.Format(CultureInfo.InstalledUICulture, "URL {0}: {1}. Retrying.... ({2})", count + 1, Trunicate(exceptionMessage, 50), retryCount < 3 ? (retryCount + 1).ToString(CultureInfo.CurrentCulture) : "Final Try");
 								
 								System.Threading.Thread.Sleep(850);
 								
@@ -293,7 +293,7 @@ namespace YoutubeDownloadHelper
             else
             {
             	
-            	MainForm.StatusBar = string.Format(CultureInfo.InstalledUICulture, "{0}{1} already exists! Download process has been aborted and considered successful.", Trunicate(video.Title, 18), position).ToLower(CultureInfo.InstalledUICulture);
+            	MainForm.StatusBar = string.Format(CultureInfo.InstalledUICulture, "{0}({1}) already exists! Download process has been aborted and considered successful.", Trunicate(video.Title, 18), position).ToLower(CultureInfo.InstalledUICulture);
             	
             }
 			
