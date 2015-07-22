@@ -46,7 +46,9 @@ namespace YoutubeDownloadHelper
         private readonly Icon formIcon = (new System.ComponentModel.ComponentResourceManager(typeof(MainForm)).GetObject("$this.Icon")) as Icon;
         
         private readonly Image[] imageList = {
-        	(new System.ComponentModel.ComponentResourceManager(typeof(MainForm)).GetObject("FolderImage") as Image)
+        	(new System.ComponentModel.ComponentResourceManager(typeof(MainForm)).GetObject("FolderImage") as Image),
+        	(new System.ComponentModel.ComponentResourceManager(typeof(MainForm)).GetObject("UpArrowImage") as Image),
+        	(new System.ComponentModel.ComponentResourceManager(typeof(MainForm)).GetObject("DownArrowImage") as Image)
         };
 
         private const decimal defaultResolution = 360;
@@ -61,11 +63,28 @@ namespace YoutubeDownloadHelper
             //
             InitializeComponent();
             
-            this.Icon = formIcon;
+            InitiateStartParams(downloadImmediately);
+			
+        }
+
+        #region Private Properties and Independant Methods
+        
+        private readonly string mainProgramFileVers = FileVersionInfo.GetVersionInfo(Assembly.GetExecutingAssembly().Location).FileVersion;
+            
+        private readonly string youTEFileVers = FileVersionInfo.GetVersionInfo("YoutubeExtractor.dll").FileVersion;
+        
+        private void InitiateStartParams(bool downloadImmediately)
+        {
+        	
+        	this.Icon = formIcon;
             
             this.changeSaveLocation.BackgroundImage = imageList[0];
             
             this.changeTemporaryLocation.BackgroundImage = imageList[0];
+            
+            this.moveQueuedItemUp.BackgroundImage = imageList[1];
+            
+            this.moveQueuedItemDown.BackgroundImage = imageList[2];
 			
             this.iMainForm = (this as IMainForm);
             
@@ -81,7 +100,7 @@ namespace YoutubeDownloadHelper
             
             GlobalVariables.urlList = Storage.ReadUrlList();
             
-            this.RefreshQueue(0);
+            this.RefreshQueue(0, false);
             
             writeFileVersionToStatBar();
   			
@@ -92,7 +111,7 @@ namespace YoutubeDownloadHelper
             	
                 this.resolutionToModify.Value = GlobalVariables.urlList [0].Item2;
                 
-                this.formatToModify.SelectedItem = GetVideoFormat(GlobalVariables.urlList [0].Item3);
+                this.formatToModify.SelectedItem = GlobalVariables.urlList [0].Item3.ToString();
                 
                 if (downloadImmediately)
                 {
@@ -104,14 +123,8 @@ namespace YoutubeDownloadHelper
             }
             
             SchedulingEnabledCheckedChanged(null, null);
-			
+        	
         }
-
-        #region Private Properties and Independant Methods
-        
-        private readonly string mainProgramFileVers = FileVersionInfo.GetVersionInfo(Assembly.GetExecutingAssembly().Location).FileVersion;
-            
-        private readonly string youTEFileVers = FileVersionInfo.GetVersionInfo("YoutubeExtractor.dll").FileVersion;
 
         /// <summary>
         /// Writes to the status bar. In this case, it writes all "version" information deemed necessary for the user to see.
@@ -122,50 +135,6 @@ namespace YoutubeDownloadHelper
             this.statusLabel.ForeColor = Color.Black;
             
             this.statusLabel.Text = string.Format(CultureInfo.InstalledUICulture, "Youtube Download Helper v {0} | Youtube Extractor v {1}", mainProgramFileVers, youTEFileVers);
-        	
-        }
-
-        /// <summary>
-        /// Transforms the selected format parameter into it's logical equivalent.
-        /// </summary>
-        /// <param name="formatType">
-        /// The parameter to convert.
-        /// </param>
-        /// <returns>
-        /// The name of the VideoType provided as a string.
-        /// </returns>
-        private static string GetVideoFormat (VideoType formatType)
-        {
-        	
-            if (formatType == VideoType.Mp4)
-            {
-        		
-                return "Mp4";
-        		
-            }
-        	
-            if (formatType == VideoType.Flash)
-            {
-        		
-                return "Flash";
-        		
-            }
-        	
-            if (formatType == VideoType.Mobile)
-            {
-        		
-                return "Mobile";
-        		
-            }
-        	
-            if (formatType == VideoType.WebM)
-            {
-        		
-                return "WebM";
-        		
-            }
-        	
-            throw new ArgumentException ("getVideoFormat: VideoType format not recognized.");
         	
         }
 
@@ -258,7 +227,7 @@ namespace YoutubeDownloadHelper
         	
         }
 
-        public void RefreshQueue (int previouslySelectedIndex)
+        public void RefreshQueue (int previouslySelectedIndex, bool forceFocusOnQueue)
         {
         	
             mainForm.queuedBox.Items.Clear();
@@ -275,16 +244,29 @@ namespace YoutubeDownloadHelper
 					
                 }
 	        	
-                mainForm.queuedBox.SelectedIndex = previouslySelectedIndex;
+                mainForm.SelectedQueueIndex = previouslySelectedIndex;
 	        	
+            }
+            
+            if(forceFocusOnQueue)
+            {
+            	
+            	mainForm.queuedBox.Focus();
+            	
             }
         	
         }
 
         public void AddToQueue (Tuple<string, int, VideoType> queueTuple)
         {
-        	
-            mainForm.queuedBox.Items.Add(string.Format(CultureInfo.InstalledUICulture, "{0}: {1} [Resolution: {2}p][Format: {3}]", mainForm.queuedBox.Items.Count + 1, queueTuple.Item1, queueTuple.Item2, queueTuple.Item3));
+            
+            ListViewItem lvi = mainForm.queuedBox.Items.Add((mainForm.queuedBox.Items.Count + 1).ToString(CultureInfo.CurrentCulture));
+            
+            lvi.SubItems.Add(queueTuple.Item1);
+            
+            lvi.SubItems.Add(queueTuple.Item2.ToString(CultureInfo.CurrentCulture));
+            
+            lvi.SubItems.Add(queueTuple.Item3.ToString());
         	
         }
 
@@ -326,9 +308,24 @@ namespace YoutubeDownloadHelper
         public int SelectedQueueIndex
         {
         	
-            get { return mainForm.queuedBox.SelectedIndex; }
+        	get 
+        	{
+        		
+				return mainForm.queuedBox.SelectedItems.Count > 0 ? mainForm.queuedBox.Items.IndexOf(mainForm.queuedBox.SelectedItems[0]) : 0;
+        		
         	
-            set { mainForm.queuedBox.SelectedIndex = value; }
+        	}
+        	
+        	set 
+        	{ 
+        		
+        		mainForm.queuedBox.Items[value].Selected = true;
+        		
+        		mainForm.queuedBox.Items[value].Focused = true;
+        		
+        		mainForm.queuedBox.Items[value].EnsureVisible();
+        	
+        	}
         	
         }
 
@@ -460,16 +457,7 @@ namespace YoutubeDownloadHelper
             if (!string.IsNullOrWhiteSpace(newURL.Text) && !newURL.Text.Contains(exampleLink) && newUrlRes.Value >= 144 && newUrlRes.Value < 720)
             {
             	
-            	int resolutionReal = (int)this.newUrlRes.Value;
-            	
-                if (this.queuedBox.Items.Count > 0)
-                {
-            		
-                    resolutionReal = (int)(GetVideoFormat(GlobalVariables.urlList [this.queuedBox.SelectedIndex].Item3).Contains("Mp4", StringComparison.OrdinalIgnoreCase) ? 360 : this.newUrlRes.Value);
-            		
-                }
-				
-                var newUrlTuple = new Tuple<string, int, VideoType> (this.newURL.Text, resolutionReal, GetVideoFormat(this.newUrlFormat.Text));
+                var newUrlTuple = new Tuple<string, int, VideoType> (this.newURL.Text, (int)this.newUrlRes.Value, GetVideoFormat(this.newUrlFormat.Text));
 				
                 this.AddToQueue(newUrlTuple);
 			
@@ -525,23 +513,23 @@ namespace YoutubeDownloadHelper
         private void DeleteButtonClick (object sender, EventArgs e)
         {
 			
-            int previouslySelectedIndex = this.queuedBox.SelectedIndex;
+            int previouslySelectedIndex = this.SelectedQueueIndex;
 			
-            if (this.queuedBox.SelectedIndex > 0 || (this.queuedBox.Items.Count - 1) > 0)
+            if (this.SelectedQueueIndex > 0 || (this.queuedBox.Items.Count - 1) > 0)
             {
         		
-                DialogResult deletionAnswer = MessageBox.Show(string.Format(CultureInfo.InstalledUICulture, "Are you sure you want to delete {0}?", GlobalVariables.urlList [this.queuedBox.SelectedIndex].Item1), "Confirmation", MessageBoxButtons.YesNo, MessageBoxIcon.Question, MessageBoxDefaultButton.Button1);
+                DialogResult deletionAnswer = MessageBox.Show(string.Format(CultureInfo.InstalledUICulture, "Are you sure you want to delete {0}?", GlobalVariables.urlList [this.SelectedQueueIndex].Item1), "Confirmation", MessageBoxButtons.YesNo, MessageBoxIcon.Question, MessageBoxDefaultButton.Button1);
         		
                 if (deletionAnswer == DialogResult.Yes)
                 {
         			
-                    GlobalVariables.urlList.RemoveAt(this.queuedBox.SelectedIndex);
+                    GlobalVariables.urlList.RemoveAt(this.SelectedQueueIndex);
 					
-                    this.queuedBox.Items.RemoveAt(this.queuedBox.SelectedIndex);
+                    this.queuedBox.Items.RemoveAt(this.SelectedQueueIndex);
 					
                     Storage.WriteUrlsToFile(GlobalVariables.urlList, false);
 	                
-                    RefreshQueue(previouslySelectedIndex > (this.queuedBox.Items.Count - 1) ? (this.queuedBox.Items.Count - 1) : previouslySelectedIndex);
+                    RefreshQueue(previouslySelectedIndex > (this.queuedBox.Items.Count - 1) ? (this.queuedBox.Items.Count - 1) : previouslySelectedIndex, true);
 	                
                 }
 				
@@ -558,32 +546,36 @@ namespace YoutubeDownloadHelper
         private void QueuedBoxSelectedIndexChanged (object sender, EventArgs e)
         {
 			
-            if (this.queuedBox.SelectedIndex > -1)
+            if (this.SelectedQueueIndex > -1)
             {
             	
-                this.urlToModify.Text = GlobalVariables.urlList [this.queuedBox.SelectedIndex].Item1;
+                this.urlToModify.Text = GlobalVariables.urlList [this.SelectedQueueIndex].Item1;
             	
-                this.resolutionToModify.Value = GlobalVariables.urlList [this.queuedBox.SelectedIndex].Item2;
+                this.resolutionToModify.Value = GlobalVariables.urlList [this.SelectedQueueIndex].Item2;
                 
-                this.formatToModify.SelectedItem = GetVideoFormat(GlobalVariables.urlList [this.queuedBox.SelectedIndex].Item3);
+                this.formatToModify.SelectedItem = GlobalVariables.urlList [this.SelectedQueueIndex].Item3.ToString();
                 
-                this.resolutionToModify.Enabled = !GetVideoFormat(GlobalVariables.urlList [this.queuedBox.SelectedIndex].Item3).Contains("Mp4", StringComparison.OrdinalIgnoreCase);
+                this.resolutionToModify.Enabled = !GlobalVariables.urlList [this.SelectedQueueIndex].Item3.ToString().Contains("Mp4", StringComparison.OrdinalIgnoreCase);
           	  
             }
+            
+            this.moveQueuedItemDown.Enabled = this.SelectedQueueIndex > -1 && GlobalVariables.urlList.Count > 1;
+	                
+	        this.moveQueuedItemUp.Enabled = this.SelectedQueueIndex > -1 && GlobalVariables.urlList.Count > 1;
 			
         }
 
         private void SubmitModificationButtonClick (object sender, EventArgs e)
         {
 			
-            int previouslySelected = this.queuedBox.SelectedIndex;
+            int previouslySelected = this.SelectedQueueIndex;
         	
             if (!string.IsNullOrWhiteSpace(urlToModify.Text) && resolutionToModify.Value > 143 && resolutionToModify.Value < 720)
             {
 				
-                GlobalVariables.urlList.RemoveAt(this.queuedBox.SelectedIndex);
+                GlobalVariables.urlList.RemoveAt(this.SelectedQueueIndex);
 				
-                GlobalVariables.urlList.Insert(this.queuedBox.SelectedIndex, new Tuple<string, int, VideoType> (urlToModify.Text, (int)resolutionToModify.Value, GetVideoFormat(this.formatToModify.Text)));
+                GlobalVariables.urlList.Insert(this.SelectedQueueIndex, new Tuple<string, int, VideoType> (urlToModify.Text, (int)resolutionToModify.Value, GetVideoFormat(this.formatToModify.Text)));
 				
                 Storage.WriteUrlsToFile(GlobalVariables.urlList, false);
 				
@@ -605,11 +597,11 @@ namespace YoutubeDownloadHelper
 				
             }
             
-            RefreshQueue(previouslySelected);
+            RefreshQueue(previouslySelected, false);
 			
         }
 
-        protected internal delegate void DDown (int retryCount, Collection<Tuple<string, int, VideoType>> urlList);
+        protected internal delegate void DDown (int retryCount, ObservableCollection<Tuple<string, int, VideoType>> urlList);
 
         private void StartDownloadButtonClick (object sender, EventArgs e)
         {
@@ -657,26 +649,25 @@ namespace YoutubeDownloadHelper
         private void ChangeSaveLocationClick (object sender, EventArgs e)
         {
 			
-            DialogResult result = saveLocationDialog.ShowDialog();
+        	string senderName = ((Control)sender).Name;
+        	
+        	DialogResult result = senderName.Contains("temp", StringComparison.OrdinalIgnoreCase) ? tempLocationDialog.ShowDialog() : saveLocationDialog.ShowDialog();
 			
             if (result == DialogResult.OK)
             {
-					
-                saveLocation.Text = saveLocationDialog.SelectedPath;
-					
-            }
-			
-        }
-
-        private void ChangeTempSaveLocationClick (object sender, EventArgs e)
-        {
-			
-            DialogResult result = tempLocationDialog.ShowDialog();
-			
-            if (result == DialogResult.OK)
-            {
-					
-                temporaryLocation.Text = tempLocationDialog.SelectedPath;
+				
+            	if(senderName.Contains("temp", StringComparison.OrdinalIgnoreCase))
+            	{
+            		
+            		temporaryLocation.Text = tempLocationDialog.SelectedPath;
+            		
+            	}
+            	else
+            	{
+            		
+            		saveLocation.Text = saveLocationDialog.SelectedPath;
+            		
+            	}
 					
             }
 			
@@ -695,6 +686,30 @@ namespace YoutubeDownloadHelper
             }
 			
         }
+        
+		void NewUrlFormatSelectedIndexChanged(object sender, EventArgs e)
+		{
+			
+			this.newUrlRes.Enabled = this.newUrlFormat.SelectedIndex != 0;
+			
+		}
+		
+		void MoveQueuedItem(object sender, EventArgs e)
+		{
+			
+			int newlySelectedIndex = ((Control)sender).Name.Contains("down", StringComparison.OrdinalIgnoreCase) 
+				?
+					this.SelectedQueueIndex + 1 < GlobalVariables.urlList.Count - 1 ? this.SelectedQueueIndex + 1 : GlobalVariables.urlList.Count - 1 
+				: 
+					this.SelectedQueueIndex - 1 > 0 ? this.SelectedQueueIndex - 1 : 0;
+			
+			GlobalVariables.urlList.Move(this.SelectedQueueIndex, newlySelectedIndex);
+			
+			Storage.WriteUrlsToFile(GlobalVariables.urlList, false);
+			
+			this.RefreshQueue(newlySelectedIndex, true);
+			
+		}
 
         #endregion
 		

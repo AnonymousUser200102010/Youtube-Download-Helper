@@ -11,7 +11,7 @@ namespace YoutubeDownloadHelper
 		private System.Windows.Forms.DateTimePicker schedulerTimePicker1;
 		private System.Windows.Forms.DateTimePicker schedulerTimePicker2;
 		private System.Windows.Forms.CheckBox schedulingEnabled;
-		private System.Windows.Forms.ListBox queuedBox;
+		private System.Windows.Forms.ListView queuedBox;
 		private System.Windows.Forms.ProgressBar videoDownloadProgressBar;
 		private System.Windows.Forms.TextBox newURL;
 		private System.Windows.Forms.TabControl queueDownloadsTab;
@@ -48,6 +48,13 @@ namespace YoutubeDownloadHelper
 		private System.Windows.Forms.ComboBox newUrlFormat;
 		private System.Windows.Forms.Label label6;
 		private System.Windows.Forms.ComboBox formatToModify;
+		private System.Windows.Forms.ColumnHeader numInQueueColumn;
+		private System.Windows.Forms.ColumnHeader urlInfoColumn;
+		private System.Windows.Forms.ColumnHeader resInfoColumn;
+		private System.Windows.Forms.ColumnHeader formatInfoColumn;
+		private System.Windows.Forms.Button moveQueuedItemDown;
+		private System.Windows.Forms.Button moveQueuedItemUp;
+		private System.Windows.Forms.ComboBox schedualUOM;
 		
 		/// <summary>
 		/// Disposes resources used by the form.
@@ -70,10 +77,16 @@ namespace YoutubeDownloadHelper
 		/// </summary>
 		private void InitializeComponent()
 		{
-			System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(MainForm));
 			this.videoDownloadProgressBar = new System.Windows.Forms.ProgressBar();
 			this.queueDownloadsTab = new System.Windows.Forms.TabControl();
 			this.tabPage3 = new System.Windows.Forms.TabPage();
+			this.moveQueuedItemDown = new System.Windows.Forms.Button();
+			this.moveQueuedItemUp = new System.Windows.Forms.Button();
+			this.queuedBox = new System.Windows.Forms.ListView();
+			this.numInQueueColumn = new System.Windows.Forms.ColumnHeader();
+			this.urlInfoColumn = new System.Windows.Forms.ColumnHeader();
+			this.resInfoColumn = new System.Windows.Forms.ColumnHeader();
+			this.formatInfoColumn = new System.Windows.Forms.ColumnHeader();
 			this.deleteUrlFromQueue = new System.Windows.Forms.Button();
 			this.tabControl1 = new System.Windows.Forms.TabControl();
 			this.tabPage1 = new System.Windows.Forms.TabPage();
@@ -92,7 +105,6 @@ namespace YoutubeDownloadHelper
 			this.resolutionToModify = new System.Windows.Forms.NumericUpDown();
 			this.submitModificationButton = new System.Windows.Forms.Button();
 			this.urlToModify = new System.Windows.Forms.TextBox();
-			this.queuedBox = new System.Windows.Forms.ListBox();
 			this.tabPage4 = new System.Windows.Forms.TabPage();
 			this.tabControl2 = new System.Windows.Forms.TabControl();
 			this.tabPage5 = new System.Windows.Forms.TabPage();
@@ -102,6 +114,7 @@ namespace YoutubeDownloadHelper
 			this.temporaryLocation = new System.Windows.Forms.TextBox();
 			this.changeTemporaryLocation = new System.Windows.Forms.Button();
 			this.groupBox1 = new System.Windows.Forms.GroupBox();
+			this.schedualUOM = new System.Windows.Forms.ComboBox();
 			this.schedulingEnabled = new System.Windows.Forms.CheckBox();
 			this.schedulerTimePicker2 = new System.Windows.Forms.DateTimePicker();
 			this.schedulerToLabel = new System.Windows.Forms.Label();
@@ -148,9 +161,11 @@ namespace YoutubeDownloadHelper
 			// 
 			// tabPage3
 			// 
+			this.tabPage3.Controls.Add(this.moveQueuedItemDown);
+			this.tabPage3.Controls.Add(this.moveQueuedItemUp);
+			this.tabPage3.Controls.Add(this.queuedBox);
 			this.tabPage3.Controls.Add(this.deleteUrlFromQueue);
 			this.tabPage3.Controls.Add(this.tabControl1);
-			this.tabPage3.Controls.Add(this.queuedBox);
 			this.tabPage3.Location = new System.Drawing.Point(4, 25);
 			this.tabPage3.Name = "tabPage3";
 			this.tabPage3.Padding = new System.Windows.Forms.Padding(3);
@@ -158,6 +173,72 @@ namespace YoutubeDownloadHelper
 			this.tabPage3.TabIndex = 0;
 			this.tabPage3.Text = "Queue";
 			this.tabPage3.UseVisualStyleBackColor = true;
+			// 
+			// moveQueuedItemDown
+			// 
+			this.moveQueuedItemDown.BackColor = System.Drawing.Color.Transparent;
+			this.moveQueuedItemDown.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Stretch;
+			this.moveQueuedItemDown.Enabled = false;
+			this.moveQueuedItemDown.Location = new System.Drawing.Point(4, 227);
+			this.moveQueuedItemDown.Name = "moveQueuedItemDown";
+			this.moveQueuedItemDown.Size = new System.Drawing.Size(24, 120);
+			this.moveQueuedItemDown.TabIndex = 10;
+			this.moveQueuedItemDown.UseVisualStyleBackColor = false;
+			this.moveQueuedItemDown.Click += new System.EventHandler(this.MoveQueuedItem);
+			// 
+			// moveQueuedItemUp
+			// 
+			this.moveQueuedItemUp.BackColor = System.Drawing.Color.Transparent;
+			this.moveQueuedItemUp.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Stretch;
+			this.moveQueuedItemUp.Enabled = false;
+			this.moveQueuedItemUp.Location = new System.Drawing.Point(4, 106);
+			this.moveQueuedItemUp.Name = "moveQueuedItemUp";
+			this.moveQueuedItemUp.Size = new System.Drawing.Size(24, 120);
+			this.moveQueuedItemUp.TabIndex = 9;
+			this.moveQueuedItemUp.UseVisualStyleBackColor = false;
+			this.moveQueuedItemUp.Click += new System.EventHandler(this.MoveQueuedItem);
+			// 
+			// queuedBox
+			// 
+			this.queuedBox.Activation = System.Windows.Forms.ItemActivation.OneClick;
+			this.queuedBox.AllowColumnReorder = true;
+			this.queuedBox.AutoArrange = false;
+			this.queuedBox.Columns.AddRange(new System.Windows.Forms.ColumnHeader[] {
+			this.numInQueueColumn,
+			this.urlInfoColumn,
+			this.resInfoColumn,
+			this.formatInfoColumn});
+			this.queuedBox.FullRowSelect = true;
+			this.queuedBox.HeaderStyle = System.Windows.Forms.ColumnHeaderStyle.Nonclickable;
+			this.queuedBox.HideSelection = false;
+			this.queuedBox.Location = new System.Drawing.Point(32, 104);
+			this.queuedBox.MultiSelect = false;
+			this.queuedBox.Name = "queuedBox";
+			this.queuedBox.Size = new System.Drawing.Size(630, 244);
+			this.queuedBox.TabIndex = 0;
+			this.queuedBox.UseCompatibleStateImageBehavior = false;
+			this.queuedBox.View = System.Windows.Forms.View.Details;
+			this.queuedBox.SelectedIndexChanged += new System.EventHandler(this.QueuedBoxSelectedIndexChanged);
+			// 
+			// numInQueueColumn
+			// 
+			this.numInQueueColumn.Text = "# in Queue";
+			this.numInQueueColumn.Width = 24;
+			// 
+			// urlInfoColumn
+			// 
+			this.urlInfoColumn.Text = "URL";
+			this.urlInfoColumn.Width = 464;
+			// 
+			// resInfoColumn
+			// 
+			this.resInfoColumn.Text = "Resolution";
+			this.resInfoColumn.Width = 79;
+			// 
+			// formatInfoColumn
+			// 
+			this.formatInfoColumn.Text = "Format";
+			this.formatInfoColumn.Width = 56;
 			// 
 			// deleteUrlFromQueue
 			// 
@@ -218,6 +299,7 @@ namespace YoutubeDownloadHelper
 			this.newUrlFormat.Size = new System.Drawing.Size(96, 24);
 			this.newUrlFormat.TabIndex = 18;
 			this.newUrlFormat.Text = "Mp4";
+			this.newUrlFormat.SelectedIndexChanged += new System.EventHandler(this.NewUrlFormatSelectedIndexChanged);
 			// 
 			// label4
 			// 
@@ -239,6 +321,7 @@ namespace YoutubeDownloadHelper
 			// 
 			// newUrlRes
 			// 
+			this.newUrlRes.Enabled = false;
 			this.newUrlRes.Font = new System.Drawing.Font("Microsoft Sans Serif", 7.8F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
 			this.newUrlRes.Increment = new decimal(new int[] {
 			120,
@@ -397,17 +480,6 @@ namespace YoutubeDownloadHelper
 			this.urlToModify.Size = new System.Drawing.Size(608, 22);
 			this.urlToModify.TabIndex = 11;
 			// 
-			// queuedBox
-			// 
-			this.queuedBox.FormattingEnabled = true;
-			this.queuedBox.HorizontalScrollbar = true;
-			this.queuedBox.ItemHeight = 16;
-			this.queuedBox.Location = new System.Drawing.Point(3, 104);
-			this.queuedBox.Name = "queuedBox";
-			this.queuedBox.Size = new System.Drawing.Size(659, 244);
-			this.queuedBox.TabIndex = 6;
-			this.queuedBox.SelectedIndexChanged += new System.EventHandler(this.QueuedBoxSelectedIndexChanged);
-			// 
 			// tabPage4
 			// 
 			this.tabPage4.Controls.Add(this.tabControl2);
@@ -453,7 +525,6 @@ namespace YoutubeDownloadHelper
 			// 
 			// changeSaveLocation
 			// 
-			this.changeSaveLocation.BackgroundImage = ((System.Drawing.Image)(resources.GetObject("FolderImage")));
 			this.changeSaveLocation.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Stretch;
 			this.changeSaveLocation.Location = new System.Drawing.Point(8, 8);
 			this.changeSaveLocation.Name = "changeSaveLocation";
@@ -485,30 +556,46 @@ namespace YoutubeDownloadHelper
 			// 
 			// changeTemporaryLocation
 			// 
-			this.changeTemporaryLocation.BackgroundImage = ((System.Drawing.Image)(resources.GetObject("FolderImage")));
 			this.changeTemporaryLocation.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Stretch;
 			this.changeTemporaryLocation.Location = new System.Drawing.Point(8, 8);
 			this.changeTemporaryLocation.Name = "changeTemporaryLocation";
 			this.changeTemporaryLocation.Size = new System.Drawing.Size(40, 40);
 			this.changeTemporaryLocation.TabIndex = 2;
 			this.changeTemporaryLocation.UseVisualStyleBackColor = true;
-			this.changeTemporaryLocation.Click += new System.EventHandler(this.ChangeTempSaveLocationClick);
+			this.changeTemporaryLocation.Click += new System.EventHandler(this.ChangeSaveLocationClick);
 			// 
 			// groupBox1
 			// 
+			this.groupBox1.Controls.Add(this.schedualUOM);
 			this.groupBox1.Controls.Add(this.schedulingEnabled);
 			this.groupBox1.Controls.Add(this.schedulerTimePicker2);
 			this.groupBox1.Controls.Add(this.schedulerToLabel);
 			this.groupBox1.Controls.Add(this.schedulerTimePicker1);
 			this.groupBox1.Location = new System.Drawing.Point(8, 8);
 			this.groupBox1.Name = "groupBox1";
-			this.groupBox1.Size = new System.Drawing.Size(320, 56);
+			this.groupBox1.Size = new System.Drawing.Size(400, 56);
 			this.groupBox1.TabIndex = 0;
 			this.groupBox1.TabStop = false;
 			this.groupBox1.Text = "Scheduler";
 			// 
+			// schedualUOM
+			// 
+			this.schedualUOM.Enabled = false;
+			this.schedualUOM.FormattingEnabled = true;
+			this.schedualUOM.Items.AddRange(new object[] {
+			"Daily",
+			"Weekly",
+			"Monthly"});
+			this.schedualUOM.Location = new System.Drawing.Point(320, 22);
+			this.schedualUOM.Name = "schedualUOM";
+			this.schedualUOM.Size = new System.Drawing.Size(64, 24);
+			this.schedualUOM.TabIndex = 8;
+			this.schedualUOM.Text = "Daily";
+			this.schedualUOM.Visible = false;
+			// 
 			// schedulingEnabled
 			// 
+			this.schedulingEnabled.Enabled = false;
 			this.schedulingEnabled.FlatStyle = System.Windows.Forms.FlatStyle.System;
 			this.schedulingEnabled.Font = new System.Drawing.Font("Microsoft Sans Serif", 7.8F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
 			this.schedulingEnabled.Location = new System.Drawing.Point(8, 24);
@@ -610,7 +697,6 @@ namespace YoutubeDownloadHelper
 			this.Controls.Add(this.downloadButton);
 			this.Controls.Add(this.queueDownloadsTab);
 			this.Controls.Add(this.videoDownloadProgressBar);
-			this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
 			this.MaximizeBox = false;
 			this.Name = "MainForm";
 			this.SizeGripStyle = System.Windows.Forms.SizeGripStyle.Hide;

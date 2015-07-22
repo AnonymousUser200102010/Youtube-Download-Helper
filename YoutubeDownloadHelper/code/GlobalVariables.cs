@@ -9,7 +9,7 @@ namespace YoutubeDownloadHelper
     public static class GlobalVariables
     {
 		
-        public static Collection<Tuple<string, int, VideoType>> urlList = new Collection<Tuple<string, int, VideoType>> ();
+        public static ObservableCollection<Tuple<string, int, VideoType>> urlList = new ObservableCollection<Tuple<string, int, VideoType>> ();
 		
     }
 }

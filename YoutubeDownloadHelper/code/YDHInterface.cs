@@ -22,7 +22,10 @@ namespace YoutubeDownloadHelper
         /// <param name="previouslySelectedIndex">
         /// The queue index selected before this operation took place.
         /// </param>
-        void RefreshQueue (int previouslySelectedIndex);
+        /// <param name="forceFocusOnQueue">
+        /// Forces the url queue control object to take focus from wherever the user is/was currently focusing.
+        /// </param>
+        void RefreshQueue (int previouslySelectedIndex, bool forceFocusOnQueue);
 
         /// <summary>
         /// Adds the selected parameter to the url queue.
@@ -163,7 +166,7 @@ namespace YoutubeDownloadHelper
     	/// <returns>
     	/// Returns the parsed url list of the file that was read.
     	/// </returns>
-    	System.Collections.ObjectModel.Collection<Tuple<string, int, YoutubeExtractor.VideoType>> ReadUrlList ();
+    	System.Collections.ObjectModel.ObservableCollection<Tuple<string, int, YoutubeExtractor.VideoType>> ReadUrlList ();
     	
     }
     

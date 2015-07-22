@@ -138,12 +138,12 @@ namespace YoutubeDownloadHelper
 			
         }
 
-        public Collection<Tuple<string, int, VideoType>> ReadUrlList ()
+        public ObservableCollection<Tuple<string, int, VideoType>> ReadUrlList ()
         {
 			
             Validation.CheckOrCreateFolder(folderToUse);
 			
-            Collection<Tuple<string, int, VideoType>> returnValue = new Collection<Tuple<string, int, VideoType>> ();
+            ObservableCollection<Tuple<string, int, VideoType>> returnValue = new ObservableCollection<Tuple<string, int, VideoType>> ();
 			
             if (File.Exists(tempURLListdat))
             {
@@ -202,7 +202,7 @@ namespace YoutubeDownloadHelper
 				
             }
 			
-            return new Collection<Tuple<string, int, VideoType>> ();
+            return new ObservableCollection<Tuple<string, int, VideoType>> ();
 			
         }
 		

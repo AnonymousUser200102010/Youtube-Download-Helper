@@ -26,23 +26,17 @@ namespace YoutubeDownloadHelper
     		
     	}
     	
-    	private static Collection<Tuple<string, int, VideoType>> GetUnfinishedDownloads(Collection<Tuple<string, int, VideoType>> finishedUrlList)
+    	private static ObservableCollection<Tuple<string, int, VideoType>> GetUnfinishedDownloads(ObservableCollection<Tuple<string, int, VideoType>> finishedUrlList)
 		{
 			
-			Collection<Tuple<string, int, VideoType>> returnValue = new Collection<Tuple<string, int, VideoType>>();
+			ObservableCollection<Tuple<string, int, VideoType>> returnValue = new ObservableCollection<Tuple<string, int, VideoType>>();
 			
 			for (int count = 0, GlobalVariablesurlListCount = GlobalVariables.urlList.Count; count < GlobalVariablesurlListCount; count++)
 			{
 				
 				Tuple<string, int, VideoType> url = GlobalVariables.urlList[count];
 				
-				if (finishedUrlList.Count <= 0)
-				{
-					
-					returnValue.Add(url);
-					
-				}
-				else if (!finishedUrlList.Any(item => item.Item1.Equals(url.Item1)))
+				if (finishedUrlList.Count <= 0 || !finishedUrlList.Any(item => item.Item1.Equals(url.Item1)))
 				{
 					
 					returnValue.Add(url);
@@ -74,7 +68,7 @@ namespace YoutubeDownloadHelper
     		
     		int previouslySelectedIndex = MainForm.SelectedQueueIndex;
     		
-    		Collection<Tuple<string, int, VideoType>> finishedUrlList = new Collection<Tuple<string, int, VideoType>>();
+    		ObservableCollection<Tuple<string, int, VideoType>> finishedUrlList = new ObservableCollection<Tuple<string, int, VideoType>>();
         	
             if (MainForm.UrlListNumberItems > 0)
             {
@@ -152,7 +146,7 @@ namespace YoutubeDownloadHelper
             
             Storage.WriteUrlsToFile(GlobalVariables.urlList, false);
             
-            MainForm.RefreshQueue(previouslySelectedIndex);
+            MainForm.RefreshQueue(previouslySelectedIndex, true);
     		
     	}
     	
