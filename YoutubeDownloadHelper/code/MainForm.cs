@@ -98,7 +98,7 @@ namespace YoutubeDownloadHelper
             
             Storage.ReadFromRegistry();
             
-            GlobalVariables.urlList = Storage.ReadUrlList();
+            VideoQueue.Items = Storage.ReadUrls();
             
             this.RefreshQueue(0, false);
             
@@ -107,11 +107,11 @@ namespace YoutubeDownloadHelper
             if (this.queuedBox.Items.Count >= 1)
             {
             	
-                this.urlToModify.Text = GlobalVariables.urlList [0].Item1;
+                this.urlToModify.Text = VideoQueue.Items [0].UrlName;
             	
-                this.resolutionToModify.Value = GlobalVariables.urlList [0].Item2;
+                this.resolutionToModify.Value = VideoQueue.Items [0].Resolution;
                 
-                this.formatToModify.SelectedItem = GlobalVariables.urlList [0].Item3.ToString();
+                this.formatToModify.SelectedItem = VideoQueue.Items [0].Format.ToString();
                 
                 if (downloadImmediately)
                 {
@@ -211,7 +211,7 @@ namespace YoutubeDownloadHelper
 
         #region Public Properties and Independant Methods
 
-        public int UrlListNumberItems
+        public int UrlsNumberItems
         {
 			
             get { return mainForm.queuedBox.Items.Count; }
@@ -232,13 +232,13 @@ namespace YoutubeDownloadHelper
         	
             mainForm.queuedBox.Items.Clear();
         	
-            if (GlobalVariables.urlList.Count > 0)
+            if (VideoQueue.Items.Count > 0)
             {
         		
-                for (int count = 0, GlobalVariablesurlListCount = GlobalVariables.urlList.Count; count < GlobalVariablesurlListCount; count++)
+                for (int count = 0, numberOfVideos = VideoQueue.Items.Count; count < numberOfVideos; count++)
                 {
 					
-                    Tuple<string, int, VideoType> url = GlobalVariables.urlList [count];
+                    Video url = VideoQueue.Items [count];
 					
                     AddToQueue(url);
 					
@@ -257,16 +257,16 @@ namespace YoutubeDownloadHelper
         	
         }
 
-        public void AddToQueue (Tuple<string, int, VideoType> queueTuple)
+        public void AddToQueue (Video queueTuple)
         {
             
             ListViewItem lvi = mainForm.queuedBox.Items.Add((mainForm.queuedBox.Items.Count + 1).ToString(CultureInfo.CurrentCulture));
             
-            lvi.SubItems.Add(queueTuple.Item1);
+            lvi.SubItems.Add(queueTuple.UrlName);
             
-            lvi.SubItems.Add(queueTuple.Item2.ToString(CultureInfo.CurrentCulture));
+            lvi.SubItems.Add(queueTuple.Resolution.ToString(CultureInfo.CurrentCulture));
             
-            lvi.SubItems.Add(queueTuple.Item3.ToString());
+            lvi.SubItems.Add(queueTuple.Format.ToString());
         	
         }
 
@@ -391,17 +391,15 @@ namespace YoutubeDownloadHelper
         public void StartDownloadingSession (bool initiate)
         {
         	
-            foreach (Control controlItem in mainForm.Controls)
-            {
-        		
-                if (!controlItem.Name.Contains("res", StringComparison.OrdinalIgnoreCase) && !controlItem.Name.Equals("statusLabel", StringComparison.OrdinalIgnoreCase) && !controlItem.Name.Equals("statusStrip", StringComparison.OrdinalIgnoreCase) && !controlItem.Name.Equals("downloadButton", StringComparison.OrdinalIgnoreCase))
-                {
-                		
-                    controlItem.Enabled = !initiate;
-                        
-                }
-        			
-            }
+			for (int count = 0, controls = mainForm.Controls.Count; count < controls; count++)
+			{
+				Control controlItem = mainForm.Controls[count];
+				
+				if (!controlItem.Name.Contains("res", StringComparison.OrdinalIgnoreCase) && !controlItem.Name.Equals("statusLabel", StringComparison.OrdinalIgnoreCase) && !controlItem.Name.Equals("statusStrip", StringComparison.OrdinalIgnoreCase) && !controlItem.Name.Equals("downloadButton", StringComparison.OrdinalIgnoreCase))
+				{
+					controlItem.Enabled = !initiate;
+				}
+			}
                 
             mainForm.downloadButton.Text = !CurrentlyDownloading ? "Start Downloading" : "Stop Downloading";
                 
@@ -457,13 +455,13 @@ namespace YoutubeDownloadHelper
             if (!string.IsNullOrWhiteSpace(newURL.Text) && !newURL.Text.Contains(exampleLink) && newUrlRes.Value >= 144 && newUrlRes.Value < 720)
             {
             	
-                var newUrlTuple = new Tuple<string, int, VideoType> (this.newURL.Text, (int)this.newUrlRes.Value, GetVideoFormat(this.newUrlFormat.Text));
+                var newUrlTuple = new Video (this.newURL.Text, (int)this.newUrlRes.Value, GetVideoFormat(this.newUrlFormat.Text));
 				
                 this.AddToQueue(newUrlTuple);
 			
-                GlobalVariables.urlList.Add(newUrlTuple);
+                VideoQueue.Items.Add(newUrlTuple);
 				
-                Storage.WriteUrlsToFile(GlobalVariables.urlList, false);
+                Storage.WriteUrlsToFile(VideoQueue.Items, false);
                 
                 this.SelectedQueueIndex = this.queuedBox.Items.Count - 1;
 				
@@ -518,16 +516,16 @@ namespace YoutubeDownloadHelper
             if (this.SelectedQueueIndex > 0 || (this.queuedBox.Items.Count - 1) > 0)
             {
         		
-                DialogResult deletionAnswer = MessageBox.Show(string.Format(CultureInfo.InstalledUICulture, "Are you sure you want to delete {0}?", GlobalVariables.urlList [this.SelectedQueueIndex].Item1), "Confirmation", MessageBoxButtons.YesNo, MessageBoxIcon.Question, MessageBoxDefaultButton.Button1);
+                DialogResult deletionAnswer = MessageBox.Show(string.Format(CultureInfo.InstalledUICulture, "Are you sure you want to delete {0}?", VideoQueue.Items [this.SelectedQueueIndex].UrlName), "Confirmation", MessageBoxButtons.YesNo, MessageBoxIcon.Question, MessageBoxDefaultButton.Button1);
         		
                 if (deletionAnswer == DialogResult.Yes)
                 {
         			
-                    GlobalVariables.urlList.RemoveAt(this.SelectedQueueIndex);
+                    VideoQueue.Items.RemoveAt(this.SelectedQueueIndex);
 					
                     this.queuedBox.Items.RemoveAt(this.SelectedQueueIndex);
 					
-                    Storage.WriteUrlsToFile(GlobalVariables.urlList, false);
+                    Storage.WriteUrlsToFile(VideoQueue.Items, false);
 	                
                     RefreshQueue(previouslySelectedIndex > (this.queuedBox.Items.Count - 1) ? (this.queuedBox.Items.Count - 1) : previouslySelectedIndex, true);
 	                
@@ -549,19 +547,19 @@ namespace YoutubeDownloadHelper
             if (this.SelectedQueueIndex > -1)
             {
             	
-                this.urlToModify.Text = GlobalVariables.urlList [this.SelectedQueueIndex].Item1;
+                this.urlToModify.Text = VideoQueue.Items [this.SelectedQueueIndex].UrlName;
             	
-                this.resolutionToModify.Value = GlobalVariables.urlList [this.SelectedQueueIndex].Item2;
+                this.resolutionToModify.Value = VideoQueue.Items [this.SelectedQueueIndex].Resolution;
                 
-                this.formatToModify.SelectedItem = GlobalVariables.urlList [this.SelectedQueueIndex].Item3.ToString();
+                this.formatToModify.SelectedItem = VideoQueue.Items [this.SelectedQueueIndex].Format.ToString();
                 
-                this.resolutionToModify.Enabled = !GlobalVariables.urlList [this.SelectedQueueIndex].Item3.ToString().Contains("Mp4", StringComparison.OrdinalIgnoreCase);
+                this.resolutionToModify.Enabled = !VideoQueue.Items [this.SelectedQueueIndex].Format.ToString().Contains("Mp4", StringComparison.OrdinalIgnoreCase);
           	  
             }
             
-            this.moveQueuedItemDown.Enabled = this.SelectedQueueIndex > -1 && GlobalVariables.urlList.Count > 1;
+            this.moveQueuedItemDown.Enabled = this.SelectedQueueIndex > -1 && VideoQueue.Items.Count > 1;
 	                
-	        this.moveQueuedItemUp.Enabled = this.SelectedQueueIndex > -1 && GlobalVariables.urlList.Count > 1;
+	        this.moveQueuedItemUp.Enabled = this.SelectedQueueIndex > -1 && VideoQueue.Items.Count > 1;
 			
         }
 
@@ -573,11 +571,11 @@ namespace YoutubeDownloadHelper
             if (!string.IsNullOrWhiteSpace(urlToModify.Text) && resolutionToModify.Value > 143 && resolutionToModify.Value < 720)
             {
 				
-                GlobalVariables.urlList.RemoveAt(this.SelectedQueueIndex);
+                VideoQueue.Items.RemoveAt(this.SelectedQueueIndex);
 				
-                GlobalVariables.urlList.Insert(this.SelectedQueueIndex, new Tuple<string, int, VideoType> (urlToModify.Text, (int)resolutionToModify.Value, GetVideoFormat(this.formatToModify.Text)));
+                VideoQueue.Items.Insert(this.SelectedQueueIndex, new Video (urlToModify.Text, (int)resolutionToModify.Value, GetVideoFormat(this.formatToModify.Text)));
 				
-                Storage.WriteUrlsToFile(GlobalVariables.urlList, false);
+                Storage.WriteUrlsToFile(VideoQueue.Items, false);
 				
             }
             else if (resolutionToModify.Value >= 720)
@@ -601,7 +599,7 @@ namespace YoutubeDownloadHelper
 			
         }
 
-        protected internal delegate void DDown (int retryCount, ObservableCollection<Tuple<string, int, VideoType>> urlList);
+        protected internal delegate void DDown (int retryCount, ObservableCollection<Video> urls);
 
         private void StartDownloadButtonClick (object sender, EventArgs e)
         {
@@ -615,9 +613,9 @@ namespace YoutubeDownloadHelper
     		
                 this.Validation.CheckOrCreateFolder(this.TempDownloadLocation);
             	
-                var tempDelegate = new DDown (Download.SetupDownloadingProcess);
+                var downloadDelegate = new DDown (Download.HandleDownloadingProcesses);
     			
-                tempDelegate.BeginInvoke(0, GlobalVariables.urlList, null, null);
+                downloadDelegate.BeginInvoke(0, VideoQueue.Items, null, null);
                 
             }
             else if (this.queuedBox.Items.Count > 0 && CurrentlyDownloading)
@@ -699,13 +697,13 @@ namespace YoutubeDownloadHelper
 			
 			int newlySelectedIndex = ((Control)sender).Name.Contains("down", StringComparison.OrdinalIgnoreCase) 
 				?
-					this.SelectedQueueIndex + 1 < GlobalVariables.urlList.Count - 1 ? this.SelectedQueueIndex + 1 : GlobalVariables.urlList.Count - 1 
+					this.SelectedQueueIndex + 1 < VideoQueue.Items.Count - 1 ? this.SelectedQueueIndex + 1 : VideoQueue.Items.Count - 1 
 				: 
 					this.SelectedQueueIndex - 1 > 0 ? this.SelectedQueueIndex - 1 : 0;
 			
-			GlobalVariables.urlList.Move(this.SelectedQueueIndex, newlySelectedIndex);
+			VideoQueue.Items.Move(this.SelectedQueueIndex, newlySelectedIndex);
 			
-			Storage.WriteUrlsToFile(GlobalVariables.urlList, false);
+			Storage.WriteUrlsToFile(VideoQueue.Items, false);
 			
 			this.RefreshQueue(newlySelectedIndex, true);
 			

@@ -6,7 +6,7 @@
    <Modules>
     <Module Name="youtubedownloadhelper.exe">
      <Messages>
-      <Message TypeName="AssembliesShouldHaveValidStrongNames" Category="Microsoft.Design" CheckId="CA2210" Status="Active" Created="2015-07-22 08:27:04Z" FixCategory="NonBreaking">
+      <Message TypeName="AssembliesShouldHaveValidStrongNames" Category="Microsoft.Design" CheckId="CA2210" Status="Active" Created="2015-07-22 14:12:01Z" FixCategory="NonBreaking">
        <Issue Name="NoStrongName" Certainty="95" Level="CriticalError">Sign 'YoutubeDownloadHelper.exe' with a strong name key.</Issue>
       </Message>
      </Messages>
@@ -15,24 +15,10 @@
        <Types>
         <Type Name="Download" Kind="Class" Accessibility="Public" ExternallyVisible="True">
          <Members>
-          <Member Name="#SetupDownloadingProcess(System.Int32,System.Collections.ObjectModel.Collection`1&lt;System.Tuple`3&lt;System.String,System.Int32,YoutubeExtractor.VideoType&gt;&gt;)" Kind="Method" Static="False" Accessibility="Public" ExternallyVisible="True">
+          <Member Name="#HandleDownloadingProcesses(System.Int32,System.Collections.ObjectModel.ObservableCollection`1&lt;YoutubeDownloadHelper.Video&gt;)" Kind="Method" Static="False" Accessibility="Public" ExternallyVisible="True">
            <Messages>
-            <Message TypeName="DoNotCatchGeneralExceptionTypes" Category="Microsoft.Design" CheckId="CA1031" Status="Active" Created="2015-07-22 08:27:04Z" FixCategory="NonBreaking">
-             <Issue Certainty="95" Level="CriticalError" Path="c:\Users\Erik\Documents\GitHub\Youtube-Download-Helper\YoutubeDownloadHelper\code" File="Download.cs" Line="107">Modify 'Download.SetupDownloadingProcess(int, Collection&lt;Tuple&lt;string, int, VideoType&gt;&gt;)' to catch a more specific exception than 'Exception' or rethrow the exception.</Issue>
-            </Message>
-           </Messages>
-          </Member>
-         </Members>
-        </Type>
-        <Type Name="GlobalVariables" Kind="Class" Accessibility="Public" ExternallyVisible="True">
-         <Members>
-          <Member Name="#urlList" Kind="Field" Static="True" Accessibility="Public" ExternallyVisible="True">
-           <Messages>
-            <Message TypeName="DoNotNestGenericTypesInMemberSignatures" Category="Microsoft.Design" CheckId="CA1006" Status="Active" Created="2015-07-22 08:27:04Z" FixCategory="Breaking">
-             <Issue Certainty="95" Level="CriticalError">Consider a design where 'GlobalVariables.urlList' doesn't nest generic type 'ObservableCollection&lt;Tuple&lt;string, int, VideoType&gt;&gt;'.</Issue>
-            </Message>
-            <Message TypeName="NonConstantFieldsShouldNotBeVisible" Category="Microsoft.Usage" CheckId="CA2211" Status="Active" Created="2015-07-22 08:27:04Z" FixCategory="Breaking">
-             <Issue Certainty="90" Level="Warning">Consider making 'GlobalVariables.urlList' non-public or a constant.</Issue>
+            <Message TypeName="DoNotCatchGeneralExceptionTypes" Category="Microsoft.Design" CheckId="CA1031" Status="Active" Created="2015-07-22 14:12:01Z" FixCategory="NonBreaking">
+             <Issue Certainty="95" Level="CriticalError" Path="c:\Users\Erik\Documents\GitHub\Youtube-Download-Helper\YoutubeDownloadHelper\code" File="Download.cs" Line="101">Modify 'Download.HandleDownloadingProcesses(int, ObservableCollection&lt;Video&gt;)' to catch a more specific exception than 'Exception' or rethrow the exception.</Issue>
             </Message>
            </Messages>
           </Member>
@@ -40,10 +26,10 @@
         </Type>
         <Type Name="IDownload" Kind="Interface" Accessibility="Public" ExternallyVisible="True">
          <Members>
-          <Member Name="#SetupDownloadingProcess(System.Int32,System.Collections.ObjectModel.Collection`1&lt;System.Tuple`3&lt;System.String,System.Int32,YoutubeExtractor.VideoType&gt;&gt;)" Kind="Method" Static="False" Accessibility="Public" ExternallyVisible="True">
+          <Member Name="#HandleDownloadingProcesses(System.Int32,System.Collections.ObjectModel.ObservableCollection`1&lt;YoutubeDownloadHelper.Video&gt;)" Kind="Method" Static="False" Accessibility="Public" ExternallyVisible="True">
            <Messages>
-            <Message TypeName="DoNotNestGenericTypesInMemberSignatures" Category="Microsoft.Design" CheckId="CA1006" Status="Active" Created="2015-07-22 08:27:04Z" FixCategory="Breaking">
-             <Issue Certainty="95" Level="CriticalError">Consider a design where 'IDownload.SetupDownloadingProcess(int, Collection&lt;Tuple&lt;string, int, VideoType&gt;&gt;)' doesn't nest generic type 'Collection&lt;Tuple&lt;string, int, VideoType&gt;&gt;'.</Issue>
+            <Message Id="Urls" TypeName="IdentifiersShouldBeCasedCorrectly" Category="Microsoft.Naming" CheckId="CA1709" Status="Active" Created="2015-07-22 14:12:01Z" FixCategory="Breaking">
+             <Issue Name="MemberParameter" Certainty="85" Level="Error">In member 'IDownload.HandleDownloadingProcesses(int, ObservableCollection&lt;Video&gt;)', correct the casing of 'Urls' in parameter name 'Urls' by changing it to 'urls'.</Issue>
             </Message>
            </Messages>
           </Member>
@@ -53,21 +39,21 @@
          <Members>
           <Member Name="#DownloadFinishedPercent" Kind="Property" Static="False" Accessibility="Public" ExternallyVisible="True">
            <Messages>
-            <Message TypeName="PropertiesShouldNotBeWriteOnly" Category="Microsoft.Design" CheckId="CA1044" Status="Active" Created="2015-07-22 08:27:04Z" FixCategory="DependsOnFix">
+            <Message TypeName="PropertiesShouldNotBeWriteOnly" Category="Microsoft.Design" CheckId="CA1044" Status="Active" Created="2015-07-22 14:12:01Z" FixCategory="DependsOnFix">
              <Issue Name="AddGetter" Certainty="95" Level="Error">Because property 'IMainForm.DownloadFinishedPercent' is write-only, either add a property getter with an accessibility that is greater than or equal to its setter or convert this property into a method.</Issue>
             </Message>
            </Messages>
           </Member>
           <Member Name="#DownloadLabel" Kind="Property" Static="False" Accessibility="Public" ExternallyVisible="True">
            <Messages>
-            <Message TypeName="PropertiesShouldNotBeWriteOnly" Category="Microsoft.Design" CheckId="CA1044" Status="Active" Created="2015-07-22 08:27:04Z" FixCategory="DependsOnFix">
+            <Message TypeName="PropertiesShouldNotBeWriteOnly" Category="Microsoft.Design" CheckId="CA1044" Status="Active" Created="2015-07-22 14:12:01Z" FixCategory="DependsOnFix">
              <Issue Name="AddGetter" Certainty="95" Level="Error">Because property 'IMainForm.DownloadLabel' is write-only, either add a property getter with an accessibility that is greater than or equal to its setter or convert this property into a method.</Issue>
             </Message>
            </Messages>
           </Member>
           <Member Name="#StatusBar" Kind="Property" Static="False" Accessibility="Public" ExternallyVisible="True">
            <Messages>
-            <Message TypeName="PropertiesShouldNotBeWriteOnly" Category="Microsoft.Design" CheckId="CA1044" Status="Active" Created="2015-07-22 08:27:04Z" FixCategory="DependsOnFix">
+            <Message TypeName="PropertiesShouldNotBeWriteOnly" Category="Microsoft.Design" CheckId="CA1044" Status="Active" Created="2015-07-22 14:12:01Z" FixCategory="DependsOnFix">
              <Issue Name="AddGetter" Certainty="95" Level="Error">Because property 'IMainForm.StatusBar' is write-only, either add a property getter with an accessibility that is greater than or equal to its setter or convert this property into a method.</Issue>
             </Message>
            </Messages>
@@ -76,17 +62,10 @@
         </Type>
         <Type Name="IStorage" Kind="Interface" Accessibility="Public" ExternallyVisible="True">
          <Members>
-          <Member Name="#ReadUrlList()" Kind="Method" Static="False" Accessibility="Public" ExternallyVisible="True">
+          <Member Name="#WriteUrlsToFile(System.Collections.ObjectModel.Collection`1&lt;YoutubeDownloadHelper.Video&gt;,System.Boolean)" Kind="Method" Static="False" Accessibility="Public" ExternallyVisible="True">
            <Messages>
-            <Message TypeName="DoNotNestGenericTypesInMemberSignatures" Category="Microsoft.Design" CheckId="CA1006" Status="Active" Created="2015-07-22 08:27:04Z" FixCategory="Breaking">
-             <Issue Certainty="95" Level="CriticalError">Consider a design where 'IStorage.ReadUrlList()' doesn't nest generic type 'ObservableCollection&lt;Tuple&lt;string, int, VideoType&gt;&gt;'.</Issue>
-            </Message>
-           </Messages>
-          </Member>
-          <Member Name="#WriteUrlsToFile(System.Collections.ObjectModel.Collection`1&lt;System.Tuple`3&lt;System.String,System.Int32,YoutubeExtractor.VideoType&gt;&gt;,System.Boolean)" Kind="Method" Static="False" Accessibility="Public" ExternallyVisible="True">
-           <Messages>
-            <Message TypeName="DoNotNestGenericTypesInMemberSignatures" Category="Microsoft.Design" CheckId="CA1006" Status="Active" Created="2015-07-22 08:27:04Z" FixCategory="Breaking">
-             <Issue Certainty="95" Level="CriticalError">Consider a design where 'IStorage.WriteUrlsToFile(Collection&lt;Tuple&lt;string, int, VideoType&gt;&gt;, bool)' doesn't nest generic type 'Collection&lt;Tuple&lt;string, int, VideoType&gt;&gt;'.</Issue>
+            <Message Id="Urls" TypeName="IdentifiersShouldBeCasedCorrectly" Category="Microsoft.Naming" CheckId="CA1709" Status="Active" Created="2015-07-22 14:12:01Z" FixCategory="Breaking">
+             <Issue Name="MemberParameter" Certainty="85" Level="Error">In member 'IStorage.WriteUrlsToFile(Collection&lt;Video&gt;, bool)', correct the casing of 'Urls' in parameter name 'Urls' by changing it to 'urls'.</Issue>
             </Message>
            </Messages>
           </Member>
@@ -96,58 +75,65 @@
          <Members>
           <Member Name="#.ctor(System.Boolean)" Kind="Method" Static="False" Accessibility="Public" ExternallyVisible="True">
            <Messages>
-            <Message TypeName="DoNotIndirectlyExposeMethodsWithLinkDemands" Category="Microsoft.Security" CheckId="CA2122" Status="Active" Created="2015-07-22 08:27:04Z" FixCategory="NonBreaking">
+            <Message TypeName="DoNotIndirectlyExposeMethodsWithLinkDemands" Category="Microsoft.Security" CheckId="CA2122" Status="Active" Created="2015-07-22 14:12:01Z" FixCategory="NonBreaking">
              <Issue Certainty="33" Level="CriticalError" Path="c:\Users\Erik\Documents\GitHub\Youtube-Download-Helper\YoutubeDownloadHelper\code" File="MainForm.cs" Line="33">'MainForm.MainForm(bool)' calls into 'FileVersionInfo.FileVersion.get()' which has a LinkDemand. By making this call, 'FileVersionInfo.FileVersion.get()' is indirectly exposed to user code. Review the following call stack that might expose a way to circumvent security protection: &#xD;&#xA;   -&gt;'MainForm.MainForm(bool)'&#xD;&#xA;   -&gt;'MainForm.MainForm(bool)'</Issue>
              <Issue Certainty="33" Level="CriticalError" Path="c:\Users\Erik\Documents\GitHub\Youtube-Download-Helper\YoutubeDownloadHelper\code" File="MainForm.cs" Line="33">'MainForm.MainForm(bool)' calls into 'FileVersionInfo.GetVersionInfo(string)' which has a LinkDemand. By making this call, 'FileVersionInfo.GetVersionInfo(string)' is indirectly exposed to user code. Review the following call stack that might expose a way to circumvent security protection: &#xD;&#xA;   -&gt;'MainForm.MainForm(bool)'&#xD;&#xA;   -&gt;'MainForm.MainForm(bool)'</Issue>
             </Message>
            </Messages>
           </Member>
+          <Member Name="#AddToQueue(YoutubeDownloadHelper.Video)" Kind="Method" Static="False" Accessibility="Public" ExternallyVisible="True">
+           <Messages>
+            <Message Id="0#" TypeName="ParameterNamesShouldMatchBaseDeclaration" Category="Microsoft.Naming" CheckId="CA1725" Status="Active" Created="2015-07-22 14:12:01Z" FixCategory="Breaking">
+             <Issue Certainty="95" Level="Error" Path="c:\Users\Erik\Documents\GitHub\Youtube-Download-Helper\YoutubeDownloadHelper\code" File="MainForm.cs" Line="263">In member 'MainForm.AddToQueue(Video)', change parameter name 'queueTuple' to 'queueItem' in order to match the identifier as it has been declared in 'IMainForm.AddToQueue(Video)'.</Issue>
+            </Message>
+           </Messages>
+          </Member>
           <Member Name="#AddURLButtonClick(System.Object,System.EventArgs)" Kind="Method" Static="False" Accessibility="Private" ExternallyVisible="False">
            <Messages>
-            <Message TypeName="SpecifyMessageBoxOptions" Category="Microsoft.Globalization" CheckId="CA1300" Status="Active" Created="2015-07-22 08:27:04Z" FixCategory="NonBreaking">
-             <Issue Certainty="95" Level="Error" Path="c:\Users\Erik\Documents\GitHub\Youtube-Download-Helper\YoutubeDownloadHelper\code" File="MainForm.cs" Line="474">Change 'MainForm.AddURLButtonClick(object, EventArgs)' to call the MessageBox.Show overload that specifies MessageBoxOptions, and make sure to set MessageBoxOptions.RightAlign and MessageBoxOptions.RtlReading if RightToLeft is set to RightToLeft.Yes on the parent control.</Issue>
-             <Issue Certainty="95" Level="Error" Path="c:\Users\Erik\Documents\GitHub\Youtube-Download-Helper\YoutubeDownloadHelper\code" File="MainForm.cs" Line="480">Change 'MainForm.AddURLButtonClick(object, EventArgs)' to call the MessageBox.Show overload that specifies MessageBoxOptions, and make sure to set MessageBoxOptions.RightAlign and MessageBoxOptions.RtlReading if RightToLeft is set to RightToLeft.Yes on the parent control.</Issue>
+            <Message TypeName="SpecifyMessageBoxOptions" Category="Microsoft.Globalization" CheckId="CA1300" Status="Active" Created="2015-07-22 14:12:01Z" FixCategory="NonBreaking">
+             <Issue Certainty="95" Level="Error" Path="c:\Users\Erik\Documents\GitHub\Youtube-Download-Helper\YoutubeDownloadHelper\code" File="MainForm.cs" Line="472">Change 'MainForm.AddURLButtonClick(object, EventArgs)' to call the MessageBox.Show overload that specifies MessageBoxOptions, and make sure to set MessageBoxOptions.RightAlign and MessageBoxOptions.RtlReading if RightToLeft is set to RightToLeft.Yes on the parent control.</Issue>
+             <Issue Certainty="95" Level="Error" Path="c:\Users\Erik\Documents\GitHub\Youtube-Download-Helper\YoutubeDownloadHelper\code" File="MainForm.cs" Line="478">Change 'MainForm.AddURLButtonClick(object, EventArgs)' to call the MessageBox.Show overload that specifies MessageBoxOptions, and make sure to set MessageBoxOptions.RightAlign and MessageBoxOptions.RtlReading if RightToLeft is set to RightToLeft.Yes on the parent control.</Issue>
             </Message>
            </Messages>
           </Member>
           <Member Name="#audioFormats" Kind="Field" Static="False" Accessibility="Private" ExternallyVisible="False">
            <Messages>
-            <Message TypeName="AvoidUnusedPrivateFields" Category="Microsoft.Performance" CheckId="CA1823" Status="Active" Created="2015-07-22 08:27:04Z" FixCategory="NonBreaking">
+            <Message TypeName="AvoidUnusedPrivateFields" Category="Microsoft.Performance" CheckId="CA1823" Status="Active" Created="2015-07-22 14:12:01Z" FixCategory="NonBreaking">
              <Issue Certainty="75" Level="Warning">It appears that field 'MainForm.audioFormats' is never used or is only ever assigned to. Use this field or remove it.</Issue>
             </Message>
            </Messages>
           </Member>
           <Member Name="#DeleteButtonClick(System.Object,System.EventArgs)" Kind="Method" Static="False" Accessibility="Private" ExternallyVisible="False">
            <Messages>
-            <Message TypeName="SpecifyMessageBoxOptions" Category="Microsoft.Globalization" CheckId="CA1300" Status="Active" Created="2015-07-22 08:27:04Z" FixCategory="NonBreaking">
-             <Issue Certainty="95" Level="Error" Path="c:\Users\Erik\Documents\GitHub\Youtube-Download-Helper\YoutubeDownloadHelper\code" File="MainForm.cs" Line="521">Change 'MainForm.DeleteButtonClick(object, EventArgs)' to call the MessageBox.Show overload that specifies MessageBoxOptions, and make sure to set MessageBoxOptions.RightAlign and MessageBoxOptions.RtlReading if RightToLeft is set to RightToLeft.Yes on the parent control.</Issue>
-             <Issue Certainty="95" Level="Error" Path="c:\Users\Erik\Documents\GitHub\Youtube-Download-Helper\YoutubeDownloadHelper\code" File="MainForm.cs" Line="540">Change 'MainForm.DeleteButtonClick(object, EventArgs)' to call the MessageBox.Show overload that specifies MessageBoxOptions, and make sure to set MessageBoxOptions.RightAlign and MessageBoxOptions.RtlReading if RightToLeft is set to RightToLeft.Yes on the parent control.</Issue>
+            <Message TypeName="SpecifyMessageBoxOptions" Category="Microsoft.Globalization" CheckId="CA1300" Status="Active" Created="2015-07-22 14:12:01Z" FixCategory="NonBreaking">
+             <Issue Certainty="95" Level="Error" Path="c:\Users\Erik\Documents\GitHub\Youtube-Download-Helper\YoutubeDownloadHelper\code" File="MainForm.cs" Line="519">Change 'MainForm.DeleteButtonClick(object, EventArgs)' to call the MessageBox.Show overload that specifies MessageBoxOptions, and make sure to set MessageBoxOptions.RightAlign and MessageBoxOptions.RtlReading if RightToLeft is set to RightToLeft.Yes on the parent control.</Issue>
+             <Issue Certainty="95" Level="Error" Path="c:\Users\Erik\Documents\GitHub\Youtube-Download-Helper\YoutubeDownloadHelper\code" File="MainForm.cs" Line="538">Change 'MainForm.DeleteButtonClick(object, EventArgs)' to call the MessageBox.Show overload that specifies MessageBoxOptions, and make sure to set MessageBoxOptions.RightAlign and MessageBoxOptions.RtlReading if RightToLeft is set to RightToLeft.Yes on the parent control.</Issue>
             </Message>
            </Messages>
           </Member>
           <Member Name="#SubmitModificationButtonClick(System.Object,System.EventArgs)" Kind="Method" Static="False" Accessibility="Private" ExternallyVisible="False">
            <Messages>
-            <Message TypeName="SpecifyMessageBoxOptions" Category="Microsoft.Globalization" CheckId="CA1300" Status="Active" Created="2015-07-22 08:27:04Z" FixCategory="NonBreaking">
-             <Issue Certainty="95" Level="Error" Path="c:\Users\Erik\Documents\GitHub\Youtube-Download-Helper\YoutubeDownloadHelper\code" File="MainForm.cs" Line="586">Change 'MainForm.SubmitModificationButtonClick(object, EventArgs)' to call the MessageBox.Show overload that specifies MessageBoxOptions, and make sure to set MessageBoxOptions.RightAlign and MessageBoxOptions.RtlReading if RightToLeft is set to RightToLeft.Yes on the parent control.</Issue>
-             <Issue Certainty="95" Level="Error" Path="c:\Users\Erik\Documents\GitHub\Youtube-Download-Helper\YoutubeDownloadHelper\code" File="MainForm.cs" Line="594">Change 'MainForm.SubmitModificationButtonClick(object, EventArgs)' to call the MessageBox.Show overload that specifies MessageBoxOptions, and make sure to set MessageBoxOptions.RightAlign and MessageBoxOptions.RtlReading if RightToLeft is set to RightToLeft.Yes on the parent control.</Issue>
+            <Message TypeName="SpecifyMessageBoxOptions" Category="Microsoft.Globalization" CheckId="CA1300" Status="Active" Created="2015-07-22 14:12:01Z" FixCategory="NonBreaking">
+             <Issue Certainty="95" Level="Error" Path="c:\Users\Erik\Documents\GitHub\Youtube-Download-Helper\YoutubeDownloadHelper\code" File="MainForm.cs" Line="584">Change 'MainForm.SubmitModificationButtonClick(object, EventArgs)' to call the MessageBox.Show overload that specifies MessageBoxOptions, and make sure to set MessageBoxOptions.RightAlign and MessageBoxOptions.RtlReading if RightToLeft is set to RightToLeft.Yes on the parent control.</Issue>
+             <Issue Certainty="95" Level="Error" Path="c:\Users\Erik\Documents\GitHub\Youtube-Download-Helper\YoutubeDownloadHelper\code" File="MainForm.cs" Line="592">Change 'MainForm.SubmitModificationButtonClick(object, EventArgs)' to call the MessageBox.Show overload that specifies MessageBoxOptions, and make sure to set MessageBoxOptions.RightAlign and MessageBoxOptions.RtlReading if RightToLeft is set to RightToLeft.Yes on the parent control.</Issue>
             </Message>
            </Messages>
           </Member>
           <Member Name="#videoFormats" Kind="Field" Static="False" Accessibility="Private" ExternallyVisible="False">
            <Messages>
-            <Message TypeName="AvoidUnusedPrivateFields" Category="Microsoft.Performance" CheckId="CA1823" Status="Active" Created="2015-07-22 08:27:04Z" FixCategory="NonBreaking">
+            <Message TypeName="AvoidUnusedPrivateFields" Category="Microsoft.Performance" CheckId="CA1823" Status="Active" Created="2015-07-22 14:12:01Z" FixCategory="NonBreaking">
              <Issue Certainty="75" Level="Warning">It appears that field 'MainForm.videoFormats' is never used or is only ever assigned to. Use this field or remove it.</Issue>
             </Message>
            </Messages>
           </Member>
          </Members>
         </Type>
-        <Type Name="MainForm+DDown" Kind="Delegate" Accessibility="FamilyOrAssembly" ExternallyVisible="True">
+        <Type Name="Storage" Kind="Class" Accessibility="Public" ExternallyVisible="True">
          <Members>
-          <Member Name="#Invoke(System.Int32,System.Collections.ObjectModel.ObservableCollection`1&lt;System.Tuple`3&lt;System.String,System.Int32,YoutubeExtractor.VideoType&gt;&gt;)" Kind="Method" Static="False" Accessibility="Public" ExternallyVisible="True">
+          <Member Name="#WriteUrlsToFile(System.Collections.ObjectModel.Collection`1&lt;YoutubeDownloadHelper.Video&gt;,System.Boolean)" Kind="Method" Static="False" Accessibility="Public" ExternallyVisible="True">
            <Messages>
-            <Message TypeName="DoNotNestGenericTypesInMemberSignatures" Category="Microsoft.Design" CheckId="CA1006" Status="Active" Created="2015-07-22 08:27:04Z" FixCategory="Breaking">
-             <Issue Certainty="95" Level="CriticalError">Consider a design where 'MainForm.DDown.Invoke(int, ObservableCollection&lt;Tuple&lt;string, int, VideoType&gt;&gt;)' doesn't nest generic type 'ObservableCollection&lt;Tuple&lt;string, int, VideoType&gt;&gt;'.</Issue>
+            <Message Id="0#" TypeName="ParameterNamesShouldMatchBaseDeclaration" Category="Microsoft.Naming" CheckId="CA1725" Status="Active" Created="2015-07-22 14:12:01Z" FixCategory="Breaking">
+             <Issue Certainty="95" Level="Error" Path="c:\Users\Erik\Documents\GitHub\Youtube-Download-Helper\YoutubeDownloadHelper\code" File="Storage.cs" Line="120">In member 'Storage.WriteUrlsToFile(Collection&lt;Video&gt;, bool)', change parameter name 'videos' to 'Urls' in order to match the identifier as it has been declared in 'IStorage.WriteUrlsToFile(Collection&lt;Video&gt;, bool)'.</Issue>
             </Message>
            </Messages>
           </Member>
@@ -201,25 +187,25 @@
    <MessageLevel Certainty="33">CriticalError</MessageLevel>
    <File Name="securityrules.dll" Version="10.0.0.0" />
   </Rule>
-  <Rule TypeName="DoNotNestGenericTypesInMemberSignatures" Category="Microsoft.Design" CheckId="CA1006">
-   <Name>Do not nest generic types in member signatures</Name>
-   <Description>Avoid API that require users to instantiate a generic type with another generic type as type argument. The syntax gets too complex.</Description>
-   <Resolution Name="Default">Consider a design where {0} doesn't nest generic type {1}.</Resolution>
+  <Rule TypeName="IdentifiersShouldBeCasedCorrectly" Category="Microsoft.Naming" CheckId="CA1709">
+   <Name>Identifiers should be cased correctly</Name>
+   <Description>Type, namespace, and member identifiers are Pascal-cased. Parameter identifiers are camel-cased. Two letter acronyms within these identifiers should be upper-cased, for example, use System.IO instead of System.Io. Acronyms of three or more letters should be Pascal-cased, for example, use System.Xml instead of System.XML. The pascal-casing convention capitalizes the first letter of each word, as in BackColor. The camel-casing convention formats the first letter of the first word in lowercase and capitalizes the first letter of all subsequent words, as in backgroundColor. Although it may be common practice for some two letter acronyms to not be fully capitalized, violations of this rule should not be excluded for this reason. For example, 'DbConnection', is common but incorrect; use DBConnection. A violation of this rule might be required for compatibility with existing, non-managed symbol schemes. In general, however, these symbols should not be visible outside the assembly that uses them.</Description>
+   <Resolution Name="MemberParameter">In member {0}, correct the casing of '{1}' in parameter name {2} by changing it to '{3}'.</Resolution>
    <Owner />
-   <Url>http://msdn.microsoft.com/library/ms182144(VS.100).aspx</Url>
+   <Url>http://msdn.microsoft.com/library/ms182240(VS.100).aspx</Url>
    <Email>[none]</Email>
-   <MessageLevel Certainty="95">CriticalError</MessageLevel>
-   <File Name="designrules.dll" Version="10.0.0.0" />
+   <MessageLevel Certainty="85">Error</MessageLevel>
+   <File Name="namingrules.dll" Version="10.0.0.0" />
   </Rule>
-  <Rule TypeName="NonConstantFieldsShouldNotBeVisible" Category="Microsoft.Usage" CheckId="CA2211">
-   <Name>Non-constant fields should not be visible</Name>
-   <Description>Static fields should be constant unless you carefully manage access to the field using locks. Using static variables without making them thread safe can compromise execution state. This rule applies to managed code libraries. If the analyzed assembly is an application, it is usually safe to exclude violations of this rule.</Description>
-   <Resolution Name="Default">Consider making {0} non-public or a constant.</Resolution>
+  <Rule TypeName="ParameterNamesShouldMatchBaseDeclaration" Category="Microsoft.Naming" CheckId="CA1725">
+   <Name>Parameter names should match base declaration</Name>
+   <Description>For usability reasons, parameter names in overridden methods should match those of the base declaration.</Description>
+   <Resolution Name="Default">In member {0}, change parameter name {1} to {2} in order to match the identifier as it has been declared in {3}.</Resolution>
    <Owner />
-   <Url>http://msdn.microsoft.com/library/ms182353(VS.100).aspx</Url>
+   <Url>http://msdn.microsoft.com/library/ms182251(VS.100).aspx</Url>
    <Email>[none]</Email>
-   <MessageLevel Certainty="90">Warning</MessageLevel>
-   <File Name="usagerules.dll" Version="10.0.0.0" />
+   <MessageLevel Certainty="95">Error</MessageLevel>
+   <File Name="namingrules.dll" Version="10.0.0.0" />
   </Rule>
   <Rule TypeName="PropertiesShouldNotBeWriteOnly" Category="Microsoft.Design" CheckId="CA1044">
    <Name>Properties should not be write only</Name>

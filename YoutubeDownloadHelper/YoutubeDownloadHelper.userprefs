@@ -1,25 +1,10 @@
 ﻿<Properties StartupItem="YoutubeDownloadHelper.csproj">
   <MonoDevelop.Ide.Workspace ActiveConfiguration="Debug" />
-  <MonoDevelop.Ide.Workbench ActiveDocument="Download.cs">
+  <MonoDevelop.Ide.Workbench ActiveDocument="code\Download.cs">
     <Files>
-      <File FileName="MainForm.cs" Line="409" Column="36" />
-      <File FileName="Download.cs" Line="40" Column="15" />
+      <File FileName="code\MainForm.cs" Line="1" Column="1" />
+      <File FileName="code\Download.cs" Line="56" Column="40" />
     </Files>
-    <Pads>
-      <Pad Id="ProjectPad">
-        <State expanded="True">
-          <Node name="YoutubeDownloadHelper" expanded="True">
-            <Node name="app.config" expanded="True">
-              <Node name="Program.cs" expanded="True">
-                <Node name="MainForm.cs" expanded="True">
-                  <Node name="Download.cs" selected="True" />
-                </Node>
-              </Node>
-            </Node>
-          </Node>
-        </State>
-      </Pad>
-    </Pads>
   </MonoDevelop.Ide.Workbench>
   <MonoDevelop.Ide.DebuggingService.Breakpoints>
     <BreakpointStore />

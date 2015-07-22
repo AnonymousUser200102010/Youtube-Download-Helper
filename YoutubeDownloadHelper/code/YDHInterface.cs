@@ -9,7 +9,7 @@ namespace YoutubeDownloadHelper
         /// <summary>
         /// The listBox containing the queued url list.
         /// </summary>
-        int UrlListNumberItems { get; }
+        int UrlsNumberItems { get; }
 
         /// <summary>
         /// The "flag" that determines whether an asynchronous downloading operation is currently taking place.
@@ -30,10 +30,10 @@ namespace YoutubeDownloadHelper
         /// <summary>
         /// Adds the selected parameter to the url queue.
         /// </summary>
-        /// <param name="queueTuple">
+        /// <param name="queueItem">
         /// The parameter to add to the queue.
         /// </param>
-        void AddToQueue (Tuple<string, int, YoutubeExtractor.VideoType> queueTuple);
+        void AddToQueue (Video queueItem);
 
         /// <summary>
         /// Transforms the selected format parameter into it's logical equivalent.
@@ -129,10 +129,10 @@ namespace YoutubeDownloadHelper
     	/// <param name="retryCount">
     	/// Internal retry count in case of errors. When used outside the function, the value should always be 0.
     	/// </param>
-    	/// <param name="urlList">
+    	/// <param name="Urls">
     	/// The queued url list.
     	/// </param>
-    	void SetupDownloadingProcess(int retryCount, System.Collections.ObjectModel.Collection<Tuple<string, int, YoutubeExtractor.VideoType>> urlList);
+    	void HandleDownloadingProcesses(int retryCount, System.Collections.ObjectModel.ObservableCollection<Video> Urls);
     	
     }
     
@@ -152,13 +152,13 @@ namespace YoutubeDownloadHelper
     	/// <summary>
     	/// Writes the provided url list to a file.
     	/// </summary>
-    	/// <param name="urlList">
+    	/// <param name="Urls">
     	/// The url list to write. It does not have to be exclusive to the queue.
     	/// </param>
     	/// <param name="backup">
     	/// Is this a backup list? (adds .bak to the filename)
     	/// </param>
-    	void WriteUrlsToFile (System.Collections.ObjectModel.Collection<Tuple<string, int, YoutubeExtractor.VideoType>> urlList, bool backup);
+    	void WriteUrlsToFile (System.Collections.ObjectModel.Collection<Video> Urls, bool backup);
     	
     	/// <summary>
     	/// Reads the file provided and converts it into a url list. (Currently there is only queue support)
@@ -166,7 +166,7 @@ namespace YoutubeDownloadHelper
     	/// <returns>
     	/// Returns the parsed url list of the file that was read.
     	/// </returns>
-    	System.Collections.ObjectModel.ObservableCollection<Tuple<string, int, YoutubeExtractor.VideoType>> ReadUrlList ();
+    	System.Collections.ObjectModel.ObservableCollection<Video> ReadUrls ();
     	
     }
     

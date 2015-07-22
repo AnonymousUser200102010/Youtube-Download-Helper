@@ -4,7 +4,6 @@ using System.Globalization;
 using System.IO;
 using System.Linq;
 using Microsoft.Win32;
-using YoutubeExtractor;
 
 namespace YoutubeDownloadHelper
 {
@@ -27,7 +26,7 @@ namespace YoutubeDownloadHelper
         
         private const string folderToUse = "Files\\";
 
-        private readonly string tempURLListdat = string.Format(CultureInfo.InvariantCulture, "{0}URLList.dat", folderToUse);
+        private readonly string UrlFile = string.Format(CultureInfo.InvariantCulture, "{0}URLList.dat", folderToUse);
 
         private static string registryValue
         {
@@ -59,32 +58,32 @@ namespace YoutubeDownloadHelper
 				
             }
 			
-            string[] tempStrings = new string[5];
+            string[] registryEntries = new string[5];
 			
             using (RegistryKey tempKey = Registry.LocalMachine.OpenSubKey(registryValue, true))
             {
 				
-                tempStrings [0] = string.IsNullOrEmpty((string)tempKey.GetValue("Download Location")) ? "C:\\" : (string)tempKey.GetValue("Download Location");
+                registryEntries [0] = string.IsNullOrEmpty((string)tempKey.GetValue("Download Location")) ? "C:\\" : (string)tempKey.GetValue("Download Location");
 				
-                tempStrings [1] = string.IsNullOrEmpty((string)tempKey.GetValue("Temporary Download Location")) ? "C:\\" : (string)tempKey.GetValue("Temporary Download Location");
+                registryEntries [1] = string.IsNullOrEmpty((string)tempKey.GetValue("Temporary Download Location")) ? "C:\\" : (string)tempKey.GetValue("Temporary Download Location");
 				
-                tempStrings [2] = string.IsNullOrEmpty((string)tempKey.GetValue("Schedual Downloads")) ? false.ToString() : (string)tempKey.GetValue("Schedual Downloads");
+                registryEntries [2] = string.IsNullOrEmpty((string)tempKey.GetValue("Schedual Downloads")) ? false.ToString() : (string)tempKey.GetValue("Schedual Downloads");
 				
-                tempStrings [3] = string.IsNullOrEmpty((string)tempKey.GetValue("Schedual Time Start")) ? DateTime.Now.ToString() : (string)tempKey.GetValue("Schedual Time Start");
+                registryEntries [3] = string.IsNullOrEmpty((string)tempKey.GetValue("Schedual Time Start")) ? DateTime.Now.ToString() : (string)tempKey.GetValue("Schedual Time Start");
 				
-                tempStrings [4] = string.IsNullOrEmpty((string)tempKey.GetValue("Schedual Time End")) ? DateTime.Now.AddMinutes(1).ToString() : (string)tempKey.GetValue("Schedual Time End");
+                registryEntries [4] = string.IsNullOrEmpty((string)tempKey.GetValue("Schedual Time End")) ? DateTime.Now.AddMinutes(1).ToString() : (string)tempKey.GetValue("Schedual Time End");
 				
             }
 			
-            IMainForm.DownloadLocation = tempStrings [0];
+            IMainForm.DownloadLocation = registryEntries [0];
 			
-            IMainForm.TempDownloadLocation = tempStrings [1];
+            IMainForm.TempDownloadLocation = registryEntries [1];
 			
-            IMainForm.Scheduling = bool.Parse(tempStrings [2]);
+            IMainForm.Scheduling = bool.Parse(registryEntries [2]);
 			
-            IMainForm.SchedulingStart = tempStrings [3];
+            IMainForm.SchedulingStart = registryEntries [3];
 			
-            IMainForm.SchedulingEnd = tempStrings [4];
+            IMainForm.SchedulingEnd = registryEntries [4];
 			
         }
 
@@ -98,57 +97,57 @@ namespace YoutubeDownloadHelper
 				
             }
 			
-            using (RegistryKey tempKey = Registry.LocalMachine.OpenSubKey(registryValue, true))
+            using (RegistryKey programKey = Registry.LocalMachine.OpenSubKey(registryValue, true))
             {
 				
-                tempKey.SetValue("Download Location", IMainForm.DownloadLocation);
+                programKey.SetValue("Download Location", IMainForm.DownloadLocation);
 				
-                tempKey.SetValue("Temporary Download Location", IMainForm.TempDownloadLocation);
+                programKey.SetValue("Temporary Download Location", IMainForm.TempDownloadLocation);
 				
-                tempKey.SetValue("Schedual Downloads", IMainForm.Scheduling);
+                programKey.SetValue("Schedual Downloads", IMainForm.Scheduling);
 				
-                tempKey.SetValue("Schedual Time Start", IMainForm.SchedulingStart);
+                programKey.SetValue("Schedual Time Start", IMainForm.SchedulingStart);
 				
-                tempKey.SetValue("Schedual Time End", IMainForm.SchedulingEnd);
+                programKey.SetValue("Schedual Time End", IMainForm.SchedulingEnd);
 				
             }
 			
         }
 		
-        public void WriteUrlsToFile (Collection<Tuple<string, int, VideoType>> urlList, bool backup)
+        public void WriteUrlsToFile (Collection<Video> videos, bool backup)
         {
 			
             Validation.CheckOrCreateFolder(folderToUse);
 			
-            using (StreamWriter outfile = new StreamWriter (string.Format(CultureInfo.InstalledUICulture, "{0}{1}", tempURLListdat, (backup ? ".bak" : null))))
+            using (StreamWriter outfile = new StreamWriter (string.Format(CultureInfo.InstalledUICulture, "{0}{1}", UrlFile, (backup ? ".bak" : null))))
             {
 				
-                for (int count = 0, GlobalVariablesurlListCount = urlList.Count; count < GlobalVariablesurlListCount; count++)
+                for (int count = 0, numberOfVideos = videos.Count; count < numberOfVideos; count++)
                 {
 					
-                    Tuple<string, int, VideoType> url = urlList [count];
+                    Video video = videos [count];
 					
-                    outfile.Write(string.Format(CultureInfo.InstalledUICulture, "{0} {1} {2}\n", url.Item1, url.Item2, url.Item3));
+                    outfile.Write(string.Format(CultureInfo.InstalledUICulture, "{0} {1} {2}\n", video.UrlName, video.Resolution, video.Format));
 					
                 }
 				
             }
 			
-            File.SetAttributes(tempURLListdat, FileAttributes.Compressed);
+            File.SetAttributes(UrlFile, FileAttributes.Compressed);
 			
         }
 
-        public ObservableCollection<Tuple<string, int, VideoType>> ReadUrlList ()
+        public ObservableCollection<Video> ReadUrls ()
         {
 			
             Validation.CheckOrCreateFolder(folderToUse);
 			
-            ObservableCollection<Tuple<string, int, VideoType>> returnValue = new ObservableCollection<Tuple<string, int, VideoType>> ();
+            ObservableCollection<Video> returnValue = new ObservableCollection<Video> ();
 			
-            if (File.Exists(tempURLListdat))
+            if (File.Exists(UrlFile))
             {
 				
-                using (StreamReader sr = new StreamReader (tempURLListdat))
+                using (StreamReader sr = new StreamReader (UrlFile))
                 {
 			
                     String line;
@@ -186,7 +185,7 @@ namespace YoutubeDownloadHelper
                             if (i >= line.Length - 1)
                             {
 								
-                                returnValue.Add(new Tuple<string, int, VideoType> (stringBuilder [0], int.Parse(stringBuilder [1], CultureInfo.InvariantCulture), MainForm.GetVideoFormat(stringBuilder [2])));
+                                returnValue.Add(new Video (stringBuilder [0], int.Parse(stringBuilder [1], CultureInfo.InvariantCulture), MainForm.GetVideoFormat(stringBuilder [2])));
 								
                             }
 							
@@ -202,7 +201,7 @@ namespace YoutubeDownloadHelper
 				
             }
 			
-            return new ObservableCollection<Tuple<string, int, VideoType>> ();
+            return new ObservableCollection<Video> ();
 			
         }
 		
