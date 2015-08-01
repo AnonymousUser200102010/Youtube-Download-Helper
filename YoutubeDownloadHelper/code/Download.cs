@@ -1,45 +1,45 @@
 ﻿using System;
-using System.Collections;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Globalization;
 using System.IO;
 using System.Linq;
 using System.Text.RegularExpressions;
+using System.Threading;
+using System.Threading.Tasks;
 using YoutubeExtractor;
+using YoutubeDownloadHelper.Gui;
+using UniversalHandlersLibrary;
 
-namespace YoutubeDownloadHelper
+namespace YoutubeDownloadHelper.Code
 {
 
     public class Download : IDownload
     {
-    	
-        private readonly IMainForm MainForm;
-
         private readonly IStorage Storage;
+        private readonly IConversion Conversion;
+        private delegate MainProgramElements GetMPE();
 
-        public Download (IMainForm mainForm, IStorage store)
+        public Download (IStorage store, IConversion convert)
         {
     		
-            this.MainForm = mainForm;
-    		
             this.Storage = store;
+            this.Conversion = convert;
     		
         }
 
-        private static ObservableCollection<Video> GetUnfinishedDownloads (ObservableCollection<Video> finishedUrls)
+        public ObservableCollection<Video> GetUnfinishedDownloads (ObservableCollection<Video> finishedUrls)
         {
-			
+			VideosToDownload videoQueue = new VideosToDownload();
             ObservableCollection<Video> returnValue = new ObservableCollection<Video> ();
-			
-			for (int count = 0, numberOfVideos = finishedUrls.Count; count < numberOfVideos; count++)
-			{
-				Video videoInfo = finishedUrls[count];
-				if (finishedUrls.Count <= 0 || !finishedUrls.Any(item => item.UrlName.Equals(videoInfo.UrlName)))
-				{
-					returnValue.Add(videoInfo);
-				}
-			}
+            ObservableCollection<Video> urlList = videoQueue.Items;
+            
+            foreach (Video vid in urlList.Where(video => finishedUrls.Any(item => video == item)))
+            {
+            	
+                returnValue.Add(vid);
+            	
+            }
 				
             return returnValue;
 			
@@ -51,246 +51,189 @@ namespace YoutubeDownloadHelper
             var r = new Regex (string.Format(CultureInfo.CurrentCulture, "[{0}]", Regex.Escape(regexSearch)));
             return r.Replace(path, "");
         }
-
-        private static string Truncate (string stringToCheck, int trunicationCutoff)
+        
+        public async void DownloadHandler (MainWindow mainWindow, int selectedIndex)
         {
-    		
-            return stringToCheck.Length <= trunicationCutoff ? stringToCheck : string.Format(CultureInfo.InstalledUICulture, "{0}[...]", stringToCheck.Substring(0, trunicationCutoff)).ToLower(CultureInfo.InstalledUICulture);
-    		
-        }
-
-        public void HandleDownloadingProcesses (int retryCount, ObservableCollection<Video> Urls)
-        {
-    		
-            int previouslySelectedIndex = MainForm.SelectedQueueIndex;
-    		
+        	ObservableCollection<Video> urlList = new ObservableCollection<Video>();
+        	mainWindow.Dispatcher.Invoke((Action)(() =>
+		    {
+		        urlList = mainWindow.MainProgramElements.Videos;
+		    }));
             ObservableCollection<Video> finishedUrls = new ObservableCollection<Video> ();
-        	
-            if (MainForm.UrlsNumberItems > 0)
+            ClassContainer classCont = new ClassContainer();
+            int[] retryCount = new int[urlList.Count+1];
+            const int maxRetrys = 4;
+            
+            for (int position = 0, urlListCount = urlList.Count; position < urlListCount; position++)
             {
-            	
-                MainForm.StartDownloadingSession(true);
-            	
-                int position = 0;
-				
-                for (int count = 0, numberOfVideos = Urls.Count; count < numberOfVideos; count++)
-                {
-					
-                    if (MainForm.CurrentlyDownloading)
-                    {
-						
-                        try
-                        {
-							
-                            Video url = Urls [count];
-							
-                            MainForm.SelectedQueueIndex = position;
-							
-                            position++;
-							
-                            if (DownloadVideo(url, position) != null)
-                            {
+	            try
+	            {
+	            	Video vid = urlList [position];
+	            	mainWindow.Dispatcher.Invoke((Action)(() =>
+				    {
+				        mainWindow.MainProgramElements.CurrentlySelectedQueueIndex = position;
+				        if(retryCount[position] <= 0)
+			        	{
+			        		mainWindow.MainProgramElements.CurrentDownloadOutputText = string.Format(CultureInfo.InstalledUICulture, "Beginning download from '{0}'", vid.Location);
+			        	}
+			        	mainWindow.MainProgramElements.CurrentDownloadProgress = 0;
+				    }));
 								
-                                finishedUrls.Add(url);
-								
-                            }
-							
-                            Storage.WriteUrlsToFile(finishedUrls, true);
-						
-                        }
-                        catch (Exception ex)
-                        {
-						
-                            var exceptionMessage = ex.Message;
-							
-                            if (retryCount <= 3)
-                            {
-								
-                            	MainForm.StatusBar = string.Format(CultureInfo.InstalledUICulture, "URL {0}: {1}. Retrying.... ({2}/{3})", count + 1, Truncate(exceptionMessage, 50), (retryCount + 1).ToString(CultureInfo.CurrentCulture), "3");
-								
-                                System.Threading.Thread.Sleep(850);
-								
-                                HandleDownloadingProcesses((retryCount + 1), Urls);
-								
-                            }
-                            else
-                            {
-								
-                            	if(finishedUrls.Count < 10)
-                            	{
-                            		
-                                	finishedUrls.Clear();
-                                	
-                            	}
-								
-                                MainForm.StatusBar = Truncate(exceptionMessage, 100);
-								
-                            }
-						
-                        }
-						
-                    }
-					
-                }
-                
-            }
-            
-            MainForm.CurrentlyDownloading = false;
-            
-            MainForm.StartDownloadingSession(false);
-                
-            MainForm.StartDownButtonEnabled = true;
-            
-            VideoQueue.Items = GetUnfinishedDownloads(finishedUrls);
-            
-            Storage.WriteUrlsToFile(VideoQueue.Items, false);
-            
-            MainForm.RefreshQueue(previouslySelectedIndex, true);
-    		
+	                if (await DownloadVideo(vid, mainWindow))
+	                {
+	                    finishedUrls.Add(vid);
+	                }
+	            }
+	            catch (Exception ex)
+	            {	
+	                var exceptionMessage = ex.Message;
+					retryCount[position]++;
+	                if (retryCount[position] <= maxRetrys)
+	                {
+	                	mainWindow.Dispatcher.Invoke((Action)(() =>
+					    {
+					        mainWindow.MainProgramElements.CurrentDownloadOutputText = string.Format(CultureInfo.InstalledUICulture, "URL {0}: {1}. Retrying.... ({2}/{3})", position + 1, classCont.ConversionCode.Truncate(exceptionMessage, 50), (retryCount[position]).ToString(CultureInfo.CurrentCulture), maxRetrys);
+					    }));
+	                    Thread.Sleep(850);						
+	                    position--;
+	                }
+	                else
+	                {	
+	                    if (finishedUrls.Count < 5)
+	                    {           		
+	                        finishedUrls.Clear();                   	
+	                    }
+	                    mainWindow.Dispatcher.Invoke((Action)(() =>
+					    {
+					        mainWindow.MainProgramElements.CurrentDownloadOutputText = classCont.ConversionCode.Truncate(exceptionMessage, 100);
+	                    	mainWindow.MainProgramElements.CurrentDownloadProgress = 0;
+					    }));
+	                    break;
+	                }
+	            }
+	        }
+            classCont.IOHandlingCode.WriteUrlsToFile(finishedUrls, true);
+            mainWindow.Dispatcher.Invoke((Action)(() =>
+			{
+	            if(finishedUrls.Count > 0)
+	            {
+	            	mainWindow.Videos.Replace((new ObservableCollection<Video>(urlList.Where(video => finishedUrls.All(item => item != video)).Select(video => video))));
+	            }
+				if (mainWindow.MainProgramElements.Videos.Count > 0)
+	            {
+					mainWindow.RefreshQueue(mainWindow.MainProgramElements.Videos, selectedIndex < mainWindow.MainProgramElements.Videos.Count ? 0 : selectedIndex);
+	            }
+				classCont.IOHandlingCode.WriteUrlsToFile(mainWindow.Videos, false);
+				mainWindow.MainProgramElements.CurrentDownloadOutputText = retryCount.Any(count => count > maxRetrys) ? "An Error Has Occurred!" : "Finished!";
+				mainWindow.MainProgramElements.CurrentDownloadProgress = 0;
+				mainWindow.MainProgramElements.WindowEnabled = true;
+			}));
         }
 
-        private string DownloadVideo (Video video, int position)
-        {
-        	
-            int previouslySelectedIndex = MainForm.SelectedQueueIndex;
- 					
-            MainForm.DownloadFinishedPercent = 0;
-            		
-            MainForm.DownloadLabel = string.Format(CultureInfo.InstalledUICulture, "Beginning download from '{0}'", video.UrlName);
+        private async Task<bool> DownloadVideo (Video video, MainWindow mainWindow)
+        {       	
 		
             /*
 		    * Get the available video formats.
 		    * We'll work with them in the video and audio download examples.
 		    */
-            IEnumerable<VideoInfo> videoInfos = DownloadUrlResolver.GetDownloadUrls(video.UrlName, false);
+            IEnumerable<VideoInfo> videoInfos = DownloadUrlResolver.GetDownloadUrls(video.Location, false);
 		    
-            if (MainForm.CurrentlyDownloading)
-            {  
-		    	
-                if ((video.Format != VideoType.Mp4 && videoInfos.Any(info => (info.Resolution == video.Resolution && info.VideoType == video.Format)) || video.Format == VideoType.Mp4 && video.Resolution == 360))
-                {
+            if ((video.Format != VideoType.Mp4 && videoInfos.Any(info => (info.Resolution == video.Resolution && info.VideoType == video.Format)) || video.Format == VideoType.Mp4 && video.Resolution == 360))
+            {
        				
-                    VideoInfo currentVideo = videoInfos.First(info => info.VideoType == video.Format && info.Resolution == video.Resolution);
-				            
-                    MainForm.DownloadLabel = string.Format(CultureInfo.InstalledUICulture, "Downloading '{0}{1}' at {2}p resolution", Truncate(currentVideo.Title, 56), currentVideo.VideoExtension, currentVideo.Resolution);
+                VideoInfo currentVideo = videoInfos.First(info => info.VideoType == video.Format && info.Resolution == video.Resolution);
+                mainWindow.Dispatcher.Invoke((Action)(() =>
+				{
+					mainWindow.MainProgramElements.CurrentDownloadOutputText = string.Format(CultureInfo.InstalledUICulture, "Downloading '{0}{1}' at {2}p resolution", Conversion.Truncate(currentVideo.Title, 56), currentVideo.VideoExtension, currentVideo.Resolution);
+				}));
 				
-                    //DownloadAudio(videoInfos);
-			                   
-                    DownloadVideo(videoInfos, video.Resolution, position, video.Format);
-			        
-                    return "Success!";
-	                    	
-                }
-       				
-	            
-                if (videoInfos.Where(info => info.VideoType == video.Format).All(info => info.Resolution != video.Resolution) || (video.Format == VideoType.Mp4 && video.Resolution != 360))
-                {
-		                    	
-                    List<int> resolutionsEstablished = new List<int> ();
-					
-                    List<VideoType> formatsEstablished = new List<VideoType> ();
-		             
-                    using (StreamWriter outfile = new StreamWriter ("Acceptable Options.txt"))
-                    {
-						
-                        outfile.Write(string.Format(CultureInfo.InstalledUICulture, "This file will show you all formats available for the current URL, as well as the resolutions that are acceptable for that URL.\n\n{0}:\n", video.UrlName));
-						
-                        foreach (VideoType format in videoInfos.Where(info => info.VideoType != VideoType.Unknown && formatsEstablished.All(format => info.VideoType != format)).Select(info => info.VideoType))
-                        {		
-							
-                            if (format == VideoType.Mp4)
-                            {
-								
-                                outfile.Write(string.Format(CultureInfo.InstalledUICulture, "Format: {0} | Resolution: {1}p\n", format, "360"));
-								
-                            }
-                            else
-                            {
-								
-                                foreach (int resolution in videoInfos.Where(info => info.Resolution >= 144 && info.Resolution < 720 && resolutionsEstablished.All(res => info.Resolution != res) && info.VideoType == format).Select(info => info.Resolution))
-                                {
-					                    		
-                                    outfile.Write(string.Format(CultureInfo.InstalledUICulture, "Format: {0} | Resolution: {1}p\n", format, resolution));
-					               		
-                                    resolutionsEstablished.Add(resolution);
-					               		
-                                }
-								
-                            }
-							
-                            resolutionsEstablished.Clear();
-							
-                            formatsEstablished.Add(format);
-							
-                        }
-						
-                    }
-		                    	
-                    MainForm.StatusBar = "An acceptable options file has been exported to the program's root folder. Check there for more information.";
-					
-                    MainForm.CurrentlyDownloading = false;
-	                    	
-                }
-	            
+                //DownloadAudio(videoInfos);
+                await this.Download_Actual(videoInfos, mainWindow, video);
+	            return true;
             }
-			
-            return null;
-       		
+            
+            if (videoInfos.Where(info => info.VideoType == video.Format).All(info => info.Resolution != video.Resolution) || (video.Format == VideoType.Mp4 && video.Resolution != 360))
+            {      	
+                List<int> resolutionsEstablished = new List<int> ();
+                List<VideoType> formatsEstablished = new List<VideoType> ();
+                using (StreamWriter outfile = new StreamWriter ("Acceptable Options.txt"))
+                {
+                    outfile.Write(string.Format(CultureInfo.CurrentCulture, "This file will show you all formats available for the current URL, as well as the resolutions that are acceptable for that URL.\n\n{0}:\n", video.Location));
+						
+                    foreach (VideoType format in videoInfos.Where(info => info.VideoType != VideoType.Unknown && formatsEstablished.All(format => info.VideoType != format)).Select(info => info.VideoType))
+                    {		
+                        if (format == VideoType.Mp4)
+                        {
+                            outfile.Write(string.Format(CultureInfo.CurrentCulture, "Format: {0} | Resolution: {1}p\n", format, "360"));
+                        }
+                        else
+                        {
+                            foreach (int resolution in videoInfos.Where(info => info.Resolution >= 144 && info.Resolution < 720 && resolutionsEstablished.All(res => info.Resolution != res) && info.VideoType == format).Select(info => info.Resolution))
+                            {    		
+                                outfile.Write(string.Format(CultureInfo.CurrentCulture, "Format: {0} | Resolution: {1}p\n", format, resolution));	
+                                resolutionsEstablished.Add(resolution);	
+                            }
+                        }
+                        resolutionsEstablished.Clear();
+                        formatsEstablished.Add(format);
+                    }
+                }
+                throw new NotSupportedException("An acceptable options file has been exported to the program's root folder. Check there for more information.");
+            }
+            return false;
         }
 
-        private void DownloadVideo (IEnumerable<VideoInfo> videoInfos, int resolution, int position, VideoType format)
-        {
-            /*
+        private async Task<int> Download_Actual (IEnumerable<VideoInfo> videoInfos, MainWindow mainWindow, Video videoToUse)
+		{
+			/*
              * Select the first .mp4 video with 360p resolution
              */
-            VideoInfo video = videoInfos
-                .First(info => info.VideoType == format && info.Resolution == resolution);
+			VideoInfo video = videoInfos
+                .First(info => info.VideoType == videoToUse.Format && info.Resolution == videoToUse.Resolution);
 
-            /*
+			/*
              * If the video has a decrypted signature, decipher it
              */
-            if (video.RequiresDecryption)
-            {
-                DownloadUrlResolver.DecryptDownloadUrl(video);
-            }
+			if (video.RequiresDecryption)
+			{
+				DownloadUrlResolver.DecryptDownloadUrl(video);
+			}
 
-            /*
+			/*
              * Create the video downloader.
              * The first argument is the video to download.
              * The second argument is the path to save the video file.
              */
             
-            var videoName = RemoveIllegalPathCharacters(video.Title) + video.VideoExtension;
-			
-            var videoPath = Path.Combine(MainForm.TempDownloadLocation, videoName);
+			Settings settings = Storage.ReadFromRegistry();
+			var videoName = RemoveIllegalPathCharacters(video.Title) + video.VideoExtension;
+			var videoPath = Path.Combine(settings.TemporarySaveLocation, videoName);
+			var finalPath = Path.Combine(settings.MainSaveLocation, videoName);
             
-            var finalPath = Path.Combine(MainForm.DownloadLocation, videoName);
-			
-            if (!File.Exists(finalPath))
-            {
+			if (!File.Exists(finalPath))
+			{
+				var videoDownloader = new VideoDownloader(video, videoPath);
+				// Register the ProgressChanged event and print the current progress
+				mainWindow.Dispatcher.Invoke((Action)(() =>
+				{
+					videoDownloader.DownloadProgressChanged += (
+					    (sender, args) => mainWindow.MainProgramElements.CurrentDownloadProgress = (int)args.ProgressPercentage
+					);
+				}));
 				
-                var videoDownloader = new VideoDownloader (video, videoPath);
-	
-                // Register the ProgressChanged event and print the current progress
-                videoDownloader.DownloadProgressChanged += (sender, args) => MainForm.DownloadFinishedPercent = (int)args.ProgressPercentage;
-	
-                /*
+				/*
 	             * Execute the video downloader.
 	             * For GUI applications note, that this method runs synchronously.
 	             */
-                videoDownloader.Execute();
-                
-                File.Move(videoPath, finalPath);
-				
-            }
-            else
-            {
-            	
-                MainForm.StatusBar = string.Format(CultureInfo.InstalledUICulture, "{0}({1}) already exists! Download process has been aborted and considered successful.", Truncate(video.Title, 18), position).ToLower(CultureInfo.InstalledUICulture);
-            	
-            }
-			
-        }
+				videoDownloader.Execute();
+				if(!videoPath.Equals(finalPath, StringComparison.OrdinalIgnoreCase))
+				{
+					File.Move(videoPath, finalPath);
+				}
+			}
+			return 0;
+		}
 		
         //				TBD
         //        private void DownloadAudio (IEnumerable<VideoInfo> videoInfos)

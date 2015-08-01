@@ -1,0 +1,12 @@
+C:\Users\Erik\Documents\GitHub\Youtube-Download-Helper\YoutubeDownloadHelper\bin\Debug\UniversalHandlersLibrary.dll
+C:\Users\Erik\Documents\GitHub\Youtube-Download-Helper\YoutubeDownloadHelper\obj\Debug\YoutubeDownloadHelper.MainForm.resources
+C:\Users\Erik\Documents\GitHub\Youtube-Download-Helper\YoutubeDownloadHelper\obj\Debug\YoutubeDownloadHelper.csproj.GenerateResource.Cache
+C:\Users\Erik\Documents\GitHub\Youtube-Download-Helper\YoutubeDownloadHelper\bin\Debug\YoutubeDownloadHelper.exe.config
+C:\Users\Erik\Documents\GitHub\Youtube-Download-Helper\YoutubeDownloadHelper\bin\Debug\YoutubeDownloadHelper.exe
+C:\Users\Erik\Documents\GitHub\Youtube-Download-Helper\YoutubeDownloadHelper\bin\Debug\YoutubeDownloadHelper.pdb
+C:\Users\Erik\Documents\GitHub\Youtube-Download-Helper\YoutubeDownloadHelper\obj\Debug\YoutubeDownloadHelper.exe
+C:\Users\Erik\Documents\GitHub\Youtube-Download-Helper\YoutubeDownloadHelper\obj\Debug\YoutubeDownloadHelper.pdb
+C:\Users\Erik\Documents\GitHub\Youtube-Download-Helper\YoutubeDownloadHelper\bin\Debug\UniversalHandlersLibrary.xml
+C:\Users\Erik\Documents\GitHub\Youtube-Download-Helper\YoutubeDownloadHelper\bin\Debug\UniversalFormsHandlerLibrary.exe
+C:\Users\Erik\Documents\GitHub\Youtube-Download-Helper\YoutubeDownloadHelper\bin\Debug\UniversalFormsHandlerLibrary.xml
+C:\Users\Erik\Documents\GitHub\Youtube-Download-Helper\YoutubeDownloadHelper\obj\Debug\YoutubeDownloadHelper.csprojResolveAssemblyReference.cache

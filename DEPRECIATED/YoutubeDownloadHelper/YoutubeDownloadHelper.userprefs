@@ -1,0 +1,13 @@
+﻿<Properties StartupItem="YoutubeDownloadHelper.csproj">
+  <MonoDevelop.Ide.Workspace ActiveConfiguration="Debug" />
+  <MonoDevelop.Ide.Workbench ActiveDocument="code\Download.cs">
+    <Files>
+      <File FileName="code\MainForm.cs" Line="1" Column="1" />
+      <File FileName="code\Download.cs" Line="56" Column="40" />
+    </Files>
+  </MonoDevelop.Ide.Workbench>
+  <MonoDevelop.Ide.DebuggingService.Breakpoints>
+    <BreakpointStore />
+  </MonoDevelop.Ide.DebuggingService.Breakpoints>
+  <MonoDevelop.Ide.DebuggingService.PinnedWatches />
+</Properties>

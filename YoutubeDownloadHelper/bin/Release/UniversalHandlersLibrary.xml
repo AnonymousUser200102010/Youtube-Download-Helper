@@ -108,6 +108,17 @@
             Is the parent program debugging?
             </param>
         </member>
+        <member name="M:UniversalHandlersLibrary.BackEnd.CheckBeginningParameters(System.String,System.Boolean)">
+            <summary>
+            A way to check for required parameters you generally always use before the start of a program.
+            </summary>
+            <param name="applicationName">
+            Name of the parent program.
+            </param>
+            <param name="debugMode">
+            Is the parent program debugging?
+            </param>
+        </member>
         <member name="T:UniversalHandlersLibrary.IOHandler">
             <summary>
             All publicly reachable reading and writing related functions handler entry point.
@@ -218,6 +229,28 @@
             <returns>
             true if the toCheck parameter occurs within the string, or if the toCheck value is an empty string (""); else false.
             </returns>
+        </member>
+        <member name="M:UniversalHandlersLibrary.UniversalHandlersLibraryGlobal.Replace``1(System.Collections.ObjectModel.ObservableCollection{``0},System.Collections.ObjectModel.ObservableCollection{``0})">
+            <summary>
+            Replaces one ObservableCollection with another. Mainly used to trigger events related to modifying an ObservableCollection.
+            </summary>
+            <param name="old">
+            The original collection.
+            </param>
+            <param name="new">
+            The collection to replace the original with.
+            </param>
+        </member>
+        <member name="M:UniversalHandlersLibrary.UniversalHandlersLibraryGlobal.Timeout(System.Single,System.Single)">
+            <summary>
+            Acts like the Windows CommandLine Timeout command.
+            </summary>
+            <param name="timeoutCount">
+            The time to count to.
+            </param>
+            <param name="increment">
+            The amount of time to for each tick.
+            </param>
         </member>
         <member name="T:UniversalHandlersLibrary.InternalFunctions">
             <summary>

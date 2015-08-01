@@ -33,5 +33,21 @@
             The form you wish to load if all required parameters are met.
             </param>
         </member>
+        <member name="M:UniversalFormsHandlerLibrary.BackEnd.CreateMessage(System.String,System.String)">
+            <summary>
+            Create a messagebox for a non-windows-forms program.
+            </summary>
+            <param name="message">
+            The message to be displayed in the body of the messagebox.
+            </param>
+            <param name="title">
+            The title of the messagebox.
+            </param>
+        </member>
+        <member name="T:UniversalFormsHandlerLibrary.SafeNativeMethods">
+            <summary>
+            Dunno, FxCop told me to call it this. 'Magine there's a good reason.
+            </summary>
+        </member>
     </members>
 </doc>

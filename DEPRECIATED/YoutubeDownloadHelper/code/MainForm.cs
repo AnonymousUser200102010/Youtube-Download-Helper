@@ -107,7 +107,7 @@ namespace YoutubeDownloadHelper
             if (this.queuedBox.Items.Count >= 1)
             {
             	
-                this.urlToModify.Text = VideoQueue.Items [0].UrlName;
+                this.urlToModify.Text = VideoQueue.Items [0].Location;
             	
                 this.resolutionToModify.Value = VideoQueue.Items [0].Resolution;
                 
@@ -262,7 +262,7 @@ namespace YoutubeDownloadHelper
             
             ListViewItem lvi = mainForm.queuedBox.Items.Add((mainForm.queuedBox.Items.Count + 1).ToString(CultureInfo.CurrentCulture));
             
-            lvi.SubItems.Add(queueTuple.UrlName);
+            lvi.SubItems.Add(queueTuple.Location);
             
             lvi.SubItems.Add(queueTuple.Resolution.ToString(CultureInfo.CurrentCulture));
             
@@ -516,7 +516,7 @@ namespace YoutubeDownloadHelper
             if (this.SelectedQueueIndex > 0 || (this.queuedBox.Items.Count - 1) > 0)
             {
         		
-                DialogResult deletionAnswer = MessageBox.Show(string.Format(CultureInfo.InstalledUICulture, "Are you sure you want to delete {0}?", VideoQueue.Items [this.SelectedQueueIndex].UrlName), "Confirmation", MessageBoxButtons.YesNo, MessageBoxIcon.Question, MessageBoxDefaultButton.Button1);
+                DialogResult deletionAnswer = MessageBox.Show(string.Format(CultureInfo.InstalledUICulture, "Are you sure you want to delete {0}?", VideoQueue.Items [this.SelectedQueueIndex].Location), "Confirmation", MessageBoxButtons.YesNo, MessageBoxIcon.Question, MessageBoxDefaultButton.Button1);
         		
                 if (deletionAnswer == DialogResult.Yes)
                 {
@@ -547,7 +547,7 @@ namespace YoutubeDownloadHelper
             if (this.SelectedQueueIndex > -1)
             {
             	
-                this.urlToModify.Text = VideoQueue.Items [this.SelectedQueueIndex].UrlName;
+                this.urlToModify.Text = VideoQueue.Items [this.SelectedQueueIndex].Location;
             	
                 this.resolutionToModify.Value = VideoQueue.Items [this.SelectedQueueIndex].Resolution;
                 

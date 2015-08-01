@@ -1,0 +1,304 @@
+<?xml version="1.0"?>
+<doc>
+    <assembly>
+        <name>UniversalHandlersLibrary</name>
+    </assembly>
+    <members>
+        <member name="T:UniversalHandlersLibrary.ConstParameters">
+            <summary>
+            Contains all parameters whose values are and must remain constant.
+            </summary>
+        </member>
+        <member name="T:UniversalHandlersLibrary.Errors">
+            <summary>
+            Errors handler entry point.
+            </summary>
+        </member>
+        <member name="M:UniversalHandlersLibrary.Errors.Writer(System.Exception,System.Boolean,System.Int32)">
+            <summary>
+            Writes to the Error.dmp file. Should only be used ONLY if just a writing operation should be initiated. It is also not documented well enough for regular use, so it's advised only advanced users use this outside the library's code.
+            </summary>
+            <param name="providedException">
+            The exception that will be handled while writing to the Error.dmp file.
+            </param>
+            <param name="prune">
+            Is this operation checking the file to see if it should be pruned?
+            </param>
+            <param name="pruneCutoff">
+            The file size at which to prune the Error.dmp file. (default is 524288)
+            </param>
+        </member>
+        <member name="M:UniversalHandlersLibrary.Errors.Handler(System.Exception,System.Boolean,System.Boolean,System.Int32)">
+            <summary>
+            Error handler.
+            </summary>
+            <param name="providedException">
+            The exception that will be handled.
+            </param>
+            <param name="write">
+            Is this a write operation?
+            </param>
+            <param name="prune">
+            Is this operation also checking the file to see if it should be pruned?
+            </param>
+            <param name="pruneCutoff">
+            The file size at which to prune the Error.dmp file. (default is 524288)
+            </param>
+            <exception cref="T:System.ArgumentOutOfRangeException">
+            Thrown if the pruneCutOff value is less than <see cref="F:UniversalHandlersLibrary.ConstParameters.minPruneVal"/>, 
+            or greater than <see cref="F:UniversalHandlersLibrary.ConstParameters.maxPruneVal"/>.
+            </exception>
+        </member>
+        <member name="M:UniversalHandlersLibrary.Errors.PremadeExceptions(System.String,System.String,System.Int32)">
+            <summary>
+            A list of premade exceptions for convenience.
+            </summary>
+            <param name="offendingCode">
+            Where did the exception originate from?
+            </param>
+            <param name="areaWhereOffendingCodeResides">
+            Where within the originating code did the exception occur?
+            </param>
+            <param name="exceptionNumber">
+            The number of the exception you'd like to use.
+            </param>
+            <returns>
+            For exception number: 0, a FormatException with the text "Argument failed to produce a valid result." will be produced.
+            </returns>
+            <exception cref="T:System.ArgumentOutOfRangeException">
+            Thrown if the exceptionNumber is less than zero or greater than the current number of premade exceptions.
+            </exception>
+        </member>
+        <member name="T:UniversalHandlersLibrary.Messages">
+            <summary>
+            Messages handler entry point.
+            </summary>
+        </member>
+        <member name="M:UniversalHandlersLibrary.Messages.Handler(System.String,System.String,System.Boolean,System.Int32)">
+            <summary>
+            Message handler
+            </summary>
+            <param name="message">
+            The message to be handled.
+            </param>
+            <param name="nameOfAppWithoutExtension">
+            The application's name, which will be printed before the message.
+            </param>
+            <param name="prune">
+            Is this operation checking the file to see if it should be pruned?
+            </param>
+            <param name="pruneCutoff">
+            The file size at which to prune the Messages.txt file. (default is 102400)
+            </param>
+            <exception cref="T:System.ArgumentOutOfRangeException">
+            Thrown if the pruneCutOff value is less than <see cref="F:UniversalHandlersLibrary.ConstParameters.minPruneVal"/>, 
+            or greater than <see cref="F:UniversalHandlersLibrary.ConstParameters.maxPruneVal"/>.
+            </exception>
+        </member>
+        <member name="T:UniversalHandlersLibrary.BackEnd">
+            <summary>
+            Backend related functions handler entry point.
+            </summary>
+        </member>
+        <member name="M:UniversalHandlersLibrary.BackEnd.SetupConsole(System.Boolean)">
+            <summary>
+            Sets up the console. If debugging, the console shows. Otherwise, it does nothing.
+            </summary>
+            <param name="debug">
+            Is the parent program debugging?
+            </param>
+        </member>
+        <member name="M:UniversalHandlersLibrary.BackEnd.CheckBeginningParameters(System.String,System.Boolean)">
+            <summary>
+            A way to check for required parameters you generally always use before the start of a program.
+            </summary>
+            <param name="applicationName">
+            Name of the parent program.
+            </param>
+            <param name="debugMode">
+            Is the parent program debugging?
+            </param>
+        </member>
+        <member name="T:UniversalHandlersLibrary.IOHandler">
+            <summary>
+            All publicly reachable reading and writing related functions handler entry point.
+            </summary>
+        </member>
+        <member name="M:UniversalHandlersLibrary.IOHandler.DeleteAllSameNamedFiles(System.IO.FileInfo,System.String)">
+            <summary>
+            Checks all files in all subdirectories of the root directory against the file provided to see if their names match. If they do, it deletes the appropriate file.
+            </summary>
+            <param name="fileToSearchWith">
+            The file, or logically it's information, that you'll be searching with.
+            </param>
+            <param name="rootDirectory">
+            The top of the directory hierarchy you'd like to search in.
+            </param>
+        </member>
+        <member name="M:UniversalHandlersLibrary.IOHandler.DeleteAllSameNamedFiles(System.IO.FileInfo,System.String,System.Boolean)">
+            <summary>
+            Checks all files in all subdirectories of the root directory against the file provided to see if their names match. If they do, it deletes the appropriate file.
+            </summary>
+            <param name="fileToSearchWith">
+            The file, or logically it's information, that you'll be searching with. This is the root file.
+            </param>
+            <param name="rootDirectory">
+            The top of the directory hierarchy you'd like to search in.
+            </param>
+            <param name="ignoreCase">
+            If true, the function will ignore casing when checking the files in the hierarchy against the root file.
+            </param>
+        </member>
+        <member name="M:UniversalHandlersLibrary.IOHandler.DeleteAllSameNamedFiles(System.IO.FileInfo,System.String,System.Boolean,System.Boolean)">
+            <summary>
+            Checks all files in all subdirectories of the root directory against the file provided to see if their names match. If they do, it deletes the appropriate file.
+            </summary>
+            <param name="fileToSearchWith">
+            The file, or logically it's information, that you'll be searching with. This is the root file.
+            </param>
+            <param name="rootDirectory">
+            The top of the directory hierarchy you'd like to search in.
+            </param>
+            <param name="ignoreCase">
+            If true, the function will ignore casing when checking the files in the hierarchy against the root file.
+            </param>
+            /// <param name="deleteAtDirectory">
+            If true, the function will delete the provided file once a file is found in the directory hierarchy with the exact same filename. If false, deletes the file in the hierarchy, and preserves the root file.
+            </param>
+        </member>
+        <member name="M:UniversalHandlersLibrary.IOHandler.CreateFolderTree(System.String[])">
+            <summary>
+            Creates a folder hierarchy of your choosing using the directory hierarchy provided.
+            </summary>
+            <param name="directoryHierarchy">
+            An array of strings with the FULL directory path of the folder you'd like to create.
+            </param>
+            <example>
+            "SomeDrive\\SomeRoot\\Folder1\\" is a correct value for the array. You can also use "SomeFolder\\SomeSubFolder\\" as well to indicate the root directory is the application's root directory. "SomeDrive\\SomeRoot\\Folder1" is not correct.
+            </example>
+        </member>
+        <member name="M:UniversalHandlersLibrary.IOHandler.CreateFolderTree(System.String[],System.String,System.Boolean,System.Boolean,System.Boolean)">
+            <summary>
+            Creates a folder hierarchy of your choosing using the directory hierarchy provided.
+            </summary>
+            <param name="directoryHierarchy">
+            An array of strings with the FULL directory path of the folder you'd like to create.
+            </param>
+            <example>
+            "SomeDrive\\SomeRoot\\Folder1\\" is a correct value for the array. You can also use "SomeFolder\\SomeSubFolder\\" as well to indicate the root directory is the application's root directory. "SomeDrive\\SomeRoot\\Folder1" is not correct.
+            </example>
+            <param name="appendedDirectoryRoot">
+            The directory root to be applied to all folders that are created when their related bool values are true. In other words, it does not apply to any folders in the directoryHierarchy array.
+            </param>
+            <example>
+            If 'createFilesFolder' is true, the program would attempt to make a folder at 'appendedDirectoryRoot\\Files\\'. Else it would attempt to make a folder at 'Files\\'.
+            </example>
+            <param name="createFilesFolder">
+            If true the 'Files\\' folder will be marked for creation, else not. This would remove the need to add it to the directoryHeirarchy array as it is a vital folder.
+            </param>
+            <param name="createTextFolder">
+            If true the 'Files\\Text\\' folder will be marked for creation, else not. This would remove the need to add it to the directoryHeirarchy array as it is a vital folder.
+            </param>
+            <param name="createAuxiliaryFolders">
+            If true all folders considered non-essential will be marked for creation, else not. This would remove the need to add it to the directoryHeirarchy array, simply for convenience reasons.
+            </param>
+        </member>
+        <member name="T:UniversalHandlersLibrary.SafeNativeMethods">
+            <summary>
+            Dunno, FxCop told me to call it this. 'Magine there's a good reason.
+            </summary>
+        </member>
+        <member name="T:UniversalHandlersLibrary.UniversalHandlersLibraryGlobal">
+            <summary>
+            Global Functions
+            </summary>
+        </member>
+        <member name="M:UniversalHandlersLibrary.UniversalHandlersLibraryGlobal.Contains(System.String,System.String,System.StringComparison)">
+            <summary>
+            Returns a value indicating if the provided String object occurs within the string.
+            </summary>
+            <param name="source">
+            The string to check.
+            </param>
+            <param name="toCheck">
+            The keyword to check for.
+            </param>
+            <param name="comp">
+            The string comparison mode you wish to use for this operation.
+            </param>
+            <returns>
+            true if the toCheck parameter occurs within the string, or if the toCheck value is an empty string (""); else false.
+            </returns>
+        </member>
+        <member name="T:UniversalHandlersLibrary.InternalFunctions">
+            <summary>
+            DO NOT USE ANY OF THESE FUNCTIONS OUTSIDE THE UNIVERSALHANDLERSLIBRARY MAIN CODE.
+            </summary>
+        </member>
+        <member name="M:UniversalHandlersLibrary.InternalFunctions.CheckParameters(System.Int32,System.String)">
+            <summary>
+            Depending on the parameter name provided, it makes sure the provided value is within the conditions specified within the code.
+            </summary>
+            <param name="value">
+            The value/parameter to check.
+            </param>
+            <param name="parameterName">
+            The name of the parameter you are currently checking.
+            </param>
+        </member>
+        <member name="M:UniversalHandlersLibrary.InternalFunctions.Writer(System.String,System.String,System.Boolean,System.Int32)">
+            <summary>
+            Central writing code for most writing operations required by this library.
+            </summary>
+            <param name="message">
+            Message to write to the file.
+            </param>
+            <param name="file">
+            The file to write to.
+            </param>
+            <param name="prune">
+            Is this operation checking the file to see if it should be pruned?
+            </param>
+            <param name="pruneCutoff">
+            The file size at which to prune the file.
+            </param>
+        </member>
+        <member name="M:UniversalHandlersLibrary.InternalFunctions.ReadFile(System.String)">
+            <summary>
+            Central reading code for most reading operations required by the program.
+            </summary>
+            <param name="file">
+            The file to read from.
+            </param>
+            <returns>
+            Returns a string containing a parsed version of the file's contents.
+            </returns>
+        </member>
+        <member name="M:UniversalHandlersLibrary.InternalFunctions.ReturnFilePath(System.String)">
+            <summary>
+            Returns the most logical path available for the provided file.
+            </summary>
+            <param name="fileName">
+            The name of the file.
+            </param>
+            <returns>
+            Returns the desired file path of the provided file name.
+            </returns>
+        </member>
+        <member name="M:UniversalHandlersLibrary.InternalFunctions.PruneCheck(System.String,System.Int32)">
+            <summary>
+            Checks to see if the provided file should be pruned.
+            </summary>
+            <param name="fileToCheck">
+            File whose size is to be checked in this operation.
+            </param>
+            <param name="pruneCutoff">
+            The size at which a file is pruned.
+            </param>
+            <exception cref="T:System.ArgumentOutOfRangeException">
+            Thrown if the pruneCutOff value is less than <see cref="F:UniversalHandlersLibrary.ConstParameters.minPruneVal"/>, 
+            or greater than <see cref="F:UniversalHandlersLibrary.ConstParameters.maxPruneVal"/>.
+            </exception>
+        </member>
+    </members>
+</doc>

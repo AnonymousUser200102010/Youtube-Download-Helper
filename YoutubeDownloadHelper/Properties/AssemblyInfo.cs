@@ -10,11 +10,11 @@ using System.Runtime.InteropServices;
 // General Information about an assembly is controlled through the following 
 // set of attributes. Change these attribute values to modify the information
 // associated with an assembly.
-[assembly: AssemblyTitle("YoutubeDownloadHelper")]
-[assembly: AssemblyDescription("Youtube Download Helper is a program whose main purpose is to batch download Youtube videos.")]
+[assembly: AssemblyTitle("Youtube Download Helper")]
+[assembly: AssemblyDescription("To batch download Youtube videos with as much ease as possible.")]
 [assembly: AssemblyConfiguration("")]
 [assembly: AssemblyCompany("")]
-[assembly: AssemblyProduct("YoutubeDownloadHelper")]
+[assembly: AssemblyProduct("Youtube Download Helper")]
 [assembly: AssemblyCopyright("The GNU Public License, Version 3+ (2015)")]
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]
@@ -31,4 +31,4 @@ using System.Runtime.InteropServices;
 //
 // You can specify all the values or you can use the default the Revision and 
 // Build Numbers by using the '*' as shown below:
-[assembly: AssemblyVersion("0.2.*")]
+[assembly: AssemblyVersion("0.4.*")]

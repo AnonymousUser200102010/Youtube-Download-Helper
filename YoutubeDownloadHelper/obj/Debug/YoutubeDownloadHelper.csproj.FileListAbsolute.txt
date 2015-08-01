@@ -1,12 +1,52 @@
-C:\Users\Erik\Documents\GitHub\Youtube-Download-Helper\YoutubeDownloadHelper\bin\Debug\UniversalHandlersLibrary.dll
-C:\Users\Erik\Documents\GitHub\Youtube-Download-Helper\YoutubeDownloadHelper\obj\Debug\YoutubeDownloadHelper.MainForm.resources
-C:\Users\Erik\Documents\GitHub\Youtube-Download-Helper\YoutubeDownloadHelper\obj\Debug\YoutubeDownloadHelper.csproj.GenerateResource.Cache
+G:\Moved User Files\YoutubeDownloadHelper\obj\Debug\GUI\App.baml
+G:\Moved User Files\YoutubeDownloadHelper\obj\Debug\GUI\MainWindow.baml
+G:\Moved User Files\YoutubeDownloadHelper\obj\Debug\GUI\Options.baml
+G:\Moved User Files\YoutubeDownloadHelper\obj\Debug\GUI\App.g.cs
+G:\Moved User Files\YoutubeDownloadHelper\obj\Debug\GUI\MainWindow.g.cs
+G:\Moved User Files\YoutubeDownloadHelper\obj\Debug\GUI\Options.g.cs
+G:\Moved User Files\YoutubeDownloadHelper\obj\Debug\YoutubeDownloadHelper_MarkupCompile.cache
+G:\Moved User Files\YoutubeDownloadHelper\obj\Debug\YoutubeDownloadHelper.g.resources
+G:\Moved User Files\YoutubeDownloadHelper\obj\Debug\YoutubeDownloadHelper.csprojResolveAssemblyReference.cache
+G:\Moved User Files\YoutubeDownloadHelper\bin\Debug\YoutubeDownloadHelper.exe.config
+G:\Moved User Files\YoutubeDownloadHelper\bin\Debug\YoutubeDownloadHelper.exe
+G:\Moved User Files\YoutubeDownloadHelper\bin\Debug\YoutubeDownloadHelper.pdb
+G:\Moved User Files\YoutubeDownloadHelper\bin\Debug\Xceed.Wpf.Toolkit.dll
+G:\Moved User Files\YoutubeDownloadHelper\obj\Debug\YoutubeDownloadHelper.exe
+G:\Moved User Files\YoutubeDownloadHelper\obj\Debug\YoutubeDownloadHelper.pdb
+G:\Moved User Files\YoutubeDownloadHelper\bin\Debug\UniversalHandlersLibrary.dll
+G:\Moved User Files\YoutubeDownloadHelper\bin\Debug\UniversalHandlersLibrary.xml
+G:\Moved User Files\YoutubeDownloadHelper\bin\Debug\Newtonsoft.Json.dll
+G:\Moved User Files\YoutubeDownloadHelper\bin\Debug\YoutubeExtractor.dll
+G:\Moved User Files\YoutubeDownloadHelper\bin\Debug\Newtonsoft.Json.xml
+G:\Moved User Files\YoutubeDownloadHelper\bin\Debug\YoutubeExtractor.pdb
+G:\Moved User Files\YoutubeDownloadHelper\obj\Debug\GUI\UrlManipulation.baml
+G:\Moved User Files\YoutubeDownloadHelper\obj\Debug\GUI\UrlManipulation.g.cs
+G:\Moved User Files\YoutubeDownloadHelper\bin\Debug\UniversalFormsHandlerLibrary.exe
+G:\Moved User Files\YoutubeDownloadHelper\bin\Debug\UniversalFormsHandlerLibrary.xml
+G:\Moved User Files\YoutubeDownloadHelper\obj\Debug\GUI\About.baml
+G:\Moved User Files\YoutubeDownloadHelper\obj\Debug\GUI\About.g.cs
 C:\Users\Erik\Documents\GitHub\Youtube-Download-Helper\YoutubeDownloadHelper\bin\Debug\YoutubeDownloadHelper.exe.config
 C:\Users\Erik\Documents\GitHub\Youtube-Download-Helper\YoutubeDownloadHelper\bin\Debug\YoutubeDownloadHelper.exe
 C:\Users\Erik\Documents\GitHub\Youtube-Download-Helper\YoutubeDownloadHelper\bin\Debug\YoutubeDownloadHelper.pdb
-C:\Users\Erik\Documents\GitHub\Youtube-Download-Helper\YoutubeDownloadHelper\obj\Debug\YoutubeDownloadHelper.exe
-C:\Users\Erik\Documents\GitHub\Youtube-Download-Helper\YoutubeDownloadHelper\obj\Debug\YoutubeDownloadHelper.pdb
-C:\Users\Erik\Documents\GitHub\Youtube-Download-Helper\YoutubeDownloadHelper\bin\Debug\UniversalHandlersLibrary.xml
+C:\Users\Erik\Documents\GitHub\Youtube-Download-Helper\YoutubeDownloadHelper\bin\Debug\Newtonsoft.Json.dll
+C:\Users\Erik\Documents\GitHub\Youtube-Download-Helper\YoutubeDownloadHelper\bin\Debug\YoutubeExtractor.dll
 C:\Users\Erik\Documents\GitHub\Youtube-Download-Helper\YoutubeDownloadHelper\bin\Debug\UniversalFormsHandlerLibrary.exe
+C:\Users\Erik\Documents\GitHub\Youtube-Download-Helper\YoutubeDownloadHelper\bin\Debug\Newtonsoft.Json.xml
+C:\Users\Erik\Documents\GitHub\Youtube-Download-Helper\YoutubeDownloadHelper\bin\Debug\UniversalHandlersLibrary.xml
+C:\Users\Erik\Documents\GitHub\Youtube-Download-Helper\YoutubeDownloadHelper\bin\Debug\YoutubeExtractor.pdb
 C:\Users\Erik\Documents\GitHub\Youtube-Download-Helper\YoutubeDownloadHelper\bin\Debug\UniversalFormsHandlerLibrary.xml
 C:\Users\Erik\Documents\GitHub\Youtube-Download-Helper\YoutubeDownloadHelper\obj\Debug\YoutubeDownloadHelper.csprojResolveAssemblyReference.cache
+C:\Users\Erik\Documents\GitHub\Youtube-Download-Helper\YoutubeDownloadHelper\obj\Debug\GUI\About.baml
+C:\Users\Erik\Documents\GitHub\Youtube-Download-Helper\YoutubeDownloadHelper\obj\Debug\GUI\App.baml
+C:\Users\Erik\Documents\GitHub\Youtube-Download-Helper\YoutubeDownloadHelper\obj\Debug\GUI\MainWindow.baml
+C:\Users\Erik\Documents\GitHub\Youtube-Download-Helper\YoutubeDownloadHelper\obj\Debug\GUI\Options.baml
+C:\Users\Erik\Documents\GitHub\Youtube-Download-Helper\YoutubeDownloadHelper\obj\Debug\GUI\UrlManipulation.baml
+C:\Users\Erik\Documents\GitHub\Youtube-Download-Helper\YoutubeDownloadHelper\obj\Debug\GUI\About.g.cs
+C:\Users\Erik\Documents\GitHub\Youtube-Download-Helper\YoutubeDownloadHelper\obj\Debug\GUI\App.g.cs
+C:\Users\Erik\Documents\GitHub\Youtube-Download-Helper\YoutubeDownloadHelper\obj\Debug\GUI\MainWindow.g.cs
+C:\Users\Erik\Documents\GitHub\Youtube-Download-Helper\YoutubeDownloadHelper\obj\Debug\GUI\Options.g.cs
+C:\Users\Erik\Documents\GitHub\Youtube-Download-Helper\YoutubeDownloadHelper\obj\Debug\GUI\UrlManipulation.g.cs
+C:\Users\Erik\Documents\GitHub\Youtube-Download-Helper\YoutubeDownloadHelper\obj\Debug\YoutubeDownloadHelper_MarkupCompile.cache
+C:\Users\Erik\Documents\GitHub\Youtube-Download-Helper\YoutubeDownloadHelper\obj\Debug\YoutubeDownloadHelper.g.resources
+C:\Users\Erik\Documents\GitHub\Youtube-Download-Helper\YoutubeDownloadHelper\obj\Debug\YoutubeDownloadHelper.exe
+C:\Users\Erik\Documents\GitHub\Youtube-Download-Helper\YoutubeDownloadHelper\obj\Debug\YoutubeDownloadHelper.pdb
