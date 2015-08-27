@@ -1,66 +1,56 @@
 ﻿using System;
-using System.Diagnostics;
-using System.IO;
 using System.Linq;
-using System.Reflection;
 using System.Windows;
 
 namespace YoutubeDownloadHelper
 {
-	/// <summary>
-	/// Interaction logic for App.xaml
-	/// </summary>
-	public partial class App : Application
-	{
-		
-		private static bool downloadImmediately;
-		
-		/// <summary>
+    /// <summary>
+    /// Interaction logic for App.xaml
+    /// </summary>
+    public partial class App : Application
+    {
+        private static bool downloadImmediately;
+
+        /// <summary>
+        /// The (whole) application is currently debugging.
+        /// </summary>
+        public static bool IsDebugging { get; private set; }
+
+        /// <summary>
         /// Program entry point.
         /// </summary>
         [STAThread]
         private static void Main (string[] args)
         {
-			
-            bool debug = false;
-			
             #if DEBUG
-			
-            debug = true;
-			
+            IsDebugging = true;
+            #else
+            IsDebugging = false;
             #endif
 			
             HandleArgs(args);
+            string programName = System.Reflection.Assembly.GetExecutingAssembly().GetName().Name;
             
-            if(UniversalHandlersLibrary.BackEnd.CheckBeginningParameters(Path.GetFileNameWithoutExtension(FileVersionInfo.GetVersionInfo(Assembly.GetExecutingAssembly().Location).InternalName), debug))
+            if (UniversalHandlersLibrary.BackEnd.CheckBeginningParameters(programName, IsDebugging))
             {
-            	
-            	Application app = new Application();
-            	app.Run(new YoutubeDownloadHelper.Gui.MainWindow(downloadImmediately));
-            	
+                (new Application ()).Run(new YoutubeDownloadHelper.Gui.MainWindow (downloadImmediately));
             }
-            
-			
+            else
+            {
+                Xceed.Wpf.Toolkit.MessageBox.Show(string.Format(System.Globalization.CultureInfo.CurrentCulture, "{0} is already running!", programName), "Application Failed to Launch", MessageBoxButton.OK, MessageBoxImage.Warning, MessageBoxResult.OK);
+            }
         }
 
         private static void HandleArgs (string[] args)
         {
-			
-            foreach (string arg in args)
+            for (int position = 0, argsLength = args.Length; position < argsLength; position++)
             {
-				
-                if (arg.Contains("start"))
+                string arg = args[position];
+                if (UniversalHandlersLibrary.GlobalFunctions.Contains(arg, "start", StringComparison.OrdinalIgnoreCase))
                 {
-					
-                    Console.WriteLine(arg);
-					
                     downloadImmediately = true;
-					
                 }
-				
             }
-			
         }
-		
-	}
+    }
 }

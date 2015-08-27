@@ -1,0 +1,102 @@
+[August 27 02:30:24 PM:
+
+Exception Message:
+
+Unable to connect to the remote server
+
+Exception Stack Trace:
+
+   at System.Net.WebClient.DownloadDataInternal(Uri address, WebRequest& request)
+   at System.Net.WebClient.DownloadString(Uri address)
+   at System.Net.WebClient.DownloadString(String address)
+   at YoutubeExtractor.HttpHelper.DownloadString(String url) in c:\Users\Erik\Documents\GitHub\Youtube-Download-Helper\YoutubeExtractor\YoutubeExtractor\YoutubeExtractor\HttpHelper.cs:line 28
+   at YoutubeExtractor.DownloadUrlResolver.LoadJson(String url) in c:\Users\Erik\Documents\GitHub\Youtube-Download-Helper\YoutubeExtractor\YoutubeExtractor\YoutubeExtractor\DownloadUrlResolver.cs:line 306
+   at YoutubeExtractor.DownloadUrlResolver.GetDownloadUrls(String videoUrl, Boolean decryptSignature) in c:\Users\Erik\Documents\GitHub\Youtube-Download-Helper\YoutubeExtractor\YoutubeExtractor\YoutubeExtractor\DownloadUrlResolver.cs:line 116
+   at YoutubeDownloadHelper.Code.Download.<DownloadVideo>d__45.MoveNext() in c:\Users\Erik\Documents\GitHub\Youtube-Download-Helper\YoutubeDownloadHelper\code\Download.cs:line 0
+--- End of stack trace from previous location where exception was thrown ---
+   at System.Runtime.CompilerServices.TaskAwaiter.ThrowForNonSuccess(Task task)
+   at System.Runtime.CompilerServices.TaskAwaiter.HandleNonSuccessAndDebuggerNotification(Task task)
+   at YoutubeDownloadHelper.Code.Download.<DownloadHandler>d__15.MoveNext() in c:\Users\Erik\Documents\GitHub\Youtube-Download-Helper\YoutubeDownloadHelper\code\Download.cs:line 51Inner Exception Message:
+
+No connection could be made because the target machine actively refused it 127.0.0.1:8080
+
+Inner Exception Stack Trace:
+
+   at System.Net.Sockets.Socket.DoConnect(EndPoint endPointSnapshot, SocketAddress socketAddress)
+   at System.Net.ServicePoint.ConnectSocketInternal(Boolean connectFailure, Socket s4, Socket s6, Socket& socket, IPAddress& address, ConnectSocketState state, IAsyncResult asyncResult, Exception& exception)]
+
+[August 27 02:28:43 PM:
+
+Exception Message:
+
+Unable to connect to the remote server
+
+Exception Stack Trace:
+
+   at System.Net.WebClient.DownloadDataInternal(Uri address, WebRequest& request)
+
+   at System.Net.WebClient.DownloadString(Uri address)
+
+   at System.Net.WebClient.DownloadString(String address)
+
+   at YoutubeExtractor.HttpHelper.DownloadString(String url) in c:\Users\Erik\Documents\GitHub\Youtube-Download-Helper\YoutubeExtractor\YoutubeExtractor\YoutubeExtractor\HttpHelper.cs:line 28
+
+   at YoutubeExtractor.DownloadUrlResolver.LoadJson(String url) in c:\Users\Erik\Documents\GitHub\Youtube-Download-Helper\YoutubeExtractor\YoutubeExtractor\YoutubeExtractor\DownloadUrlResolver.cs:line 306
+
+   at YoutubeExtractor.DownloadUrlResolver.GetDownloadUrls(String videoUrl, Boolean decryptSignature) in c:\Users\Erik\Documents\GitHub\Youtube-Download-Helper\YoutubeExtractor\YoutubeExtractor\YoutubeExtractor\DownloadUrlResolver.cs:line 116
+
+   at YoutubeDownloadHelper.Code.Download.<DownloadVideo>d__45.MoveNext() in c:\Users\Erik\Documents\GitHub\Youtube-Download-Helper\YoutubeDownloadHelper\code\Download.cs:line 0
+
+--- End of stack trace from previous location where exception was thrown ---
+
+   at System.Runtime.CompilerServices.TaskAwaiter.ThrowForNonSuccess(Task task)
+
+   at System.Runtime.CompilerServices.TaskAwaiter.HandleNonSuccessAndDebuggerNotification(Task task)
+
+   at YoutubeDownloadHelper.Code.Download.<DownloadHandler>d__15.MoveNext() in c:\Users\Erik\Documents\GitHub\Youtube-Download-Helper\YoutubeDownloadHelper\code\Download.cs:line 51Inner Exception Message:
+
+No connection could be made because the target machine actively refused it 127.0.0.1:8080
+
+Inner Exception Stack Trace:
+
+   at System.Net.Sockets.Socket.DoConnect(EndPoint endPointSnapshot, SocketAddress socketAddress)
+
+   at System.Net.ServicePoint.ConnectSocketInternal(Boolean connectFailure, Socket s4, Socket s6, Socket& socket, IPAddress& address, ConnectSocketState state, IAsyncResult asyncResult, Exception& exception)]
+
+[August 27 02:27:35 PM:
+
+Exception Message:
+
+Unable to connect to the remote server
+
+Exception Stack Trace:
+
+   at System.Net.WebClient.DownloadDataInternal(Uri address, WebRequest& request)
+
+   at System.Net.WebClient.DownloadString(Uri address)
+
+   at System.Net.WebClient.DownloadString(String address)
+
+   at YoutubeExtractor.HttpHelper.DownloadString(String url) in c:\Users\Erik\Documents\GitHub\Youtube-Download-Helper\YoutubeExtractor\YoutubeExtractor\YoutubeExtractor\HttpHelper.cs:line 28
+
+   at YoutubeExtractor.DownloadUrlResolver.LoadJson(String url) in c:\Users\Erik\Documents\GitHub\Youtube-Download-Helper\YoutubeExtractor\YoutubeExtractor\YoutubeExtractor\DownloadUrlResolver.cs:line 306
+
+   at YoutubeExtractor.DownloadUrlResolver.GetDownloadUrls(String videoUrl, Boolean decryptSignature) in c:\Users\Erik\Documents\GitHub\Youtube-Download-Helper\YoutubeExtractor\YoutubeExtractor\YoutubeExtractor\DownloadUrlResolver.cs:line 116
+
+   at YoutubeDownloadHelper.Code.Download.<DownloadVideo>d__45.MoveNext() in c:\Users\Erik\Documents\GitHub\Youtube-Download-Helper\YoutubeDownloadHelper\code\Download.cs:line 0
+
+--- End of stack trace from previous location where exception was thrown ---
+
+   at System.Runtime.CompilerServices.TaskAwaiter.ThrowForNonSuccess(Task task)
+
+   at System.Runtime.CompilerServices.TaskAwaiter.HandleNonSuccessAndDebuggerNotification(Task task)
+
+   at YoutubeDownloadHelper.Code.Download.<DownloadHandler>d__15.MoveNext() in c:\Users\Erik\Documents\GitHub\Youtube-Download-Helper\YoutubeDownloadHelper\code\Download.cs:line 51Inner Exception Message:
+
+No connection could be made because the target machine actively refused it 127.0.0.1:8080
+
+Inner Exception Stack Trace:
+
+   at System.Net.Sockets.Socket.DoConnect(EndPoint endPointSnapshot, SocketAddress socketAddress)
+
+   at System.Net.ServicePoint.ConnectSocketInternal(Boolean connectFailure, Socket s4, Socket s6, Socket& socket, IPAddress& address, ConnectSocketState state, IAsyncResult asyncResult, Exception& exception)]

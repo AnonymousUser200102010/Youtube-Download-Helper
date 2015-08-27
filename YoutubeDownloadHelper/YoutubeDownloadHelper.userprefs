@@ -2,8 +2,17 @@
   <MonoDevelop.Ide.Workspace ActiveConfiguration="Debug" />
   <MonoDevelop.Ide.Workbench ActiveDocument="GUI\MainWindow.xaml.cs">
     <Files>
-      <File FileName="GUI\MainWindow.xaml.cs" Line="159" Column="50" />
-      <File FileName="code\Download.cs" Line="1" Column="1" />
+      <File FileName="GUI\MainWindow.xaml.cs" Line="162" Column="6" />
+      <File FileName="code\Download.cs" Line="18" Column="6" />
+      <File FileName="GUI\App.xaml.cs" Line="18" Column="1" />
+      <File FileName="GUI\About.xaml.cs" Line="18" Column="5" />
+      <File FileName="GUI\Options.xaml.cs" Line="16" Column="1" />
+      <File FileName="GUI\UrlManipulation.xaml.cs" Line="16" Column="6" />
+      <File FileName="code\Conversion.cs" Line="16" Column="75" />
+      <File FileName="code\Custom.cs" Line="21" Column="11" />
+      <File FileName="code\Exceptions.cs" Line="35" Column="6" />
+      <File FileName="code\Storage.cs" Line="11" Column="5" />
+      <File FileName="code\YDHInterface.cs" Line="18" Column="23" />
     </Files>
   </MonoDevelop.Ide.Workbench>
   <MonoDevelop.Ide.DebuggingService.Breakpoints>

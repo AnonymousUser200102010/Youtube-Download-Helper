@@ -8,11 +8,10 @@
 	ResizeMode="NoResize"
 	Height="359"
 	Width="732"
-	Icon="C:\Users\Erik\Documents\GitHub\Youtube-Download-Helper\YoutubeDownloadHelper\Assets\YDHIcon.ico">
+	Icon="C:\Users\Erik\Documents\GitHub\Youtube-Download-Helper\YoutubeDownloadHelper\Icons and Images\YDHIcon.ico">
 	<Grid
 		Background="#FFF0F0F0">
 		<Image
-			Source="C:\Users\Erik\Documents\GitHub\Youtube-Download-Helper\YoutubeDownloadHelper\Assets\YDHIcon.ico"
 			Stretch="Fill"
 			Grid.Column="0"
 			Grid.Row="0"
@@ -20,62 +19,63 @@
 			VerticalAlignment="Top"
 			Margin="0,0,0,0"
 			Width="271.20000000000005"
-			Height="328" />
+			Height="328"
+			Source="C:\Users\Erik\Documents\GitHub\Youtube-Download-Helper\YoutubeDownloadHelper\Icons and Images\YDHIcon.ico" />
 		<TextBlock
 			x:Name="programName"
 			Text="{Binding ProjectName}"
 			TextWrapping="WrapWithOverflow"
 			FontSize="16"
 			TextAlignment="Center"
-			Background="{x:Null}"
 			Grid.Column="0"
 			Grid.Row="0"
 			HorizontalAlignment="Right"
 			VerticalAlignment="Top"
 			Margin="0,0,0.600000000000023,0"
-			Width="336.20000000000005"
-			Height="34" />
+			Width="343.4"
+			Height="34"
+			Background="{x:Null}"></TextBlock>
 		<TextBlock
 			d1p1:Name="programCopyright" xmlns:d1p1="http://schemas.microsoft.com/winfx/2006/xaml"
 			TextAlignment="Center"
 			Text="{Binding Copyright}"
 			TextWrapping="WrapWithOverflow"
-			Background="{x:Null}"
+			FontSize="16"
 			Grid.Column="0"
 			Grid.Row="0"
 			HorizontalAlignment="Right"
 			VerticalAlignment="Top"
 			Margin="0,34,0.600000000000023,0"
-			Width="336.20000000000005"
+			Width="344.19999999999993"
 			Height="34"
-			FontSize="16" />
+			Background="{d1p1:Null}" />
 		<TextBlock
 			d1p1:Name="programDescription" xmlns:d1p1="http://schemas.microsoft.com/winfx/2006/xaml"
 			Text="{Binding Goal}"
 			TextAlignment="Center"
 			TextWrapping="WrapWithOverflow"
-			Background="{x:Null}"
+			FontSize="16"
+			Background="{d1p1:Null}"
 			Grid.Column="0"
 			Grid.Row="0"
 			HorizontalAlignment="Right"
 			VerticalAlignment="Top"
 			Margin="0,67,0.600000000000023,0"
-			Width="336.20000000000005"
-			Height="45"
-			FontSize="16"></TextBlock>
+			Width="344"
+			Height="54.599999999999966"></TextBlock>
 		<ScrollViewer
 			Name="programDisclaimerScrollViewer"
-			Grid.Column="0"
-			Grid.Row="0"
-			HorizontalAlignment="Stretch"
-			VerticalAlignment="Stretch"
-			Margin="377,121.6,0.600000000000023,67"
-			Height="NaN"
 			HorizontalContentAlignment="Stretch"
 			HorizontalScrollBarVisibility="Disabled"
 			Background="#FFFFFFFF"
 			BorderThickness="0,0,0,0"
-			BorderBrush="{x:Null}">
+			BorderBrush="{x:Null}"
+			Margin="377,121.6,0.600000000000023,67"
+			VerticalAlignment="Stretch"
+			HorizontalAlignment="Stretch"
+			Grid.Row="0"
+			Grid.Column="0"
+			Height="NaN">
 			<TextBlock
 				d1p1:Name="programDisclaimer" xmlns:d1p1="http://schemas.microsoft.com/winfx/2006/xaml"
 				Text="{Binding Disclaimer}"
@@ -139,42 +139,86 @@
 		<GroupBox
 			BorderThickness="2,2,2,2"
 			BorderBrush="#FF000000"
-			Background="{x:Null}"
 			FontSize="16"
 			Header="-"
+			Background="{x:Null}"
 			Grid.Column="0"
 			Grid.Row="0"
 			HorizontalAlignment="Right"
 			VerticalAlignment="Bottom"
 			Margin="0,0,442.6,0"
-			Height="335"
-			Width="275"></GroupBox>
+			Width="287"
+			Height="342"></GroupBox>
 		<TextBlock
 			FontSize="18"
 			TextAlignment="Center"
 			Text="Version:"
-			Margin="295.4,269,0,0"
-			VerticalAlignment="Top"
+			Grid.Column="0"
+			Grid.Row="0"
 			HorizontalAlignment="Left"
-			Grid.Row="0"
-			Grid.Column="0"
-			Height="59"
-			Width="81.600000000000023" />
-		<TextBlock
-			d1p1:Name="programVersion" xmlns:d1p1="http://schemas.microsoft.com/winfx/2006/xaml"
-			FontSize="20"
-			Text="{Binding Version}"
-			TextAlignment="Center"
-			TextWrapping="WrapWithOverflow"
-			Background="{x:Null}"
-			FontWeight="Normal"
-			Margin="0,269,0.600000000000023,0"
 			VerticalAlignment="Top"
-			HorizontalAlignment="Right"
+			Margin="295,276.8,0,0"
+			Width="82"
+			Height="51.200000000000045" />
+		<ScrollViewer
+			HorizontalContentAlignment="Stretch"
+			HorizontalScrollBarVisibility="Disabled"
+			Background="#FFFFFFFF"
+			BorderThickness="0,0,0,0"
+			BorderBrush="{x:Null}"
+			x:Name="programDisclaimerScrollViewer_Copy"
+			Margin="377,121.6,0.600000000000023,67"
+			VerticalAlignment="Stretch"
+			HorizontalAlignment="Stretch"
 			Grid.Row="0"
 			Grid.Column="0"
-			Height="59"
-			Width="336.19999999999993"></TextBlock>
+			Height="NaN">
+			<TextBlock
+				d1p1:Name="programDisclaimer_Copy" xmlns:d1p1="http://schemas.microsoft.com/winfx/2006/xaml"
+				Text="{Binding Disclaimer}"
+				TextAlignment="Center"
+				TextWrapping="WrapWithOverflow"
+				Background="{x:Null}"
+				Grid.Column="0"
+				Grid.Row="0"
+				FontWeight="ExtraBold"
+				VerticalAlignment="Stretch"
+				HorizontalAlignment="Stretch"
+				Margin="0,0,0,0"
+				FontSize="14"
+				Width="NaN"
+				Height="NaN"></TextBlock>
+		</ScrollViewer>
+		<ScrollViewer
+			HorizontalContentAlignment="Stretch"
+			HorizontalScrollBarVisibility="Disabled"
+			Background="#FFFFFFFF"
+			BorderThickness="0,0,0,0"
+			BorderBrush="{x:Null}"
+			d1p1:Name="programVersionsScrollView" xmlns:d1p1="http://schemas.microsoft.com/winfx/2006/xaml"
+			Grid.Column="0"
+			Grid.Row="0"
+			HorizontalAlignment="Stretch"
+			VerticalAlignment="Stretch"
+			Margin="377,276.8,0.600000000000023,-1">
+			<TextBlock
+				d1p1:Name="programDisclaimer_Copy2" xmlns:d1p1="http://schemas.microsoft.com/winfx/2006/xaml"
+				Text="{Binding Version}"
+				TextWrapping="WrapWithOverflow"
+				Grid.Column="0"
+				Grid.Row="0"
+				VerticalAlignment="Stretch"
+				HorizontalAlignment="Stretch"
+				Margin="0,0,0,0"
+				FontSize="14"
+				Width="NaN"
+				Height="NaN"
+				FontStyle="Oblique"
+				TextAlignment="Left"
+				FontWeight="Medium"
+				Background="{x:Null}"
+				AllowDrop="False"></TextBlock>
+		</ScrollViewer>
 		<Grid.ColumnDefinitions></Grid.ColumnDefinitions>
 	</Grid>
 </Window>

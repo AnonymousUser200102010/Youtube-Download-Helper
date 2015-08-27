@@ -1,113 +1,472 @@
 ﻿using System;
+using System.Collections.Generic;
+using System.Collections.ObjectModel;
+using System.Diagnostics;
 using System.Globalization;
 using System.IO;
 using System.Linq;
 using System.Runtime.InteropServices;
+using System.Timers;
+using Microsoft.Win32;
 
 namespace UniversalHandlersLibrary
 {
 
+    #region Global Custom Items
     /// <summary>
-    /// Contains all parameters whose values are and must remain constant.
+    /// A registry value.
     /// </summary>
-    internal struct ConstParameters
+    public class RegistryEntry
     {
-		
-        internal const int minPruneVal = 25000;
+        /// <summary>
+        /// The name of the entry.
+        /// </summary>
+        public string Name { get; set; }
 
-        internal const int maxPruneVal = 26214400;
-		
+        /// <summary>
+        /// The entry's value
+        /// </summary>
+        public object Value { get; set; }
+
+        /// <summary>
+        /// A registry value.
+        /// </summary>
+        /// <param name="key">
+        /// The registry value's key.
+        /// </param>
+        /// <param name="value">
+        /// The registry value's actual held value.
+        /// </param>
+        public RegistryEntry (string key, object value)
+        {
+            this.Name = key;
+            this.Value = value;
+        }
     }
 
     /// <summary>
-    /// Errors handler entry point.
+    /// Contains all internal parameters whose values are and must remain constant.
     /// </summary>
-    public static class Errors
+    internal struct InternalParamaters
     {
-    	
-        #region Handler & Related Functions
+        internal const int minPruneVal = 25000;
+
+        internal const int maxPruneVal = 26214400;
+    }
+
+    /// <summary>
+    /// Conditionary statements for statistics-related functions.
+    /// </summary>
+    public enum StatisticCondition
+    {
+        /// <summary>
+        /// Use no conditions.
+        /// </summary>
+        None,
+        /// <summary>
+        /// Return only the sum of this function's internal arithmetic.
+        /// </summary>
+        SumOf,
+        /// <summary>
+        /// Return this function's numeric value as milliseconds (multiplied by 1000).
+        /// </summary>
+        ReturnInMilliseconds
+    }
+
+    /// <summary>
+    /// Generic conditionary statements fit for multiple uses and purposes.
+    /// </summary>
+    public enum GenericCondition
+    {
+        /// <summary>
+        /// Use no conditions.
+        /// </summary>
+        None,
+        /// <summary>
+        /// When performing check operations, swap the normal position of the checked items to be in reverse.
+        /// </summary>
+        ReverseCheck,
+        /// <summary>
+        /// When performing check operations, use an equals operator instead of a contains operator.
+        /// </summary>
+        CheckExactly,
+        /// <summary>
+        /// When running this function, throw any and all built-in exceptions.
+        /// </summary>
+        ThrowExceptions,
+        /// <summary>
+        /// For functions with pruning capability, this tells the function to prune.
+        /// </summary>
+        Prune
+    }
+
+    /// <summary>
+    /// Performance classifications. These are intended to be used internally (and then by you IN A FUNCTION HOUSED BY THIS LIBRARY). However this is not a requirement.
+    /// </summary>
+    public enum PerformanceClass
+    {
+        /// <summary>
+        /// CPU performance values.
+        /// </summary>
+        CpuUsage,
+        /// <summary>
+        /// Ram performance values.
+        /// </summary>
+        MemoryUsage,
+        /// <summary>
+        /// Overall temperature of the machine.
+        /// </summary>
+        OverallTemperature
+    }
+
+    /// <summary>
+    /// A set of variables related to the default folder tree.
+    /// </summary>
+    public static class GenericFolderOptions
+    {
+        /// <summary>
+        /// The base folder used for most folder trees.
+        /// </summary>
+        public const string BaseFolderRoot = "Files";
 
         /// <summary>
-        /// Writes to the Error.dmp file. Should only be used ONLY if just a writing operation should be initiated. It is also not documented well enough for regular use, so it's advised only advanced users use this outside the library's code.
+        /// The old folder tree structure.
         /// </summary>
-        /// <param name="providedException">
-        /// The exception that will be handled while writing to the Error.dmp file.
+        public static IEnumerable<string> OldStyleFileTree
+        {
+            get { return oldStyleFileTree.AsEnumerable(); }
+        }
+        private static readonly List<string> oldStyleFileTree = new List<string> {
+            "Text", "Backup", "Help", "Assets" };
+       	
+       	/// <summary>
+       	/// The current folder tree structure.
+       	/// </summary>
+       	public static IEnumerable<string> NewStyleFileTree 
+       	{ 
+       		get { return newStyleFileTree.AsEnumerable(); }
+       	}
+       	private static readonly List<string> newStyleFileTree = new List<string> { "Text", "Text\\Help", "Backups", "Backups\\Assets" };
+    }
+    #endregion
+
+    /// <summary>
+    /// Global Functions
+    /// </summary>
+    public static class GlobalFunctions
+    {
+    	/// <summary>
+    	/// Counts all real elements in a collection of items.
+    	/// </summary>
+    	/// <param name="itemToCount">
+    	/// The item you wish to get the number of total items from.
+    	/// </param>
+    	/// <returns>
+    	/// if itemToCount.Count() - 1 >= 0, returns itemToCount.Count() - 1; Else returns 0.
+    	/// </returns>
+    	public static int All<T>(this IEnumerable<T> itemToCount)
+    	{
+    		int allCount = itemToCount.Count() - 1;
+    		return allCount >= 0 ? allCount : 0;
+    	}
+    	
+        /// <summary>
+        /// Returns a value indicating if the provided String object occurs within the string.
+        /// </summary>
+        /// <param name="source">
+        /// The string to check.
         /// </param>
-        /// <param name="prune">
-        /// Is this operation checking the file to see if it should be pruned?
+        /// <param name="value">
+        /// The keyword to seek.
         /// </param>
-        /// <param name="pruneCutoff">
-        /// The file size at which to prune the Error.dmp file. (default is 524288)
+        /// <param name="comp">
+        /// One of the enumeration values that specifies the rules for the search.
         /// </param>
-        public static void Writer (Exception providedException, bool prune, int pruneCutoff)
-        {	
-				
-            string startingMessage = string.Format(CultureInfo.InvariantCulture, "{0}:\nException Message:\n{1}\n\nException Stack Trace:\n{2}\n\n{3}", DateTime.Now.ToString("MMMM dd hh:mm:ss tt", CultureInfo.InvariantCulture), providedException.Message, providedException.StackTrace, providedException.InnerException != null ? string.Format(CultureInfo.InvariantCulture, "Inner Exception Message:\n{0}\n\nInner Exception Stack Trace:\n{1}\n\n", providedException.InnerException.Message, providedException.InnerException.StackTrace) : null);
-				
-            InternalFunctions.Writer(startingMessage, InternalFunctions.ReturnFilePath("Error.dmp"), prune, pruneCutoff);
-				
+        /// <returns>
+        /// true if the value occurs within the source, or if the value is empty; else false.
+        /// </returns>
+        public static bool Contains (this string source, string value, StringComparison comp)
+        {
+            return source.IndexOf(value, comp) >= 0;
+        }
+        
+        /// <summary>
+        /// Replaces one Collection with another.
+        /// </summary>
+        /// <param name="old">
+        /// The original collection.
+        /// </param>
+        /// <param name="new">
+        /// The collection to replace the original with.
+        /// </param>
+        public static void Replace<T> (this Collection<T> old, IEnumerable<T> @new)
+        {
+        	old.Replace(@new.GetEnumerator());
         }
 
         /// <summary>
-        /// Error handler.
+        /// Replaces one Collection with another.
+        /// </summary>
+        /// <param name="old">
+        /// The original collection.
+        /// </param>
+        /// <param name="new">
+        /// The collection to replace the original with.
+        /// </param>
+        public static void Replace<T> (this Collection<T> old, IEnumerator<T> @new)
+        {
+            old.Clear();
+            for (var position = @new; position.MoveNext();)
+			{
+				var item = position.Current;
+				old.Add(item);
+			}
+        }
+        
+        /// <summary>
+        /// Checks if a string is within the given parameters.
+        /// </summary>
+        /// <description>
+        /// Checks to see if a string is within the parameters provided and, if not, trims the string to the selected length and adds a [...] to the end of it.
+        /// </description>
+        /// <param name="value">
+        /// The object whose length you want to check.
+        /// </param>
+        /// <param name="truncationCutoff">
+        /// The maximum length before the string is truncated.
+        /// </param>
+        /// <returns>
+        /// Returns the full string if it is less than or equal to the provided truncation cutoff. If not it returns the same string, pruned to the the truncation cutoff length, with a singular '[...]' added to the end.
+        /// </returns>
+        public static string Truncate (this string value, int truncationCutoff)
+        {
+            return value.Length <= truncationCutoff ? value : string.Format(CultureInfo.InstalledUICulture, "{0}[...]", value.Substring(0, truncationCutoff)).ToLower(CultureInfo.InstalledUICulture);
+        }
+        #region Find Function and Overloads
+        /// <summary>
+        /// Find a desired value in a collection of objects.
+        /// </summary>
+        /// <param name="source">
+        /// The object you're searching.
+        /// </param>
+        /// <param name="value">
+        /// The value you wish to find.
+        /// </param>
+        /// <returns>
+        /// If the value exists in the collection, returns that value. Else, returns the default value.
+        /// </returns>
+		public static T Find<T>(this IEnumerable<T> source, T value)
+		{
+			return source.Find(value, 0);
+		}
+		
+		/// <summary>
+        /// Find a desired value in a collection of objects.
+        /// </summary>
+        /// <param name="source">
+        /// The object you're searching.
+        /// </param>
+        /// <param name="value">
+        /// The value you wish to find.
+        /// </param>
+        /// <param name="offset">
+        /// The number of items through the collection you'd like to skip to begin with.
+        /// </param>
+        /// <remarks>
+        /// Having an offset greater than the first value that fits the value you're searching for does not mean that the first value will not be returned.
+        /// </remarks>
+        /// <returns>
+        /// If the value exists in the collection, returns that value after offset. Else, returns the default value.
+        /// </returns>
+        /// <exception cref="T:System.ArgumentOutOfRangeException">
+		/// Thrown if you pass an offset less than 0 or greater than the amount of real values in the provided collection.
+		/// </exception>
+		public static T Find<T>(this IEnumerable<T> source, T value, int offset)
+		{
+			return source.Find(value, offset, (new List<GenericCondition>{ GenericCondition.ThrowExceptions }).AsEnumerable());
+		}
+		
+		/// <summary>
+        /// Find a desired value in a collection of objects.
+        /// </summary>
+        /// <param name="source">
+        /// The object you're searching.
+        /// </param>
+        /// <param name="value">
+        /// The value you wish to find.
+        /// </param>
+        /// <param name="offset">
+        /// The number of items through the collection you'd like to skip to begin with.
+        /// </param>
+        /// <remarks>
+        /// Having an offset greater than the first value that fits the value you're searching for does not mean that the first value will not be returned.
+        /// </remarks>
+        /// <param name="conditions">
+        /// A list of conditions to be used within the function.
+        /// </param>
+        /// <returns>
+        /// If the value exists in the collection, returns that value after offset. Otherwise it returns the default value.
+        /// </returns>
+		/// <exception cref="T:System.ArgumentOutOfRangeException">
+		/// Thrown if you pass an offset less than 0 or greater than the amount of real values in the provided collection.
+		/// </exception>
+		public static T Find<T> (this IEnumerable<T> source, T value, int offset, IEnumerable<GenericCondition> conditions)
+		{
+			InternalFunction.CheckParameters(conditions, new List<GenericCondition>{ GenericCondition.CheckExactly, GenericCondition.ReverseCheck, GenericCondition.ThrowExceptions });
+			if ((offset > source.All() || offset < 0) && conditions.Any(item => item.Equals(GenericCondition.ThrowExceptions)))
+			{
+				throw new ArgumentOutOfRangeException(string.Format(CultureInfo.CurrentCulture, "When trying to find {0}, you attempted to pass an invalid offset", value));
+        	}
+        	bool exactSearch = conditions.Any(item => item.Equals(GenericCondition.CheckExactly));
+			try
+			{
+				return source.First(searchResult => 
+	        		(
+					    conditions.Any(item => item.Equals(GenericCondition.ReverseCheck)) 
+				        ? 
+				        	(!exactSearch ? value.ToString().Contains(searchResult.ToString(), StringComparison.OrdinalIgnoreCase) : value.ToString().Equals(searchResult.ToString(), StringComparison.OrdinalIgnoreCase))
+				        : 
+				        	(!exactSearch ? searchResult.ToString().Contains(value.ToString(), StringComparison.OrdinalIgnoreCase) : searchResult.ToString().Equals(value.ToString(), StringComparison.OrdinalIgnoreCase))
+					)
+					&&
+					(
+						source.ToList().IndexOf(searchResult) > offset || (source.ToList().IndexOf(searchResult) == 0 && offset == 0) && source.ToList().IndexOf(searchResult) > -1
+					)
+				);
+			}
+        	catch (InvalidOperationException) {}
+			return offset > 0 ? Find(source, value, 0, conditions) : default(T);
+		}
+		#endregion
+		
+        private static bool timedout;
+        private static float maxTime;
+        private static float elapsedTime;
+        private static Timer aTimer = new Timer ();
+
+        /// <summary>
+        /// Acts like the Windows CommandLine Timeout command.
+        /// </summary>
+        /// <param name="timeoutCount">
+        /// The time to count to.
+        /// </param>
+        /// <param name="increment">
+        /// The amount of time to for each tick.
+        /// </param>
+        public static void Timeout (float timeoutCount, float increment)
+        {
+            maxTime = timeoutCount;
+            aTimer.Enabled = false;
+            Console.WriteLine(string.Format(CultureInfo.CurrentCulture, "Waiting {0} seconds. Press any key to continue.", timeoutCount));
+            
+            aTimer = new Timer ();		
+            aTimer.Interval = increment * 1000;			
+            aTimer.Elapsed += OnTimedEvent;			
+            aTimer.Start();
+            
+            while (!Console.KeyAvailable && !timedout)
+            {
+                System.Threading.Thread.Sleep(100);
+            }
+            timedout = true;	
+        }
+
+        private static void OnTimedEvent (object sender, ElapsedEventArgs e)
+        {
+            if (elapsedTime < maxTime && !timedout)
+            {
+                elapsedTime += (float)aTimer.Interval / 1000;
+                Console.Clear();
+                Console.WriteLine(string.Format(CultureInfo.CurrentCulture, "Waiting {0} seconds. Press any key to continue.", maxTime - elapsedTime));	
+            }
+            else if (!timedout)
+            {
+                timedout = true;
+            }
+            else
+            {
+                aTimer.Stop();
+                aTimer.Close();
+                aTimer.Dispose();
+            }
+        }
+    }
+
+    /// <summary>
+    /// Error handler entry point.
+    /// </summary>
+    public static class ErrorFunc
+    {
+    	#region Handler Function and Overloads
+		/// <summary>
+		/// Handles errors.
+		/// </summary>
+		/// <param name="providedException">
+		/// The exception that will be handled.
+		/// </param>
+		public static void Log (this Exception providedException)
+		{
+			providedException.Log((new List<GenericCondition>{ GenericCondition.Prune, GenericCondition.ThrowExceptions }).AsEnumerable());
+		}
+		
+		/// <summary>
+		/// Handles errors.
+		/// </summary>
+		/// <param name="providedException">
+		/// The exception that will be handled.
+		/// </param>
+		/// <param name="condition">
+		/// The condition for this function.
+		/// </param>
+		public static void Log (this Exception providedException, GenericCondition condition)
+		{
+			providedException.Log((new List<GenericCondition>{ condition }).AsEnumerable());
+		}
+
+		/// <summary>
+		/// Handles errors.
+		/// </summary>
+		/// <param name="providedException">
+		/// The exception that will be handled.
+		/// </param>
+		/// <param name="conditions">
+		/// The conditions for this function.
+		/// </param>
+		public static void Log (this Exception providedException, IEnumerable<GenericCondition> conditions)
+		{
+			providedException.Log(conditions, 524288);
+		}
+		
+        /// <summary>
+        /// Handles errors.
         /// </summary>
         /// <param name="providedException">
         /// The exception that will be handled.
         /// </param>
-        /// <param name="write">
-        /// Is this a write operation?
-        /// </param>
-        /// <param name="prune">
-        /// Is this operation also checking the file to see if it should be pruned?
+        /// <param name="conditions">
+        /// The conditions for this function.
         /// </param>
         /// <param name="pruneCutoff">
         /// The file size at which to prune the Error.dmp file. (default is 524288)
         /// </param>
         /// <exception cref="T:System.ArgumentOutOfRangeException">
-        /// Thrown if the pruneCutOff value is less than <see cref="ConstParameters.minPruneVal"/>, 
-        /// or greater than <see cref="ConstParameters.maxPruneVal"/>.
+        /// Thrown if the pruneCutOff value is less than <see cref="InternalParamaters.minPruneVal"/>, 
+        /// or greater than <see cref="InternalParamaters.maxPruneVal"/>.
         /// </exception>
-        public static void Handler (Exception providedException, bool write, bool prune, int pruneCutoff)
+        public static void Log (this Exception providedException, IEnumerable<GenericCondition> conditions, int pruneCutoff)
         {
-				
-            if (write)
-            {
-					
-                Writer(providedException, prune, pruneCutoff);
-					
-            }
-				
-				
-            if (prune)
-            {
-					
-                try
-                {
-						
-                    InternalFunctions.CheckParameters(pruneCutoff, "prune");
-						
-                }
-                catch (Exception e)
-                {
-						
-                    Errors.Handler(e, true, false, 0);
-						
-                }
-					
-                string errorDmp = InternalFunctions.ReturnFilePath("Error.dmp");
-					
-                InternalFunctions.PruneCheck(errorDmp, pruneCutoff);
-					
-            }
-				
-            throw providedException;
-				
+        	InternalFunction.CheckParameters(conditions, new List<GenericCondition>{ GenericCondition.Prune, GenericCondition.ThrowExceptions });
+        	var startingMessage = new Collection<string> 
+        	{
+        		string.Format(CultureInfo.InvariantCulture, "[{0}:\n\nException Message:\n\n{1}\n\nException Stack Trace:\n\n{2}{3}]\n\n", DateTime.Now.ToString("MMMM dd hh:mm:ss tt", CultureInfo.InvariantCulture), providedException.Message, providedException.StackTrace, providedException.InnerException != null ? string.Format(CultureInfo.InvariantCulture, "Inner Exception Message:\n\n{0}\n\nInner Exception Stack Trace:\n\n{1}", providedException.InnerException.Message, providedException.InnerException.StackTrace) : null)
+        	};
+			var filePath = InternalFunction.ReturnFilePath("Error.dmp");
+			startingMessage.InternalWriter(filePath, conditions.Any(item => item.Equals(GenericCondition.Prune)), pruneCutoff);
+			if (conditions.Any(item => item.Equals(GenericCondition.ThrowExceptions))) throw providedException;	
         }
-
         #endregion
-
         /// <summary>
-        /// A list of premade exceptions for convenience.
+        /// A list of premade exceptions for convenience. This does not replace custom-built exceptions, which should be used more often than premade exceptions.
         /// </summary>
         /// <param name="offendingCode">
         /// Where did the exception originate from?
@@ -115,546 +474,760 @@ namespace UniversalHandlersLibrary
         /// <param name="areaWhereOffendingCodeResides">
         /// Where within the originating code did the exception occur?
         /// </param>
-        /// <param name="exceptionNumber">
-        /// The number of the exception you'd like to use.
+        /// <param name="exceptionToThrow">
+        /// The exception you wish to see thrown.
         /// </param>
+        /// <remarks>
+        /// This function only utilizes the exception provided for it's type, so additional information in said exception (such as a message) is not required.
+        /// </remarks>
         /// <returns>
-        /// For exception number: 0, a FormatException with the text "Argument failed to produce a valid result." will be produced.
+        /// Returns a premade exception for that type, if one exists.
         /// </returns>
         /// <exception cref="T:System.ArgumentOutOfRangeException">
         /// Thrown if the exceptionNumber is less than zero or greater than the current number of premade exceptions.
         /// </exception>
-        public static Exception PremadeExceptions (string offendingCode, string areaWhereOffendingCodeResides, int exceptionNumber)
-        {
-            const int lower = 0;
-            const int upper = 0;
-            //Upper is 0 until a new exception is created.
-			
-            if (exceptionNumber < lower || exceptionNumber > upper)
-            {
-				
-                Errors.Handler(new ArgumentOutOfRangeException ("exceptionNumber", exceptionNumber, string.Format(CultureInfo.CurrentCulture, "Value must be between {0} and {1}", lower, upper)), true, true, 524288);
-				
-            }
-			
-            Exception e = null;
-			
-            switch (exceptionNumber)
-            {
-					
-                case 0:
-                    e = new FormatException (string.Format(CultureInfo.InvariantCulture, "{0}: {1}: {2}", offendingCode, areaWhereOffendingCodeResides, "Argument failed to produce a valid result."));
-                    break;
-					
-            }
-			
-            return e;
-			
-        }
-		
+        public static Exception PremadeError (this Exception exceptionToThrow, string offendingCode, string areaWhereOffendingCodeResides)
+		{
+        	var messageToUse = string.Format(CultureInfo.InvariantCulture, "{0}: {1}: ", offendingCode, areaWhereOffendingCodeResides);
+			if (exceptionToThrow is FormatException)
+			{
+				messageToUse += "Argument failed to produce a valid result.";
+				exceptionToThrow = new FormatException(messageToUse);
+			}
+			else
+			{
+				messageToUse += "This functionality has not been implimented.";
+				exceptionToThrow = new NotImplementedException(messageToUse);
+			}
+			return exceptionToThrow;
+		}
     }
 
     /// <summary>
-    /// Messages handler entry point.
+    /// Message handler entry point.
     /// </summary>
-    public static class Messages
+    public static class Message
     {
-		
+    	/// <summary>
+        /// Message handler
+        /// </summary>
+        /// <param name="message">
+        /// The message to be handled.
+        /// </param>
+        /// <param name="caller">
+        /// The name you wish to be printed before the message.
+        /// </param>
+        public static void Log (this string message, string caller)
+        {
+        	message.Log(caller, GenericCondition.Prune, 102400);
+        }
+    	
         /// <summary>
         /// Message handler
         /// </summary>
         /// <param name="message">
         /// The message to be handled.
         /// </param>
-        /// <param name="nameOfAppWithoutExtension">
-        /// The application's name, which will be printed before the message.
+        /// <param name="caller">
+        /// The name you wish to be printed before the message.
         /// </param>
-        /// <param name="prune">
-        /// Is this operation checking the file to see if it should be pruned?
+        /// <param name="condition">
+        /// The condition for this function.
         /// </param>
         /// <param name="pruneCutoff">
         /// The file size at which to prune the Messages.txt file. (default is 102400)
         /// </param>
         /// <exception cref="T:System.ArgumentOutOfRangeException">
-        /// Thrown if the pruneCutOff value is less than <see cref="ConstParameters.minPruneVal"/>, 
-        /// or greater than <see cref="ConstParameters.maxPruneVal"/>.
+        /// Thrown if the pruneCutOff value is less than <see cref="InternalParamaters.minPruneVal"/>, 
+        /// or greater than <see cref="InternalParamaters.maxPruneVal"/>.
         /// </exception>
-        public static void Handler (string message, string nameOfAppWithoutExtension, bool prune, int pruneCutoff)
+        public static void Log (this string message, string caller, GenericCondition condition, int pruneCutoff)
         {
-			
-            try
-            {
-				
-                InternalFunctions.CheckParameters(pruneCutoff, "prune");
-				
-                string startingMessage = string.Format(CultureInfo.InvariantCulture, "{0}: {1} Time: {2}\n\n", nameOfAppWithoutExtension, message, DateTime.Now.ToString("MM-dd-yy hh:mm tt", CultureInfo.InvariantCulture));
-				
-                InternalFunctions.Writer(startingMessage, InternalFunctions.ReturnFilePath("Messages.txt"), prune, pruneCutoff);
-				
-            }
-            catch (Exception e)
-            {
-				
-                Errors.Handler(e, true, true, 524288);
-				
-            }
-			
+        	InternalFunction.CheckParameters(condition, GenericCondition.Prune);
+        	var filePath = InternalFunction.ReturnFilePath("Messages.txt");
+        	var finalMessage = new Collection<string> 
+        	{
+        		string.Format(CultureInfo.InvariantCulture, "{0}: {1} Time: {2}\n\n", caller, message, DateTime.Now.ToString("MM-dd-yy hh:mm tt", CultureInfo.InvariantCulture)) 
+        	};
+        	finalMessage.InternalWriter(filePath, condition.Equals(GenericCondition.Prune), pruneCutoff);
         }
-		
     }
 
     /// <summary>
-    /// Backend related functions handler entry point.
+    /// Backend related functions.
     /// </summary>
     public static class BackEnd
     {
+    	/// <summary>
+    	/// Gets a statistics value for the currently running machine.
+    	/// </summary>
+    	/// <param name="classification">
+    	/// The statistic classification you are seeking a value for.
+    	/// </param>
+    	/// <returns>
+    	/// Returns a value for the currently selected classification unit.
+    	/// </returns>
+    	/// <remarks>
+    	/// If this function has not been told to find a different value-type, the average will be found.
+    	/// </remarks>
+		/// <exception cref="T:System.NotImplementedException">
+		/// Some classification categories have not yet been implemented. If the category you select has not been implemeneted yet, this error is thrown.
+		/// </exception>
+    	public static int GetStatistics(this PerformanceClass classification)
+		{
+    		return classification.GetStatistics(StatisticCondition.ReturnInMilliseconds);
+    	}
+    	/// <summary>
+    	/// Gets a statistics value for the currently running machine.
+    	/// </summary>
+    	/// <param name="classification">
+    	/// The statistic classification you are seeking a value for.
+    	/// </param>
+    	/// <param name="validator">
+    	/// The validator which dictates how the value will be returned to you.
+    	/// </param>
+    	/// <returns>
+    	/// Returns a value for the currently selected classification unit.
+    	/// </returns>
+    	/// <remarks>
+    	/// If this function has not been told to find a different value-type, the average will be found.
+    	/// </remarks>
+		/// <exception cref="T:System.NotImplementedException">
+		/// Some classification categories have not yet been implemented. If the category you select has not been implemeneted yet, this error is thrown.
+		/// </exception>
+    	public static int GetStatistics(this PerformanceClass classification, StatisticCondition validator)
+		{
+			var CPUUsage = new Collection<float>();
+			int times = 0;
+			const int runFor = 50;
+			const int sleepFor = 250;
+			float calculatedValue = 0;
+			using (PerformanceCounter performanceCounter = new PerformanceCounter())
+			{
+				switch (classification)
+				{
+					case PerformanceClass.CpuUsage:
+						performanceCounter.CategoryName = "Processor";
+						performanceCounter.CounterName = "% Processor Time";
+						performanceCounter.InstanceName = "_Total";
+						//PerformanceCounter ramCounter = new PerformanceCounter("Memory", "Available MBytes");
+						performanceCounter.NextValue();
+						Console.WriteLine("Program calculating CPU usage...Please wait.\n");
+						for (times = 0; times <= runFor; times++)
+						{
+							System.Threading.Thread.Sleep(sleepFor);
+							CPUUsage.Add((float)performanceCounter.NextValue());
+						}
+						calculatedValue = CPUUsage.Sum();
+						break;
+					default:
+						throw new NotImplementedException(string.Format(CultureInfo.CurrentCulture, "The program could not measure this computer's {0}, as the functionality has not yet been implimented.", classification));
+				}
+				performanceCounter.Close();
+    		}
+			if(validator != StatisticCondition.SumOf)
+			{
+				calculatedValue /= times;
+				switch (validator)
+				{
+					case StatisticCondition.ReturnInMilliseconds:
+						//First value in the min/max variables is the cap for that range, the second is the value to use if the cap is reached.
+						var min = (new List<int> {5, 0}).AsReadOnly();
+						var max = (new List<int> {25, 60}).AsReadOnly();
+						if (calculatedValue >= max[0])
+						{
+							calculatedValue = max[1];
+						}
+						else if (calculatedValue <= min[0])
+						{
+							calculatedValue = min[1];
+						}
+						calculatedValue *= 1000;
+						break;
+				}
+			}
+			return (int)(Math.Round(calculatedValue, 0, MidpointRounding.AwayFromZero));
+		}
     	
         /// <summary>
-        /// Sets up the console. If debugging, the console shows. Otherwise, it does nothing.
+        /// Sets up the console.
         /// </summary>
-        /// <param name="debug">
+        public static void SetupConsole ()
+        {
+            SafeNativeMethods.AllocConsole();
+        }
+
+        /// <summary>
+        /// A way to check for required parameters you generally always use before the start of a program.
+        /// </summary>
+        /// <param name="applicationName">
+        /// Name of the parent program.
+        /// </param>
+        /// <param name="debugMode">
         /// Is the parent program debugging?
         /// </param>
-        public static void SetupConsole (bool debug)
+        public static bool CheckBeginningParameters (string applicationName, bool debugMode)
         {
-			
-            if (debug)
-            {
-				
-                SafeNativeMethods.AllocConsole();	
-				
-            }
-			
+        	if (debugMode) BackEnd.SetupConsole();
+			return Process.GetProcessesByName(applicationName).Count() <= 1 || debugMode;
         }
-		
     }
-
+    
     /// <summary>
-    /// All publicly reachable reading and writing related functions handler entry point.
+    /// All publicly reachable reading and writing related functions.
     /// </summary>
-    public static class IOHandler
+    public static class IOFunc
     {
-        #region Mass Delete Same Name Files Overrides
-
-        /// <summary>
-        /// Checks all files in all subdirectories of the root directory against the file provided to see if their names match. If they do, it deletes the appropriate file.
-        /// </summary>
-        /// <param name="fileToSearchWith">
-        /// The file, or logically it's information, that you'll be searching with.
-        /// </param>
-        /// <param name="rootDirectory">
-        /// The top of the directory hierarchy you'd like to search in.
-        /// </param>
-        public static void DeleteAllSameNamedFiles (FileInfo fileToSearchWith, string rootDirectory)
+    	#region Registry Functions and Overloads
+    	/// <summary>
+    	/// Reads a series of values from the registry.
+    	/// </summary>
+    	/// <param name="returnValue">
+    	/// The collection to write the read values to.
+    	/// </param>
+    	/// <param name="mainRegistrySubkey">
+    	/// The top of the registry tree.
+    	/// </param>
+    	/// <param name="debugging">
+    	/// The program who called this function is debugging.
+    	/// </param>
+    	/// <returns>
+    	/// Returns a collection of objects whose said objects represent individual registry entries.
+    	/// </returns>
+    	public static IEnumerable<RegistryEntry> ReadFromRegistry (this IEnumerable<RegistryEntry> returnValue, string mainRegistrySubkey, bool debugging)
         {
-				
-            DeleteAllSameNamedFiles(fileToSearchWith, rootDirectory, false, true);
-				
+    		return (new Collection<RegistryEntry>(returnValue.ToList())).ReadFromRegistry(mainRegistrySubkey, debugging);
         }
-
-        /// <summary>
-        /// Checks all files in all subdirectories of the root directory against the file provided to see if their names match. If they do, it deletes the appropriate file.
-        /// </summary>
-        /// <param name="fileToSearchWith">
-        /// The file, or logically it's information, that you'll be searching with. This is the root file.
-        /// </param>
-        /// <param name="rootDirectory">
-        /// The top of the directory hierarchy you'd like to search in.
-        /// </param>
-        /// <param name="ignoreCase">
-        /// If true, the function will ignore casing when checking the files in the hierarchy against the root file.
-        /// </param>
-        public static void DeleteAllSameNamedFiles (FileInfo fileToSearchWith, string rootDirectory, bool ignoreCase)
+    	
+    	/// <summary>
+    	/// Reads a series of values from the registry.
+    	/// </summary>
+    	/// <param name="returnValue">
+    	/// The collection to write the read values to.
+    	/// </param>
+    	/// <param name="mainRegistrySubkey">
+    	/// The top of the registry tree.
+    	/// </param>
+    	/// <param name="debugging">
+    	/// The program who called this function is debugging.
+    	/// </param>
+    	/// <returns>
+    	/// Returns a collection of objects whose said objects represent individual registry entries.
+    	/// </returns>
+    	public static IEnumerable<RegistryEntry> ReadFromRegistry (this Collection<RegistryEntry> returnValue, string mainRegistrySubkey, bool debugging)
         {
-				
-            DeleteAllSameNamedFiles(fileToSearchWith, rootDirectory, ignoreCase, true);
-				
+    		var registrySubkey = string.Format(CultureInfo.InvariantCulture, "SOFTWARE\\{0}\\{1}\\", mainRegistrySubkey, debugging ?  "Debug" : Environment.UserName);
+    		InternalFunction.CheckParameters(registrySubkey, InternalFunction.InternalCondition.RegistrySubkey);
+            using (RegistryKey programKey = Registry.LocalMachine.OpenSubKey(registrySubkey, true))
+            {
+            	var registryValues = programKey.GetValueNames().GetEnumerator();
+            	for (var position = registryValues; position.MoveNext();)
+				{
+            		string registryEntry = position.Current.ToString();
+					returnValue.Add(new RegistryEntry(registryEntry, programKey.GetValue(registryEntry)));
+				}
+				programKey.Close();
+            }
+            return returnValue.AsEnumerable();
         }
-
+    	
+    	/// <summary>
+    	/// Writes a series of values to the registry.
+    	/// </summary>
+    	/// <param name="registryValues">
+    	/// A collection of objects which represent individual registry entries.
+    	/// </param>
+    	/// <param name="mainRegistrySubkey">
+    	/// The top of the registry tree.
+    	/// </param>
+    	/// <param name="debugging">
+    	/// The program who called this function is debugging.
+    	/// </param>
+    	public static void WriteToRegistry (this IEnumerable<RegistryEntry> registryValues, string mainRegistrySubkey, bool debugging)
+        {
+    		WriteToRegistry(registryValues.GetEnumerator(), mainRegistrySubkey, debugging);
+        }
+    	
+    	/// <summary>
+    	/// Writes a series of values to the registry.
+    	/// </summary>
+    	/// <param name="registryValues">
+    	/// A collection of objects which represent individual registry entries.
+    	/// </param>
+    	/// <param name="mainRegistrySubkey">
+    	/// The top of the registry tree.
+    	/// </param>
+    	/// <param name="debugging">
+    	/// The program who called this function is debugging.
+    	/// </param>
+    	public static void WriteToRegistry (this IEnumerator<RegistryEntry> registryValues, string mainRegistrySubkey, bool debugging)
+        {
+    		var registrySubkey = string.Format(CultureInfo.InvariantCulture, "SOFTWARE\\{0}\\{1}\\", mainRegistrySubkey, debugging ?  "Debug" : Environment.UserName);
+    		InternalFunction.CheckParameters(registrySubkey, InternalFunction.InternalCondition.RegistrySubkey);
+            using (RegistryKey programKey = Registry.LocalMachine.OpenSubKey(registrySubkey, true))
+            {
+				for (var position = registryValues; position.MoveNext();)
+				{
+					var item = position.Current;
+					programKey.SetValue(item.Name, item.Value);
+				}
+				programKey.Close();
+            }
+        }
+    	#endregion
+    	#region File IO Functions and Overloads
+    		#region Add To Functions and Overloads
+			/// <summary>
+			/// Adds the contents of a file to a collection.
+			/// </summary>
+			/// <param name="collectionToUse">
+			/// The collection of objects you wish to add to.
+			/// </param>
+			/// <param name="fileToUse">
+			/// The file whose contents you wish to add to the provided collection.
+			/// </param>
+			/// <returns>
+			/// Returns a collection of objects containing the file's contents.
+			/// </returns>
+			public static IEnumerable<string> AddFileContents (this IEnumerable<string> collectionToUse, string fileToUse)
+			{
+				return ((Collection<string>)collectionToUse).AddFileContents(fileToUse, string.Empty);
+			}
+	
+	    	/// <summary>
+	    	/// Adds the contents of a file to a collection.
+	    	/// </summary>
+	    	/// <param name="collectionToUse">
+	    	/// The collection of objects you wish to add to.
+	    	/// </param>
+	    	/// <param name="fileToUse">
+	    	/// The file whose contents you wish to add to the provided collection.
+	    	/// </param>
+	    	/// <param name="separator">
+	    	/// A singular string used to represent how entries read from a file should be separated before being added to the collection.
+	    	/// </param>
+	    	/// <remarks>
+	    	/// The separator is mainly used for puppet collections; collections that never need to be read from, only added to. Until writing to a file, of course.
+	    	/// </remarks>
+	    	/// <returns>
+	    	/// Returns a collection of objects containing the file's contents.
+	    	/// </returns>
+	    	public static IEnumerable<string> AddFileContents (this Collection<string> collectionToUse, string fileToUse, string separator)
+	        {
+	            if (File.Exists(fileToUse))
+				{
+					using (StreamReader infile = new StreamReader(fileToUse))
+					{
+						String line;
+						int position = 0;
+						while (!infile.EndOfStream)
+						{
+							if(!string.IsNullOrEmpty(line = infile.ReadLine()))
+							{
+								collectionToUse.Add(string.Format(CultureInfo.InvariantCulture, "{0}{1}", position <= 0 || string.IsNullOrEmpty(separator) ? string.Empty : separator, line));
+								position++;
+							}
+						}
+						infile.Close();
+					}
+				}
+	            return collectionToUse.AsEnumerable();
+	        }
+	    	#endregion
+	    	#region Write To Functions and Overloads
+			/// <summary>
+			/// Write a collection to a file.
+			/// </summary>
+			/// <param name="itemsToUse">
+			/// The collection to write to file.
+			/// </param>
+			/// <param name="fileName">
+			/// The name of the file you wish to write to with extension.
+			/// </param>
+			public static void WriteToFile<T> (this IEnumerable<T> itemsToUse, string fileName)
+			{
+				itemsToUse.WriteToFile(fileName, new List<string>());
+			}
+			
+			/// <summary>
+			/// Write a collection to a file.
+			/// </summary>
+			/// <param name="itemsToUse">
+			/// The collection to write to file.
+			/// </param>
+			/// <param name="fileName">
+			/// The name of the file you wish to write to with extension.
+			/// </param>
+			/// <param name="extension">
+	    	/// The extension for the file you wish to write to.
+	    	/// </param>
+	    	/// <remarks>
+	    	/// The file name does not have to be without an extension. Likewise the "extension" can have extra information. If you desire, of course.
+	    	/// </remarks>
+			public static void WriteToFile<T> (this IEnumerable<T> itemsToUse, string fileName, string extension)
+			{
+				itemsToUse.WriteToFile(fileName, new List<string> { extension });
+			}
+			
+			/// <summary>
+			/// Write a collection to a file.
+			/// </summary>
+			/// <param name="itemsToUse">
+			/// The collection to write to file.
+			/// </param>
+			/// <param name="fileName">
+			/// The name of the file you wish to write to with extension.
+			/// </param>
+			/// <param name="extensions">
+	    	/// The extension(s) for the file you wish to write to.
+	    	/// </param>
+	    	/// <remarks>
+	    	/// The file name does not have to be without an extension. Likewise the "extensions" can have extra information. If you desire, of course.
+	    	/// </remarks>
+			public static void WriteToFile<T> (this IEnumerable<T> itemsToUse, string fileName, IEnumerable<string> extensions)
+			{
+				itemsToUse.WriteToFile(fileName, extensions, FileAttributes.Compressed);
+			}
+			
+			/// <summary>
+	    	/// Write a collection to a file.
+	    	/// </summary>
+	    	/// <param name="itemsToUse">
+	    	/// The collection to write to file.
+	    	/// </param>
+	    	/// <param name="fileName">
+	    	/// The name of the file you wish to write to.
+	    	/// </param>
+	    	/// <param name="extensions">
+	    	/// The extension(s) for the file you wish to write to.
+	    	/// </param>
+	    	/// <param name="fileSettings">
+	    	/// The setting(s) for the file you wish to write to.
+	    	/// </param>
+	    	/// <remarks>
+	    	/// The file name does not have to be without an extension. Likewise the "extensions" can have extra information. If you desire, of course.
+	    	/// </remarks>
+	    	public static void WriteToFile<T> (this IEnumerable<T> itemsToUse, string fileName, IEnumerable<string> extensions, FileAttributes fileSettings)
+	        {
+	    		itemsToUse.GetEnumerator().WriteToFile(fileName, extensions, fileSettings);
+	        }
+			
+	    	/// <summary>
+	    	/// Write a collection to a file.
+	    	/// </summary>
+	    	/// <param name="itemsToUse">
+	    	/// The collection to write to file.
+	    	/// </param>
+	    	/// <param name="fileName">
+	    	/// The name of the file you wish to write to.
+	    	/// </param>
+	    	/// <param name="extensions">
+	    	/// The extension(s) for the file you wish to write to.
+	    	/// </param>
+	    	/// <param name="fileSettings">
+	    	/// The setting(s) for the file you wish to write to.
+	    	/// </param>
+	    	/// <remarks>
+	    	/// The file name does not have to be without an extension. Likewise the "extensions" can have extra information. If you desire, of course.
+	    	/// </remarks>
+	    	public static void WriteToFile<T> (this IEnumerator<T> itemsToUse, string fileName, IEnumerable<string> extensions, FileAttributes fileSettings)
+	        {
+				var fileToWriteTo = string.Format(CultureInfo.InstalledUICulture, "{0}{1}", fileName, string.Join(string.Empty, extensions));
+	    		using (StreamWriter outfile = new StreamWriter(fileToWriteTo))
+	            {
+	    			for (var position = itemsToUse; position.MoveNext();)
+					{
+						outfile.Write(position.Current);
+					}
+	                outfile.Close();
+	            }
+	            File.SetAttributes(fileToWriteTo, fileSettings);
+	        }
+	    	#endregion
+	    	#region Deletion Functions and Overloads
+	        /// <summary>
+	        /// Checks all files in all subdirectories of the root directory against the file provided to see if their names match. If they do, it deletes the appropriate file.
+	        /// </summary>
+	        /// <param name="fileToSearchWith">
+	        /// The file, or logically it's information, that you'll be searching with.
+	        /// </param>
+	        /// <param name="rootDirectory">
+	        /// The top of the directory hierarchy you'd like to search in.
+	        /// </param>
+	        public static void DeleteAllSameNamedFiles (FileInfo fileToSearchWith, string rootDirectory)
+	        {
+	            DeleteAllSameNamedFiles(fileToSearchWith, rootDirectory, false, true);
+	        }
+	
+	        /// <summary>
+	        /// Checks all files in all subdirectories of the root directory against the file provided to see if their names match. If they do, it deletes the appropriate file.
+	        /// </summary>
+	        /// <param name="fileToSearchWith">
+	        /// The file, or logically it's information, that you'll be searching with. This is the root file.
+	        /// </param>
+	        /// <param name="rootDirectory">
+	        /// The top of the directory hierarchy you'd like to search in.
+	        /// </param>
+	        /// <param name="ignoreCase">
+	        /// If true, the function will ignore casing when checking the files in the hierarchy against the root file.
+	        /// </param>
+	        public static void DeleteAllSameNamedFiles (FileInfo fileToSearchWith, string rootDirectory, bool ignoreCase)
+	        {
+	            DeleteAllSameNamedFiles(fileToSearchWith, rootDirectory, ignoreCase, true);	
+	        }
+	
+	        /// <summary>
+	        /// Checks all files in all subdirectories of the root directory against the file provided to see if their names match. If they do, it deletes the appropriate file.
+	        /// </summary>
+	        /// <param name="fileToSearchWith">
+	        /// The file, or logically it's information, that you'll be searching with. This is the root file.
+	        /// </param>
+	        /// <param name="rootDirectory">
+	        /// The top of the directory hierarchy you'd like to search in.
+	        /// </param>
+	        /// <param name="ignoreCase">
+	        /// If true, the function will ignore casing when checking the files in the hierarchy against the root file.
+	        /// </param>
+	        /// /// <param name="deleteAtDirectory">
+	        /// If true, the function will delete the provided file once a file is found in the directory hierarchy with the exact same filename. If false, deletes the file in the hierarchy, and preserves the root file.
+	        /// </param>
+	        public static void DeleteAllSameNamedFiles (FileInfo fileToSearchWith, string rootDirectory, bool ignoreCase, bool deleteAtDirectory)
+	        {
+	            Console.WriteLine(string.Format(CultureInfo.InvariantCulture, "Starting deletion...Looking in '{0}' for files with the exact same name as '{1}', while {2} case.", rootDirectory, fileToSearchWith.Name, ignoreCase ? "ignoring" : "including"));
+				
+	            bool stopChecking = false;
+				
+				int currentPosition = 0, maxLengthDir = Directory.GetDirectories(rootDirectory).Length;
+	            while (currentPosition < maxLengthDir && !stopChecking)
+				{
+					string d = Directory.GetDirectories(rootDirectory)[currentPosition];
+					Console.WriteLine(string.Format(CultureInfo.InvariantCulture, "Now looking in {0}", d));
+					if (!fileToSearchWith.DirectoryName.Equals(d))
+					{
+						DirectoryInfo dI = new DirectoryInfo(d);
+						for (int currentFile = 0, maxLength = dI.GetFiles().Length; currentFile < maxLength; currentFile++)
+						{
+							FileInfo file = dI.GetFiles()[currentFile];
+							if (file != null && file.Name.Equals(fileToSearchWith.Name, ignoreCase ? StringComparison.OrdinalIgnoreCase : StringComparison.Ordinal))
+							{
+								Console.WriteLine(string.Format(CultureInfo.InvariantCulture, deleteAtDirectory ? "{0}\\{1} is being deleted, {2}\\{3} will be preserved." : "{2}\\{3} is being deleted, {0}\\{1} will be preserved.", fileToSearchWith.DirectoryName, fileToSearchWith.Name, file.DirectoryName, file.Name));
+								if (deleteAtDirectory) fileToSearchWith.Delete();
+								else file.Delete();
+								stopChecking = true;
+								return;
+							}
+						}
+					}
+					else
+					{
+						Console.WriteLine(string.Format(CultureInfo.InvariantCulture, "Cannot search {0} as it is the directory of the file you're searching with.", d));
+					}
+					currentPosition++;
+				}
+	        }
+	        #endregion
         #endregion
-
+        #region Create Hierarchy Functions and Overloads
         /// <summary>
-        /// Checks all files in all subdirectories of the root directory against the file provided to see if their names match. If they do, it deletes the appropriate file.
+        /// Creates a folder hierarchy based on the default values.
         /// </summary>
-        /// <param name="fileToSearchWith">
-        /// The file, or logically it's information, that you'll be searching with. This is the root file.
-        /// </param>
-        /// <param name="rootDirectory">
-        /// The top of the directory hierarchy you'd like to search in.
-        /// </param>
-        /// <param name="ignoreCase">
-        /// If true, the function will ignore casing when checking the files in the hierarchy against the root file.
-        /// </param>
-        /// /// <param name="deleteAtDirectory">
-        /// If true, the function will delete the provided file once a file is found in the directory hierarchy with the exact same filename. If false, deletes the file in the hierarchy, and preserves the root file.
-        /// </param>
-        public static void DeleteAllSameNamedFiles (FileInfo fileToSearchWith, string rootDirectory, bool ignoreCase, bool deleteAtDirectory)
+        public static void CreateFolderTree ()
         {
-
-            Console.WriteLine(string.Format(CultureInfo.InvariantCulture, "Starting deletion...Looking in '{0}' for files with the exact same name as '{1}', while {2} case.", rootDirectory, fileToSearchWith.Name, ignoreCase ? "ignoring" : "including"));
-			
-            bool stopChecking = false;
-			
-            for (int currentDirectory = 0, maxLengthDir = Directory.GetDirectories(rootDirectory).Length; currentDirectory < maxLengthDir; currentDirectory++)
-            {
-				
-                string d = Directory.GetDirectories(rootDirectory) [currentDirectory];
-				
-                Console.WriteLine(string.Format(CultureInfo.InvariantCulture, "Now looking in {0}", d));
-				
-                if (!stopChecking)
-                {
-					
-                    if (!fileToSearchWith.DirectoryName.Equals(d))
-                    {
-						
-                        DirectoryInfo dI = new DirectoryInfo (d);
-					
-                        for (int currentFile = 0, maxLength = dI.GetFiles().Length; currentFile < maxLength; currentFile++)
-                        {
-							
-                            FileInfo file = dI.GetFiles() [currentFile];
-							
-                            if (file != null && ignoreCase ? file.Name.Equals(fileToSearchWith.Name, StringComparison.OrdinalIgnoreCase) : file.Name.Equals(fileToSearchWith.Name))
-                            {
-								
-                                Console.WriteLine(string.Format(CultureInfo.InvariantCulture, deleteAtDirectory ? "{0}\\{1} is being deleted, {2}\\{3} will be preserved." : "{2}\\{3} is being deleted, {0}\\{1} will be preserved.", fileToSearchWith.DirectoryName, fileToSearchWith.Name, file.DirectoryName, file.Name));
-								
-                                if (deleteAtDirectory)
-                                {
-									
-                                    fileToSearchWith.Delete();
-									
-                                }
-                                else
-                                {
-									
-                                    file.Delete();
-									
-                                }
-								
-                                stopChecking = true;
-								
-                                return;
-                            }
-                        }
-						
-                    }
-                    else
-                    {
-						
-                        Console.WriteLine(string.Format(CultureInfo.InvariantCulture, "Cannot search {0} as it is the directory of the file you're searching with.", d));
-						
-                    }
-					
-                }
-				
-            }
+        	CreateFolderTree(GenericFolderOptions.BaseFolderRoot, GenericFolderOptions.NewStyleFileTree);
         }
-
+        
         /// <summary>
         /// Creates a folder hierarchy of your choosing using the directory hierarchy provided.
         /// </summary>
-        /// <param name="directoryHierarchy">
+        /// <param name="directory">
         /// An array of strings with the FULL directory path of the folder you'd like to create.
         /// </param>
         /// <example>
-        /// "SomeDrive\\SomeRoot\\Folder1\\" is a correct value for the array. You can also use "SomeFolder\\SomeSubFolder\\" as well to indicate the root directory is the application's root directory. "SomeDrive\\SomeRoot\\Folder1" is not correct.
+        /// "SomeDrive\\SomeRoot\\SomeFolder\\" is a correct value for the array. You can also use "SomeFolder\\SomeSubFolder\\" as well to indicate the root directory is the application's root directory. "SomeDrive\\SomeRoot\\SomeFolder" is not correct.
         /// </example>
-        public static void CreateFolderTree (string[] directoryHierarchy)
+        public static void CreateFolderTree (string directory)
         {
-			
-            CreateFolderTree(directoryHierarchy, null, true, true, true);
-			
+        	CreateFolderTree(new Collection<string> { directory });
         }
-
+        
         /// <summary>
         /// Creates a folder hierarchy of your choosing using the directory hierarchy provided.
         /// </summary>
-        /// <param name="directoryHierarchy">
-        /// An array of strings with the FULL directory path of the folder you'd like to create.
-        /// </param>
-        /// <example>
-        /// "SomeDrive\\SomeRoot\\Folder1\\" is a correct value for the array. You can also use "SomeFolder\\SomeSubFolder\\" as well to indicate the root directory is the application's root directory. "SomeDrive\\SomeRoot\\Folder1" is not correct.
-        /// </example>
         /// <param name="appendedDirectoryRoot">
-        /// The directory root to be applied to all folders that are created when their related bool values are true. In other words, it does not apply to any folders in the directoryHierarchy array.
+        /// The directory root to be applied to all folders in the directory hierarchy.
         /// </param>
         /// <example>
-        /// If 'createFilesFolder' is true, the program would attempt to make a folder at 'appendedDirectoryRoot\\Files\\'. Else it would attempt to make a folder at 'Files\\'.
+        /// "C:\\".
         /// </example>
-        /// <param name="createFilesFolder">
-        /// If true the 'Files\\' folder will be marked for creation, else not. This would remove the need to add it to the directoryHeirarchy array as it is a vital folder.
+        /// <param name="directory">
+        /// A list of directories with the FULL directory path of the folder you'd like to create.
         /// </param>
-        /// <param name="createTextFolder">
-        /// If true the 'Files\\Text\\' folder will be marked for creation, else not. This would remove the need to add it to the directoryHeirarchy array as it is a vital folder.
-        /// </param>
-        /// <param name="createAuxiliaryFolders">
-        /// If true all folders considered non-essential will be marked for creation, else not. This would remove the need to add it to the directoryHeirarchy array, simply for convenience reasons.
-        /// </param>
-        public static void CreateFolderTree (string[] directoryHierarchy, string appendedDirectoryRoot, bool createFilesFolder, bool createTextFolder, bool createAuxiliaryFolders)
+        /// <example>
+        /// If there is no appended directory root provided: "SomeDrive\\SomeRoot\\SomeFolder\\" is a correct value for the array. You can also use "SomeFolder\\SomeSubFolder\\" as well to indicate the root directory is the application's root directory. "SomeDrive\\SomeRoot\\SomeFolder" is not correct.
+        /// </example>
+        /// <example>
+        /// If there is an appended directory root provided: "SomeFolder\\" is a correct value for the array. You can also use "SomeFolder\\SomeSubFolder\\" as well, and so on. "SomeFolder" is not correct
+        /// </example>
+        public static void CreateFolderTree (string appendedDirectoryRoot, string directory)
         {
-			
-            if (createFilesFolder && !Directory.Exists(string.IsNullOrEmpty(appendedDirectoryRoot) ? "Files\\" : string.Format(CultureInfo.InvariantCulture, "{0}\\Files\\", appendedDirectoryRoot)))
-            {
-				
-                Directory.CreateDirectory(string.IsNullOrEmpty(appendedDirectoryRoot) ? "Files\\" : string.Format(CultureInfo.InvariantCulture, "{0}\\Files\\", appendedDirectoryRoot));
-				
-            }
-			
-            if (createTextFolder && !Directory.Exists(string.IsNullOrEmpty(appendedDirectoryRoot) ? "Files\\Text\\" : string.Format(CultureInfo.InvariantCulture, "{0}\\Files\\Text\\", appendedDirectoryRoot)))
-            {
-				
-                Directory.CreateDirectory(string.IsNullOrEmpty(appendedDirectoryRoot) ? "Files\\Text\\" : string.Format(CultureInfo.InvariantCulture, "{0}\\Files\\Text\\", appendedDirectoryRoot));
-				
-            }
-			
-            if (createAuxiliaryFolders && !Directory.Exists(string.IsNullOrEmpty(appendedDirectoryRoot) ? "Files\\Help\\" : string.Format(CultureInfo.InvariantCulture, "{0}\\Files\\Help\\", appendedDirectoryRoot)))
-            {
-				
-                Directory.CreateDirectory(string.IsNullOrEmpty(appendedDirectoryRoot) ? "Files\\Help\\" : string.Format(CultureInfo.InvariantCulture, "{0}\\Files\\Help\\", appendedDirectoryRoot));
-				
-            }
-			
-            if (createAuxiliaryFolders && !Directory.Exists(string.IsNullOrEmpty(appendedDirectoryRoot) ? "Files\\Assets\\" : string.Format(CultureInfo.InvariantCulture, "{0}\\Files\\Assets\\", appendedDirectoryRoot)))
-            {
-				
-                Directory.CreateDirectory(string.IsNullOrEmpty(appendedDirectoryRoot) ? "Files\\Assets\\" : string.Format(CultureInfo.InvariantCulture, "{0}\\Files\\Assets\\", appendedDirectoryRoot));
-				
-            }
-			
+        	CreateFolderTree(appendedDirectoryRoot, new Collection<string> { directory });
+        }
+
+        /// <summary>
+        /// Creates a folder hierarchy of your choosing using the directory hierarchy provided.
+        /// </summary>
+        /// <param name="directoryHierarchy">
+        /// An array of strings with the FULL directory path of the folder you'd like to create.
+        /// </param>
+        /// <example>
+        /// "SomeDrive\\SomeRoot\\SomeFolder\\" is a correct value for the array. You can also use "SomeFolder\\SomeSubFolder\\" as well to indicate the root directory is the application's root directory. "SomeDrive\\SomeRoot\\SomeFolder" is not correct.
+        /// </example>
+        public static void CreateFolderTree (IEnumerable<string> directoryHierarchy)
+        {
+            CreateFolderTree(null, directoryHierarchy);
+        }
+
+        /// <summary>
+        /// Creates a folder hierarchy of your choosing using the directory hierarchy provided.
+        /// </summary>
+        /// <param name="appendedDirectoryRoot">
+        /// The directory root to be applied to all folders in the directory hierarchy.
+        /// </param>
+        /// <example>
+        /// "C:\\".
+        /// </example>
+        /// <param name="directoryHierarchy">
+        /// A list of directories with the FULL directory path of the folder you'd like to create.
+        /// </param>
+        /// <example>
+        /// If there is no appended directory root provided: "SomeDrive\\SomeRoot\\SomeFolder\\" is a correct value for the array. You can also use "SomeFolder\\SomeSubFolder\\" as well to indicate the root directory is the application's root directory. "SomeDrive\\SomeRoot\\SomeFolder" is not correct.
+        /// </example>
+        /// <example>
+        /// If there is an appended directory root provided: "SomeFolder\\" is a correct value for the array. You can also use "SomeFolder\\SomeSubFolder\\" as well, and so on. "SomeFolder" is not correct
+        /// </example>
+        public static void CreateFolderTree (string appendedDirectoryRoot, IEnumerable<string> directoryHierarchy)
+        {
             if (directoryHierarchy != null && directoryHierarchy.Any())
             {
-				
-                for (int curDir = 0, directoryHierarchyLength = directoryHierarchy.Length; curDir < directoryHierarchyLength; curDir++)
+            	var directoriesToCreate = directoryHierarchy.Where(dir => !Directory.Exists(dir));
+            	for (var position = directoriesToCreate.GetEnumerator(); position.MoveNext();)
                 {
-					
-                    if (!Directory.Exists(directoryHierarchy [curDir]))
-                    {
-						
-                        Directory.CreateDirectory(directoryHierarchy [curDir]);
-						
-                    }
-					
+                	string correctedDirectory = string.IsNullOrEmpty(appendedDirectoryRoot) ? position.Current : string.Format(CultureInfo.InvariantCulture, "{0}\\{1}\\", appendedDirectoryRoot, position.Current);
+					Directory.CreateDirectory(correctedDirectory);
                 }
-				
             }
-			
-            //Currently there is little support for custom file trees in this program, so it's up to you to code for any folders beside "Files\\" and "Text\\".
-			
         }
-		
+        #endregion
     }
 
     /// <summary>
-    /// Dunno, FxCop told me to call it this. 'Magine there's a good reason.
+    /// Dunno, FxCop told me to call it this.
     /// </summary>
     internal static class SafeNativeMethods
     {
-		
         [DllImport("kernel32.dll", SetLastError = true)]
         [return: MarshalAs(UnmanagedType.Bool)]
         public static extern bool AllocConsole ();
-		
     }
-
-    /// <summary>
-    /// Global Functions
-    /// </summary>
-    public static class UniversalHandlersLibraryGlobal
-    {
-        /// <summary>
-        /// Returns a value indicating if the provided String object occurs within the string.
-        /// </summary>
-        /// <param name="source">
-        /// The string to check.
-        /// </param>
-        /// <param name="toCheck">
-        /// The keyword to check for.
-        /// </param>
-        /// <param name="comp">
-        /// The string comparison mode you wish to use for this operation.
-        /// </param>
-        /// <returns>
-        /// true if the toCheck parameter occurs within the string, or if the toCheck value is an empty string (""); else false.
-        /// </returns>
-        public static bool Contains (this string source, string toCheck, StringComparison comp)
-        {
-            return source.IndexOf(toCheck, comp) >= 0;
-			
-        }
-		
-    }
-
 	
     /// <summary>
     /// DO NOT USE ANY OF THESE FUNCTIONS OUTSIDE THE UNIVERSALHANDLERSLIBRARY MAIN CODE.
     /// </summary>
-    internal static class InternalFunctions
+    internal static class InternalFunction
     {
+    	#region Internal Custom Items
+    	/// <summary>
+    	/// Internal conditions meant only for use within the library.
+    	/// </summary>
+    	internal enum InternalCondition
+    	{
+    		/// <summary>
+    		/// Tells the function to prune.
+    		/// </summary>
+    		Prune,
+    		/// <summary>
+    		/// Tells the function to look for a registry subkey and, if one does not exist, create it.
+    		/// </summary>
+    		RegistrySubkey
+    	}
+    	#endregion
+    	#region Parameter Validation Functions and Overloads
         /// <summary>
         /// Depending on the parameter name provided, it makes sure the provided value is within the conditions specified within the code.
         /// </summary>
         /// <param name="value">
-        /// The value/parameter to check.
+        /// The value to check.
         /// </param>
         /// <param name="parameterName">
         /// The name of the parameter you are currently checking.
         /// </param>
-        internal static void CheckParameters (int value, string parameterName)
+        internal static void CheckParameters<T> (T value, InternalCondition parameterName)
         {
-			
-            if (parameterName.Contains("prune", StringComparison.OrdinalIgnoreCase))
-            {
-				
-                if (value < ConstParameters.minPruneVal || value > ConstParameters.maxPruneVal)
-                {
-					
-                    throw new ArgumentOutOfRangeException ("value", value, string.Format(CultureInfo.CurrentCulture, "UniversalHandlersLibrary: value must be between {0} and {1}", ConstParameters.minPruneVal, ConstParameters.maxPruneVal));
-					
-                }
-				
-            }
-			
+			string valueAsString = value.ToString();
+			int valueAsInt = 0;
+			if(!int.TryParse(valueAsString, NumberStyles.Integer, CultureInfo.InvariantCulture, out valueAsInt)) valueAsInt = default(int);
+			switch (parameterName)
+			{
+				case InternalCondition.Prune:
+					if (valueAsInt < InternalParamaters.minPruneVal || valueAsInt > InternalParamaters.maxPruneVal)
+					{
+						throw new ArgumentOutOfRangeException("value", value, string.Format(CultureInfo.CurrentCulture, "UniversalHandlersLibrary: value must be between {0} and {1}", InternalParamaters.minPruneVal, InternalParamaters.maxPruneVal));
+					}
+					break;
+				case InternalCondition.RegistrySubkey:
+					using (RegistryKey localKey = Registry.LocalMachine)
+           	 		{
+						if (localKey.OpenSubKey(valueAsString) == null) localKey.CreateSubKey(valueAsString);
+						localKey.Close();
+					}
+					break;
+				default:
+					throw new ArgumentException("When checking parameters, the passed parameter was not a valid selection.");
+			}
         }
-
+        
         /// <summary>
-        /// Central writing code for most writing operations required by this library.
+        /// Depending on the parameter name provided, it makes sure the provided value is within the conditions specified within the code.
         /// </summary>
-        /// <param name="message">
-        /// Message to write to the file.
+        /// <param name="valueToCheck">
+        /// The value to check.
         /// </param>
-        /// <param name="file">
-        /// The file to write to.
-        /// </param>
-        /// <param name="prune">
-        /// Is this operation checking the file to see if it should be pruned?
-        /// </param>
-        /// <param name="pruneCutoff">
-        /// The file size at which to prune the file.
-        /// </param>
-        internal static void Writer (string message, string file, bool prune, int pruneCutoff)
+		/// <param name = "acceptableValue">
+		/// The acceptable value to check against valueToCheck.
+		/// </param>
+        internal static void CheckParameters<T> (T valueToCheck, T acceptableValue)
         {
-			
-            string temp = string.Format(CultureInfo.InvariantCulture, "{0}{1}", message, InternalFunctions.ReadFile(file));
-			
-            if (prune)
-            {
-					
-                InternalFunctions.PruneCheck(file, pruneCutoff);
-				
-            }
-				
-            File.WriteAllText(file, temp);
-			
-            if (prune)
-            {
-					
-                InternalFunctions.PruneCheck(file, pruneCutoff);
-				
-            }
-			
+        	CheckParameters(new List<T> { valueToCheck }.AsEnumerable(), new List<T> { acceptableValue }.AsEnumerable());
         }
-
+        
         /// <summary>
-        /// Central reading code for most reading operations required by the program.
+        /// Depending on the parameter name provided, it makes sure the provided value is within the conditions specified within the code.
         /// </summary>
-        /// <param name="file">
-        /// The file to read from.
+        /// <param name="valuesToCheck">
+        /// The values to check.
         /// </param>
-        /// <returns>
-        /// Returns a string containing a parsed version of the file's contents.
-        /// </returns>
-        internal static string ReadFile (string file)
+		/// <param name = "acceptableValues">
+		/// The acceptable values to check against valueToCheck.
+		/// </param>
+        internal static void CheckParameters<T> (IEnumerable<T> valuesToCheck, IEnumerable<T> acceptableValues)
         {
-			
-            string returnString = null;
-			
-            if (File.Exists(file))
-            {
-				
-                using (StreamReader sr = new StreamReader (file))
-                {
-                    String line;
-							
-                    while ((line = sr.ReadLine()) != null)
-                    {
-								
-                        returnString += !string.IsNullOrWhiteSpace(line) ? string.Format(CultureInfo.InvariantCulture, "{0}\n", line) : "\n";
-								
-                    }
-							
-                    sr.Close();
-                }
-				
-                return returnString;
-				
-            }
-				
-            return null;
-			
+        	if(!valuesToCheck.Any() || !acceptableValues.Any())
+        	{
+        		throw new ArgumentOutOfRangeException("A critical collection of values was passed with no values held (empty).", new ArgumentException("When checking parameters, neither the values you are checking nor the acceptable values can be empty."));
+        	}
+        	if(valuesToCheck.All(item => item is GenericCondition))
+        	{
+        		if (!valuesToCheck.All(item => acceptableValues.Any(checkedItem => checkedItem.Equals(item))) && !valuesToCheck.All(item => item.Equals(GenericCondition.None)))
+				{
+					throw new FormatException("The condition(s) passed was/were not one of the acceptable conditions for that purpose.");
+				}
+        	}
+        	else
+        	{
+        		throw new ArgumentException("The type of value you are checking is not valid.");
+        	}
         }
-
-        /// <summary>
-        /// Returns the most logical path available for the provided file.
-        /// </summary>
-        /// <param name="fileName">
-        /// The name of the file.
-        /// </param>
-        /// <returns>
-        /// Returns the desired file path of the provided file name.
-        /// </returns>
-        internal static string ReturnFilePath (string fileName)
-        {
-			
-            string[] ExcludedFileExtentions = {
-                ".dmp"
-            };
-			
-            string[] AssetFileExtentions = {
-                ".jpg",
-                ".jpeg",
-                ".bmp",
-                ".gif",
-                ".png",
-                ".ico"
-            };
-			
-            string[] HelpFileExtentions = {
-                "NOTHINGYET!!!!11!!!1"
-            };
-			
-            if (Directory.Exists("Files\\Help\\") && HelpFileExtentions.Any(s => fileName.Contains(s, StringComparison.OrdinalIgnoreCase)))
-            {
-				
-                return string.Format(CultureInfo.InvariantCulture, "Files\\Help\\{0}", fileName);
-					
-            }
-			
-            if (Directory.Exists("Files\\Assets\\") && AssetFileExtentions.Any(s => fileName.Contains(s, StringComparison.OrdinalIgnoreCase)))
-            {
-				
-                return string.Format(CultureInfo.InvariantCulture, "Files\\Assets\\{0}", fileName);
-					
-            }
-			
-            if (Directory.Exists("Files\\Text\\") && !ExcludedFileExtentions.Any(s => fileName.Contains(s, StringComparison.OrdinalIgnoreCase)))
-            {
-				
-                return string.Format(CultureInfo.InvariantCulture, "Files\\Text\\{0}", fileName);
-					
-            }
-			
-            if (Directory.Exists("Files\\"))
-            {
-				
-                return string.Format(CultureInfo.InvariantCulture, "Files\\{0}", fileName);
-				
-            }
-			
-            return fileName;
-        }
-
+        
         /// <summary>
         /// Checks to see if the provided file should be pruned.
         /// </summary>
@@ -665,46 +1238,172 @@ namespace UniversalHandlersLibrary
         /// The size at which a file is pruned.
         /// </param>
         /// <exception cref="T:System.ArgumentOutOfRangeException">
-        /// Thrown if the pruneCutOff value is less than <see cref="ConstParameters.minPruneVal"/>, 
-        /// or greater than <see cref="ConstParameters.maxPruneVal"/>.
+        /// Thrown if the pruneCutOff value is less than <see cref="InternalParamaters.minPruneVal"/>, 
+        /// or greater than <see cref="InternalParamaters.maxPruneVal"/>.
         /// </exception>
-        internal static void PruneCheck (string fileToCheck, int pruneCutoff)
+        internal static void PruneCheck (this string fileToCheck, int pruneCutoff)
         {
-			
             if (File.Exists(fileToCheck))
             {
-				
                 long fileSize = new FileInfo (fileToCheck).Length;
-				
-                CheckParameters(pruneCutoff, "prune");
-				
-                if (fileSize < pruneCutoff)
-                {
-					
-                    return;
-					
-                }
+                CheckParameters(pruneCutoff, InternalCondition.Prune);
+				if (fileSize < pruneCutoff) return;
 				
                 //<see cref="UniversalHandlersLibrary.ConstParameters.minPruneVal"/> regular pruneCutoff Messages
                 //524288 regular pruneCutoff Errors
 				
-                if (File.Exists(fileToCheck + ".old"))
-                {
-					
-                    File.Delete(fileToCheck + ".old");
-					
-                }
-				
-                File.Copy(fileToCheck, fileToCheck + ".old");
-				
+				var prunedFile = string.Format(CultureInfo.CurrentCulture, "{0}.old", fileToCheck);
+				if (File.Exists(prunedFile)) File.Delete(prunedFile);
+				File.Copy(fileToCheck, prunedFile);
                 File.Delete(fileToCheck);
-				
-                File.WriteAllText(fileToCheck, null);
-				
+                File.WriteAllText(fileToCheck, string.Empty);
             }
-			
         }
+        #endregion
+
+        /// <summary>
+        /// Central writing code for most writing operations required by this library.
+        /// </summary>
+        /// <param name="fileContents">
+        /// Message to write to the file.
+        /// </param>
+        /// <param name="file">
+        /// The file to write to.
+        /// </param>
+        /// <param name="prune">
+        /// Is this operation checking the file to see if it should be pruned?
+        /// </param>
+        /// <remarks>
+        /// Does not check after the file has been written to.
+        /// </remarks>
+        /// <param name="pruneCutoff">
+        /// The file size at which to prune the file.
+        /// </param>
+        internal static void InternalWriter (this Collection<string> fileContents, string file, bool prune, int pruneCutoff)
+        {
+        	fileContents.AddFileContents(file, "\n\n");
+			if (prune) file.PruneCheck(pruneCutoff);
+			fileContents.WriteToFile(file);
+        }
+        #region Return Path Functions, Overloads, and Misc
+		/// <summary>
+		/// Returns the most logical path available for the provided file.
+		/// </summary>
+		/// <param name="fileName">
+		/// The name of the file.
+		/// </param>
+		/// <returns>
+		/// Returns the desired file path of the provided file name.
+		/// </returns>
+		/// <exception cref="T:System.IndexOutOfRangeException">
+		/// Thrown if, when finding the position in the searched folders housing the passed file, this function attempts to use a position that should not exist.
+		/// </exception>
+		internal static string ReturnFilePath(string fileName)
+		{
+			return ReturnFilePath(fileName, GenericFolderOptions.BaseFolderRoot, GenericFolderOptions.NewStyleFileTree, null);
+		}
 		
-    }
-	
+		/// <summary>
+		/// Represents a file extension.
+		/// </summary>
+        internal class FileDefinition
+        {
+        	/// <summary>
+        	/// The extension's directory.
+        	/// </summary>
+        	public string Key { get; set; }
+        	
+        	/// <summary>
+        	/// The extension.
+        	/// </summary>
+        	public string Value { get; set; }
+        	
+        	/// <summary>
+        	/// Represents a file extension.
+        	/// </summary>
+        	/// <param name="key">
+        	/// The extension's directory.
+        	/// </param>
+        	/// <param name="value">
+        	/// The extension.
+        	/// </param>
+        	public FileDefinition(string key, string value)
+        	{
+        		this.Key = key;
+        		this.Value = value;
+        	}
+        }
+
+        /// <summary>
+        /// Returns the most logical path available for the provided file.
+        /// </summary>
+        /// <param name="fileName">
+        /// The name of the file.
+        /// </param>
+        /// <param name = "BaseRoot">
+        /// The root appended to all found file paths
+        /// </param>
+		/// <param name = "directoryHierarchy">
+		/// The list of directories to use.
+		/// </param>
+		/// <param name = "Definitions">
+		/// List of extensions and their respective folder to be used as sorting rules when determining a file path.
+		/// </param>
+        /// <returns>
+        /// Returns the desired file path of the provided file name.
+        /// </returns>
+		/// <exception cref="T:System.IndexOutOfRangeException">
+		/// Thrown if, when finding the position in the searched folders housing the passed file, this function attempts to use a position that should not exist.
+		/// </exception>
+        internal static string ReturnFilePath (string fileName, string BaseRoot, IEnumerable<string> directoryHierarchy, IEnumerable<FileDefinition> Definitions)
+        {
+        	var FileDefinitions = Definitions != null && Definitions.Any() ? Definitions : new List<FileDefinition>
+        	{
+        	    new FileDefinition("text", ".txt"),
+				new FileDefinition("text", ".text"),
+        		new FileDefinition("text", ".dat"),
+        		new FileDefinition("text", ".data"),
+        		new FileDefinition("text", ".log"),
+ 
+        		new FileDefinition("asset", ".jpg"),
+        		new FileDefinition("asset", ".jpeg"),
+        		new FileDefinition("asset", ".bmp"),
+        		new FileDefinition("asset", ".gif"),
+        		new FileDefinition("asset", ".png"),
+        		new FileDefinition("asset", ".ico"),
+                
+        		new FileDefinition("help", "NOTHINGYET!!!!11!!!1"),
+        		
+        		new FileDefinition("backup", ".bak"),
+        		new FileDefinition("backup", ".old")
+        	}.AsEnumerable();
+        	string returnPath = string.Empty;
+        	try
+        	{
+        		returnPath += string.Format(CultureInfo.InvariantCulture, "{0}\\{1}\\{2}", BaseRoot, directoryHierarchy.First(item =>
+					Directory.Exists(string.Format(CultureInfo.InvariantCulture, "{0}\\{1}", BaseRoot, item))
+					&&					
+	        		(
+	        			FileDefinitions.Any(checkedItem => 
+	        		    	(
+	        		        	!checkedItem.Key.Equals("text", StringComparison.OrdinalIgnoreCase)
+				        		? 
+				        			item.Contains(checkedItem.Key, StringComparison.OrdinalIgnoreCase)
+				        		: 
+				        			item.Equals(checkedItem.Key, StringComparison.OrdinalIgnoreCase)
+			        		)
+	        		        && fileName.Contains(checkedItem.Value, StringComparison.OrdinalIgnoreCase) 
+		        		)
+        		    )
+				), fileName);
+        	}
+        	catch (InvalidOperationException) {}
+        	if(string.IsNullOrEmpty(returnPath))
+			{
+				returnPath = Directory.Exists(BaseRoot) ? string.Format(CultureInfo.InvariantCulture, "{0}\\{1}", BaseRoot, fileName) : fileName;
+			}
+			return returnPath;
+        }	
+    }	
+    #endregion
 }

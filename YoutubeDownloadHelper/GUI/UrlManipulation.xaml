@@ -4,12 +4,13 @@
 	Background="#FFF0F0F0"
 	BorderBrush="#FF000000"
 	Title=""
-	Icon="C:\Users\Erik\Documents\GitHub\Youtube-Download-Helper\YoutubeDownloadHelper\Assets\YDHIcon.ico"
+	Icon="C:\Users\Erik\Documents\GitHub\Youtube-Download-Helper\YoutubeDownloadHelper\Icons and Images\YDHIcon.ico"
 	Width="553"
 	x:Name="window1"
 	Closed="window1_Closed"
 	Closing="window1_Closing" xmlns:xctk="http://schemas.xceed.com/wpf/xaml/toolkit"
-	Height="169">
+	Height="169"
+	ResizeMode="NoResize">
 	<Grid>
 		<TabControl
 			Grid.Column="0"
@@ -24,7 +25,7 @@
 					x:Name="bvGrid">
 					<TextBox
 						x:Name="basicUrlText"
-						Text="Example: https://www.youtube.com/watch?v=ft6rWcJIlpU"
+						Text="{Binding BasicText, Mode=OneWay}"
 						FontSize="12"
 						Grid.Column="0"
 						Grid.Row="0"
@@ -33,9 +34,9 @@
 						Width="488"
 						HorizontalAlignment="Right"
 						Margin="0,8,7.99999999999989,0"
-						FontWeight="Light"
-						FontStyle="Italic"
-						TextAlignment="Center"
+						FontWeight="{Binding BasicUrlBoldness, Mode=OneWay}"
+						FontStyle="{Binding BasicUrlFontStyle, Mode=OneWay}"
+						TextAlignment="{Binding BasicUrlTextAlignment, Mode=OneWay}"
 						GotFocus="basicUrlText_TextManipulation"
 						LostFocus="basicUrlText_TextManipulation" />
 					<TextBlock
@@ -61,7 +62,7 @@
 						Height="22" />
 					<ComboBox
 						x:Name="formatComboBox"
-						ItemsSource="{Binding FormatList}"
+						ItemsSource="{Binding FormatList, Mode=OneWay}"
 						Text=""
 						FontSize="11"
 						Grid.Column="0"
@@ -71,7 +72,7 @@
 						Margin="0,34,380.8,0"
 						Width="81"
 						Height="22"
-						SelectedIndex="0"></ComboBox>
+						SelectedIndex="{Binding SelectedFormat, Mode=TwoWay}"></ComboBox>
 					<Button
 						Grid.Column="0"
 						Grid.Row="0"
@@ -85,37 +86,30 @@
 					<TextBlock
 						x:Name="urlTextBlock_Copy1"
 						TextAlignment="Justify"
-						Text="Resolution:"
+						Text="Quality:"
+						Width="58"
+						Height="22"
 						Grid.Column="0"
 						Grid.Row="0"
 						HorizontalAlignment="Left"
 						VerticalAlignment="Top"
-						Margin="166,33,0,0"
-						Width="81"
-						Height="22" />
+						Margin="166,33,0,0" />
 					<xctk:IntegerUpDown
 						Increment="120"
 						Maximum="600"
 						Minimum="144"
 						MouseWheelActiveTrigger="Focused"
-						Value="360"
+						Value="{Binding SelectedResolution, Mode=TwoWay}"
 						FontSize="14"
+						x:Name="basicResolution"
 						Grid.Column="0"
 						Grid.Row="0"
-						HorizontalAlignment="Right"
 						VerticalAlignment="Top"
-						Margin="0,34,219.8,0"
-						Width="58"
 						Height="22"
-						x:Name="basicResolution" />
-					<TextBlock
-						Grid.Column="0"
-						Grid.Row="0"
+						Width="49.6"
 						HorizontalAlignment="Left"
-						VerticalAlignment="Top"
-						Margin="328,34,0,0"
-						Width="196.79999999999996"
-						Height="22"
+						Margin="232,34,0,0" />
+					<TextBlock
 						Foreground="#FF000000"
 						x:Name="basicUserInfoText"
 						IsEnabled="False"
@@ -125,7 +119,26 @@
 						FontStretch="Normal"
 						IsHyphenationEnabled="False"
 						TextAlignment="Center"
-						Text="" />
+						Text=""
+						Grid.Column="0"
+						Grid.Row="0"
+						HorizontalAlignment="Right"
+						VerticalAlignment="Top"
+						Margin="0,34,7.79999999999995,0"
+						Width="136.2"
+						Height="22" />
+					<CheckBox
+						Content="Audio Only"
+						FontSize="14"
+						IsChecked="{Binding AudioOnlyEnabled, Mode=TwoWay}"
+						x:Name="basicAudioOnlyCheckBox"
+						Grid.Column="0"
+						Grid.Row="0"
+						HorizontalAlignment="Left"
+						VerticalAlignment="Top"
+						Margin="290,34,0,0"
+						Width="91"
+						Height="21.999999999999964" />
 				</Grid>
 			</TabItem>
 			<TabItem

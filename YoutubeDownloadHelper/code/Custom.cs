@@ -1,75 +1,90 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Globalization;
 using System.Linq;
+using System.Reflection;
+using System.Security.Permissions;
 using YoutubeExtractor;
+using UniversalHandlersLibrary;
 
 namespace YoutubeDownloadHelper.Code
 {
-	public class VideosToDownload
-	{
-		private ObservableCollection<Video> _items = new ObservableCollection<Video>();
-		
-		/// <summary>
-		/// The items within this collection.
-		/// </summary>
-		public ObservableCollection<Video> Items 
-		{ 
-			get {return _items;}
-			set 
-			{
-				_items = value;
-				new ClassContainer().IOHandlingCode.WriteUrlsToFile(value, false);
-			}
-		}
-		
-		/// <summary>
-		/// This is the video queue.
-		/// </summary>
-		public VideosToDownload()
-		{
-			this._items = new ClassContainer().IOHandlingCode.ReadUrls();
-		}
-	}
-	
+    public class VideosToDownload
+    {
+        private readonly ObservableCollection<Video> _items = new ObservableCollection<Video> ();
+
+        /// <summary>
+        /// The items within this collection.
+        /// </summary>
+        public ObservableCollection<Video> Items { get { return _items; } }
+
+        /// <summary>
+        /// This is the video queue.
+        /// </summary>
+        public VideosToDownload ()
+        {
+            this.Items.ReadUrls();
+        }
+    }
+
     public class Video : INotifyPropertyChanged
     {
-    	private int _position;
-    	
-    	/// <summary>
-    	/// The position of the Video within whatever list it's in.
-    	/// </summary>
-    	public int Position 
-    	{
-    		get{return _position+1;}
-    		set{
-    			_position = value;
-    			RaisePropertyChanged("Position");
-    		}
-    	}
-    	
-    	/// <summary>
-    	/// The string value of the url of this video.
-    	/// </summary>
-    	public string Location { get; private set; }
-    	
-    	/// <summary>
-    	/// The resolution of this video.
-    	/// </summary>
-    	public int Resolution { get; private set; }
-    	
-    	/// <summary>
-    	/// The format (or extension) of the video.
-    	/// </summary>
-    	public VideoType Format { get; private set; }
-    	
-		public override string ToString()
-		{
-			return string.Format(CultureInfo.CurrentCulture, "{0} {1} {2}\n", Location, Resolution, Format);
-		}
+        private int _position;
+
+        /// <summary>
+        /// The position of the Video.
+        /// </summary>
+        /// <remarks>
+        /// This is in relation to it's containing object.
+        /// </remarks>
+        public int Position
+        {
+            get{ return this._position + 1; }
+            set
+            {
+                this._position = value;
+                RaisePropertyChanged("Position");
+            }
+        }
+
+        /// <summary>
+        /// The url location of this video.
+        /// </summary>
+        public string Location { get; private set; }
+
+        /// <summary>
+        /// The video/audio quality this video will be downloaded in.
+        /// </summary>
+        public int Quality { get; private set; }
+
+        /// <summary>
+        /// The format that the GUI will show.
+        /// </summary>
+        public string Format { get { return this.IsAudioFile ? this.AudioFormat.ToString() : this.VideoFormat.ToString(); } }
+
+        /// <summary>
+        /// The format (or extension) of the video.
+        /// </summary>
+        public VideoType VideoFormat { get; private set; }
+
+        /// <summary>
+        /// The format (or extension) of the audio track.
+        /// </summary>
+        public AudioType AudioFormat { get; private set; }
+
+        /// <summary>
+        /// The download process for this video will only return an audio track.
+        /// </summary>
+        public bool IsAudioFile { get; private set; }
+
+        public override string ToString ()
+        {
+            return string.Format(CultureInfo.CurrentCulture, "{0} {1} {2} {3}\n", this.Location, this.Quality, this.Format, this.IsAudioFile);
+        }
 		
-		#region INotifyPropertyChanged Members
+        #region INotifyPropertyChanged Members
 
         public event PropertyChangedEventHandler PropertyChanged;
 
@@ -77,202 +92,441 @@ namespace YoutubeDownloadHelper.Code
 
         #region Methods
 
-        private void RaisePropertyChanged(string propertyName)
+        private void RaisePropertyChanged (string propertyName)
         {
             // take a copy to prevent thread issues
-            PropertyChangedEventHandler handler = PropertyChanged;
+            PropertyChangedEventHandler handler = this.PropertyChanged;
             if (handler != null)
             {
-                handler(this, new PropertyChangedEventArgs(propertyName));
+                handler(this, new PropertyChangedEventArgs (propertyName));
             }
         }
         #endregion
     	
-    	/// <summary>
-    	/// Represents a video through a set of locally held attributes.
-    	/// </summary>
-    	/// <param name="pos">
-    	/// The position of the Video within the current list.
-    	/// </param>
-    	/// <param name="location">
-    	/// The "location" of the video on the internet. In other words, the string representation of the url for the video.
-    	/// </param>
-    	/// <param name="res">
-    	/// The resolution of the video.
-    	/// </param>
-    	/// <param name="format">
-    	/// The format (or extension) of the video.
-    	/// </param>
-    	public Video(int pos, string location, int res, VideoType format)
-    	{
-    		this.Position = pos;
-    		this.Location = location;
-    		this.Resolution = res;
-    		this.Format = format;
-    	}
-    	
-    	
-    	public Video()
-    	{
-    		this.Position = -1;
-    		this.Location = "Invalid Url!";
-    		this.Resolution = 144;
-    		this.Format = VideoType.Unknown;
-    	}
-    	
+        /// <summary>
+        /// Represents a video through a set of locally held attributes.
+        /// </summary>
+        /// <param name="pos">
+        /// The position of the Video within the current list.
+        /// </param>
+        /// <param name="location">
+        /// The "location" of the video on the internet. In other words, the string representation of the url for the video.
+        /// </param>
+        /// <param name="quality">
+        /// The consumption quality of the video.
+        /// </param>
+        /// <param name="format">
+        /// The format (or extension) of the video.
+        /// </param>
+        /// <param name="audioFormat">
+        /// The format (or extension) of the audio track.
+        /// </param>
+        /// <param name="isAudioOnly">
+        /// Dictates whether this video will be downloaded as a full video or only as an audio track.
+        /// </param>
+        public Video (int pos, string location, int quality, VideoType format, AudioType audioFormat, bool isAudioOnly)
+        {
+            this.Position = pos;
+            this.Location = location;
+            this.Quality = quality;
+            this.VideoFormat = format;
+            this.AudioFormat = audioFormat;
+            this.IsAudioFile = isAudioOnly;
+        }
     }
-    
+
     public class Settings : INotifyPropertyChanged
-	{
-    	private bool schedulingEnabled = false;
-    	private string[] saveLocations = new string[2];
-    	private Collection<string> schedulingTimes = new Collection<string>();
-    	
-    	/// <summary>
-    	/// Is the program currently using the scheduling function?
-    	/// </summary>
-    	public bool Scheduling 
-    	{ 
-    		get
-    		{
-    			return schedulingEnabled;
-    		} 
-    		set
-    		{
-    			schedulingEnabled = value;
-    			RaisePropertyChanged("Scheduling");
-    		} 
-    	}
+    {
+        private bool schedulingEnabled;
+        private Collection<string> saveLocations = new Collection<string> { "C:\\", "C:\\" };
+        private readonly Collection<string> schedulingTimes = new Collection<string> 
+        {
+            DateTime.Now.ToString("hh:mm:ss tt", CultureInfo.InvariantCulture),
+            DateTime.Now.AddMinutes(1).ToString("hh:mm:ss tt", CultureInfo.InvariantCulture)
+        };
+        private const string scheduling = "Schedual Downloads";
+        private const string mainDownloadLocation = "Download Location";
+        private const string temporaryDownloadLocation = "Temporary Download Location";
+        private const string schedualStart = "Schedual Time Start";
+        private const string schedualEnd = "Schedual Time End";
+
+        /// <summary>
+        /// The value indicating whether scheduling within the program is enabled.
+        /// </summary>
+        /// <description>
+        /// The user has enabled scheduling.
+        /// </description>
+        public bool Scheduling
+        { 
+            get
+            {
+                return this.schedulingEnabled;
+            } 
+            set
+            {
+                this.schedulingEnabled = value;
+                RaisePropertyChanged("Scheduling");
+            } 
+        }
+
+        /// <summary>
+        /// The save directory where finished files will be moved to.
+        /// </summary>
+        public string MainSaveLocation
+        { 
+            get
+            {
+                return this.saveLocations[0];
+            } 
+            set
+            {
+                this.saveLocations[0] = value;
+                RaisePropertyChanged("MainSaveLocation");
+            } 
+        }
+
+        /// <summary>
+        /// The save directory where files will be downloaded to.
+        /// </summary>
+        public string TemporarySaveLocation
+        { 
+            get
+            {
+                return this.saveLocations[1];
+            } 
+            set
+            {
+                this.saveLocations[1] = value;
+                RaisePropertyChanged("TemporarySaveLocation");
+            } 
+        }
+
+        /// <summary>
+        /// An array containing the scheduling times.
+        /// </summary>
+        public Collection<string> Schedule
+        { 
+            get { return this.schedulingTimes; }
+            //TO-DO: IMPLIMENT SCHEDULING.
+        }
 		
-		/// <summary>
-		/// The save directory where finished files will be moved to.
-		/// </summary>
-		public string MainSaveLocation
-    	{ 
-    		get
-    		{
-    			return saveLocations[0];
-    		} 
-    		set
-    		{
-    			saveLocations[0] = value;
-    			RaisePropertyChanged("MainSaveLocation");
-    		} 
-    	}
-		
-		/// <summary>
-		/// The temporary save directory where files will be downloaded to.
-		/// </summary>
-		public string TemporarySaveLocation
-    	{ 
-    		get
-    		{
-    			return saveLocations[1];
-    		} 
-    		set
-    		{
-    			saveLocations[1] = value;
-    			RaisePropertyChanged("TemporarySaveLocation");
-    		} 
-    	}
-		
-		/// <summary>
-		/// An array containing the start of scheduling and the end of scheduling.
-		/// </summary>
-		public Collection<string> Schedule
-    	{ 
-    		get
-    		{
-    			return schedulingTimes;
-    		} 
-    		set
-    		{
-    			schedulingTimes = value;
-    		} 
-    	}
-		
-		#region INotifyPropertyChanged Members
+        #region INotifyPropertyChanged Members
 
         public event PropertyChangedEventHandler PropertyChanged;
 
         #endregion
-
         #region Methods
 
-        private void RaisePropertyChanged(string propertyName)
+        private void RaisePropertyChanged (string propertyName)
         {
             // take a copy to prevent thread issues
-            PropertyChangedEventHandler handler = PropertyChanged;
+            PropertyChangedEventHandler handler = this.PropertyChanged;
             if (handler != null)
             {
-                handler(this, new PropertyChangedEventArgs(propertyName));
+                handler(this, new PropertyChangedEventArgs (propertyName));
             }
         }
         #endregion
-		
-		/// <summary>
-		/// The container for user-defined program settings.
-		/// </summary>
-		/// <param name="scheduling">
-		/// The user defined value for whether scheduling is enabled.
-		/// </param>
-		/// <param name="mainSaveLoc">
-		/// The user defined value for the primary save location.
-		/// </param>
-		/// <param name="tempSaveLoc">
-		/// The user defined value for the secondary save location.
-		/// </param>
-		/// <param name="schedule">
-		/// The user defined start/end time of scheduling.
-		/// </param>
-		public Settings(bool scheduling, string mainSaveLoc, string tempSaveLoc, Collection<string> schedule)
-		{
-			
-			this.Scheduling = scheduling;
-			this.MainSaveLocation = mainSaveLoc;
-			this.TemporarySaveLocation = tempSaveLoc;
-			this.Schedule = schedule;
-			
-		}
-	}
-    
+        #region Collection Functions and Overloads
+        /// <summary>
+        /// Convert the current settings into an enumerable.
+        /// </summary>
+        /// <returns>
+        /// Returns a collection of objects which represent the individual user-settings in a format suitable for use in the registry.
+        /// </returns>
+        public IEnumerable<RegistryEntry> AsEnumerable ()
+        {
+            var returnValue = new List<RegistryEntry> 
+            {
+        		{ new RegistryEntry(scheduling, this.Scheduling) },
+        		{ new RegistryEntry(mainDownloadLocation, this.MainSaveLocation) },
+        		{ new RegistryEntry(temporaryDownloadLocation, this.TemporarySaveLocation) },
+        		{ new RegistryEntry(schedualStart, this.schedulingTimes[0]) },
+        		{ new RegistryEntry(schedualEnd, this.schedulingTimes[1]) }
+            }.AsEnumerable();
+            return returnValue;
+        }
+        
+        /// <summary>
+        /// Replaces these settings with a collection of objects with comperable entries.
+        /// </summary>
+        /// <param name="newSettings">
+        /// The object whose values you will replace these settings with.
+        /// </param>
+        /// <returns>
+        /// Returns this settings container with the values of the provided object.
+        /// </returns>
+        /// <exception cref="T:YoutubeDownloadHelper.ParsingException">
+        /// Thrown if even a single value in the provided object does not contain a "Settings definition"; that is, it cannot be parsed.
+        /// </exception>
+        public Settings Replace (IEnumerable<RegistryEntry> newSettings)
+        {
+        	return this.Replace(newSettings.GetEnumerator());
+        }
+
+        /// <summary>
+        /// Replaces these settings with a collection of objects with comperable entries.
+        /// </summary>
+        /// <param name="newSettings">
+        /// The object whose values you will replace these settings with.
+        /// </param>
+        /// <returns>
+        /// Returns this settings container with the values of the provided object.
+        /// </returns>
+        /// <exception cref="T:YoutubeDownloadHelper.ParsingException">
+        /// Thrown if even a single value in the provided object does not contain a "Settings definition"; that is, it cannot be parsed.
+        /// </exception>
+        public Settings Replace (IEnumerator<RegistryEntry> newSettings)
+        {
+            for (var position = newSettings; position.MoveNext();)
+            {
+            	var currentItem = position.Current;
+                string name = currentItem.Name;
+                var valueAsString = currentItem.Value.ToString();
+                if (!string.IsNullOrEmpty(valueAsString))
+                {
+                    switch (name)
+                    {
+                        case scheduling:
+                            this.Scheduling = bool.Parse(valueAsString);
+                            break;
+                        case mainDownloadLocation:
+                            this.MainSaveLocation = valueAsString;
+                            break;
+                        case temporaryDownloadLocation:
+                            this.TemporarySaveLocation = valueAsString;
+                            break;
+                        case schedualStart:
+                            if (this.Schedule.Any()) this.Schedule.Insert(0, valueAsString);
+                            else this.Schedule.Add(valueAsString);
+                            break;
+                        case schedualEnd:
+                            if (this.Schedule.Count() >= 2) this.Schedule.Insert(1, valueAsString);
+                            else this.Schedule.Add(valueAsString);
+                            break;
+                        default:
+                            throw new ParsingException (string.Format(CultureInfo.CurrentCulture, "'{0}' could not be assimilated into the current instance of settings because no value in settings contain '{0}'", name));
+                    }
+                }
+            }
+            return this;
+        }
+        #endregion
+
+        /// <summary>
+        /// The container for user-defined program settings.
+        /// </summary>
+        public Settings () {}
+
+        /// <summary>
+        /// The container for user-defined program settings.
+        /// </summary>
+        /// <param name="scheduling">
+        /// The user defined value for whether scheduling is enabled.
+        /// </param>
+        /// <param name="mainSaveLoc">
+        /// The user defined value for the primary save location.
+        /// </param>
+        /// <param name="tempSaveLoc">
+        /// The user defined value for the secondary save location.
+        /// </param>
+        /// <param name="schedule">
+        /// The user defined start/end time of scheduling.
+        /// </param>
+        public Settings (bool scheduling, string mainSaveLoc, string tempSaveLoc, Collection<string> schedule)
+        {
+            this.Scheduling = scheduling;
+            this.MainSaveLocation = mainSaveLoc;
+            this.TemporarySaveLocation = tempSaveLoc;
+            this.schedulingTimes = schedule;
+        }
+    }
+
     public class ClassContainer
     {
-    	
     	/// <summary>
-    	/// Conversion class.
+    	/// Pre-Baked Exceptions class.
     	/// </summary>
-    	internal IConversion ConversionCode { get; private set; }
+    	public IError BakedExceptionCode { get; private set; }
     	
     	/// <summary>
     	/// Storage class.
     	/// </summary>
-    	internal IStorage IOHandlingCode { get; private set; }
+    	public IStorage IOCode { get; private set; }
     	
+        /// <summary>
+        /// Download class.
+        /// </summary>
+        public IDownload DownloadingCode { get; private set; }
+
+    	
+        /// <summary>
+        /// Backend container of classes to make the programmer's life a little easier.
+        /// </summary>
+        public ClassContainer ()
+        {
+            this.DownloadingCode = new Download ();
+            this.IOCode = new Storage();
+            this.BakedExceptionCode = new PrebakedError ();
+        }
+    }
+
+    /// <summary>
+    /// Originating party catagory.
+    /// </summary>
+    public enum Party
+    {
+        /// <summary>
+        /// First Party.
+        /// </summary>
+        First,
+        /// <summary>
+        /// Second Party.
+        /// </summary>
+        Second,
+        /// <summary>
+        /// Third Party.
+        /// </summary>
+        Third
+    }
+
+    [PermissionSetAttribute(SecurityAction.Demand, Name = "FullTrust")]
+    public class ProjectAssemblies
+    {
+        private readonly Collection<Library> assemblyStore = new Collection<Library> ();
+
+        /// <summary>
+        /// All assemblies used in the project.
+        /// </summary>
+        /// <remarks>
+        ///  Excludes the project assembly itself and all system assemblies.
+        /// </remarks>
+        public IEnumerable<Library> Assemblies { get { return assemblyStore; } }
+        
+        /// <summary>
+        /// A container for the external assemblies referenced in the project.
+        /// </summary>
+        /// <param name="doNotStoreAssemblyReferences">
+        /// Do not store any of the read libraries as an assembly reference.
+        /// </param>
+        /// <exception cref="T:YoutubeDownloadHelper.ParsingException">
+        /// Thrown during the intialization process of this class if some portion fails.
+        /// </exception>
+        public ProjectAssemblies (bool doNotStoreAssemblyReferences)
+        {
+			var currentAssembly = Assembly.GetExecutingAssembly();
+			var allAssemblies = currentAssembly.GetManifestResourceNames().Where(n => n.EndsWith(".dll", StringComparison.OrdinalIgnoreCase)).GetEnumerator();
+            for (var position = allAssemblies; position.MoveNext();)
+            {
+                string resource = position.Current;
+                using (var stream = currentAssembly.GetManifestResourceStream(resource))
+                {
+                    if (stream == null) continue;
+                    try
+                    {
+                        var bytes = new byte[stream.Length];
+                        stream.Read(bytes, 0, bytes.Length);
+                        assemblyStore.Add(new Library (Assembly.ReflectionOnlyLoad(bytes)));
+                        if(doNotStoreAssemblyReferences) assemblyStore.Last().ReleaseAssembly();
+                    }
+                    catch (Exception ex)
+                    {
+                        System.Diagnostics.Debug.Print(string.Format(CultureInfo.CurrentCulture, "Failed to load: {0}, Exception: {1}", resource, ex.Message));
+                        throw new ParsingException (string.Format(CultureInfo.CurrentCulture, "While pulling the libraries from the program for use in the frontend, an error caused the process to stop. ({0})", ex.Message), ex);
+                    }
+                    stream.Close();
+                }
+            }
+        }
+
+        /// <summary>
+        /// Generates a table-like string of assembly's names and versions.
+        /// </summary>
+        /// <param name="partyToGet">
+        /// With whom the libraries you are seeking originated from.
+        /// </param>
+        /// <returns>
+        /// Returns a list of assembly names and versions.
+        /// </returns>
+        public string ToString (Party partyToGet)
+        {
+        	var librariesToCheck = new List<string> { "UniversalHandlersLibrary" }.AsReadOnly();
+            string returnString = string.Empty;
+            var compiledParties = this.Assemblies.Where(item => partyToGet == Party.Third ? !librariesToCheck.Any(checkedItem => item.Name.Contains(checkedItem, StringComparison.OrdinalIgnoreCase)) : librariesToCheck.Any(checkedItem => item.Name.Contains(checkedItem, StringComparison.OrdinalIgnoreCase)));
+            for (var position = compiledParties.GetEnumerator(); position.MoveNext();)
+            {
+                var currentLibrary = position.Current;
+                returnString += string.Format(CultureInfo.CurrentCulture, currentLibrary != compiledParties.Last() ? "{0}: {1}\n" : "{0}: {1}", currentLibrary.Name, currentLibrary.Version);
+            }
+            return returnString;
+        }
+    }
+
+    public class Library
+    {
+    	private AssemblyName assembly = new AssemblyName();
     	/// <summary>
-    	/// Validation class.
+    	/// The actual assembly this library is based on.
     	/// </summary>
-    	internal IValidation ValidationCode { get; private set; }
-    	
-    	/// <summary>
-    	/// Download class.
-    	/// </summary>
-    	internal IDownload DownloadingCode { get; private set; }
-    	
-    	
-	    /// <summary>
-	    /// Backend container of classes to make the programmer's life a little easier.
-	    /// </summary>
-    	public ClassContainer()
-    	{
-    		
-    		this.ConversionCode = new Conversion();
-    		this.ValidationCode = new Validation();
-    		this.IOHandlingCode = new Storage(this.ConversionCode, this.ValidationCode);
-    		this.DownloadingCode = new Download(this.IOHandlingCode, this.ConversionCode);
-    		
+    	/// <description>
+    	/// This is held only because a call to grab this assembly again would throw an exception. So, as a precaution, the actual assembly file is held internally.
+    	/// </description>
+    	/// <remarks>
+    	/// This is NOT to be used regularly. This is mainly if a functionality has not yet been implimented or you need something very specific from the actual assembly rarely. Otherwise all functions should use other members, and not this one.
+    	/// </remarks>
+    	public AssemblyName Assembly 
+    	{ 
+    		get
+			{
+				if (this.assembly == null)
+				{
+					FatalException thrownException = new FatalException("The assembly reference you are attempting to access has been nullified or was never initiated.");
+					(new ClassContainer()).BakedExceptionCode.Alert(thrownException);
+					throw thrownException;
+				}
+				return this.assembly;
+			}
+    		private set
+    		{
+    			this.assembly = value;
+    		}
     	}
     	
+        /// <summary>
+        /// The name of the referenced Assembly.
+        /// </summary>
+        public string Name { get; private set; }
+
+        /// <summary>
+        /// The version of the referenced Assembly.
+        /// </summary>
+        public Version Version { get; private set; }
+
+        /// <summary>
+        /// Container for an Assembly file.
+        /// </summary>
+        /// <param name="file">
+        /// The Assembly reference.
+        /// </param>
+        public Library (Assembly file)
+        {
+            this.Assembly = file.GetName();
+            this.Name = this.Assembly.Name;
+            this.Version = this.Assembly.Version;
+        }
+        
+        public void Modify (string name, Version version)
+        {
+        	this.Name = name;
+        	this.Version = version;
+        }
+        
+        /// <summary>
+        /// Use this to manually free up resources by nullifying the held assembly.
+        /// </summary>
+        public void ReleaseAssembly()
+        {
+        	this.Assembly = null;
+        }
     }
-    
 }
