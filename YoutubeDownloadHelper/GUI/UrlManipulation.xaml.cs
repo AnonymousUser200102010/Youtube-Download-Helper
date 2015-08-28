@@ -90,8 +90,10 @@ namespace YoutubeDownloadHelper.Gui
         private void basicManipulateUrlButton_Click (object sender, RoutedEventArgs e)
         {
             var basicQualityValue = (int)this.urlShapingVars.SelectedResolution;
+			var formatType = this.urlShapingVars.AudioOnlyEnabled ? typeof(AudioType).ToString() : typeof(VideoType).ToString();
+			var formatAsString = formatType.Contains("audio", StringComparison.OrdinalIgnoreCase) ? "audio track" : "video";
 			
-            if (!string.IsNullOrWhiteSpace(this.urlShapingVars.BasicText) && !this.urlShapingVars.BasicText.Contains("example", StringComparison.OrdinalIgnoreCase) && basicQualityValue >= UrlShaping.MinimumQuality && basicQualityValue <= UrlShaping.MaximumQuality)
+            if (!string.IsNullOrWhiteSpace(this.urlShapingVars.BasicText) && !this.urlShapingVars.BasicText.Contains("example", StringComparison.OrdinalIgnoreCase) && basicQualityValue >= UrlShaping.MinimumQuality[formatType] && basicQualityValue <= UrlShaping.MaximumQuality)
             {
                 try
                 {
@@ -124,7 +126,14 @@ namespace YoutubeDownloadHelper.Gui
             else if (basicQualityValue >= UrlShaping.MaximumQuality)
             {
                 this.basicUserInfoText.Text = "Generic Error";
-                Xceed.Wpf.Toolkit.MessageBox.Show("HD video resolution is currently unsupported", "Resolution Unsupported", MessageBoxButton.OK, MessageBoxImage.Stop);
+                Xceed.Wpf.Toolkit.MessageBox.Show(string.Format(CultureInfo.CurrentCulture, "The quality you set for this {0} is too high.", formatAsString), "Quality Unsupported", MessageBoxButton.OK, MessageBoxImage.Stop);
+                this.urlShapingVars.SelectedResolution = UrlShaping.MaximumQuality;
+            }
+            else if (basicQualityValue < UrlShaping.MinimumQuality[formatType])
+            {
+            	this.basicUserInfoText.Text = "Generic Error";
+                Xceed.Wpf.Toolkit.MessageBox.Show(string.Format(CultureInfo.CurrentCulture, "The quality you set for this {0} is too low.", formatAsString), "Quality Unsupported", MessageBoxButton.OK, MessageBoxImage.Stop);
+                this.urlShapingVars.SelectedResolution = UrlShaping.MinimumQuality[formatType];
             }
             else
             {
@@ -180,7 +189,7 @@ namespace YoutubeDownloadHelper.Gui
         /// <summary>
         /// Returns the lowest quality the user is allowed to set a video to in the basic tab.
         /// </summary>
-        public static int MinimumQuality { get { return 144; } }
+        public static IDictionary<string, int> MinimumQuality { get { return new Dictionary<string, int> { { typeof(VideoType).ToString(), 144 }, { typeof(AudioType).ToString(), 24 } }; } }
         
         /// <summary>
         /// Returns the highest quality the user is allowed to set a video to in the basic tab.

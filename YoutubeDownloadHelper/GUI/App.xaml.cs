@@ -14,7 +14,17 @@ namespace YoutubeDownloadHelper
         /// <summary>
         /// The (whole) application is currently debugging.
         /// </summary>
-        public static bool IsDebugging { get; private set; }
+        public static bool IsDebugging 
+        { 
+        	get
+        	{
+        		var debug = false;
+        		#if DEBUG
+	            debug = true;
+	            #endif
+	            return debug;
+        	} 
+        }
 
         /// <summary>
         /// Program entry point.
@@ -22,12 +32,6 @@ namespace YoutubeDownloadHelper
         [STAThread]
         private static void Main (string[] args)
         {
-            #if DEBUG
-            IsDebugging = true;
-            #else
-            IsDebugging = false;
-            #endif
-			
             HandleArgs(args);
             string programName = System.Reflection.Assembly.GetExecutingAssembly().GetName().Name;
             

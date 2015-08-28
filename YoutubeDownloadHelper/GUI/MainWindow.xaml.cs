@@ -122,6 +122,7 @@ namespace YoutubeDownloadHelper.Gui
 		    if (this.MainProgramElements.Videos.Any())
 		    {
 	    		this.MainProgramElements.WindowEnabled = false;
+	    		this.MainProgramElements.CurrentDownloadOutputText = "Starting Downloading Process....";
 	    		int selectedIndex = this.queueListView.SelectedIndex;
 	    		Task.Factory.StartNew(() => { (new ClassContainer ()).DownloadingCode.DownloadHandler(this, selectedIndex); });
 	    	}
@@ -130,7 +131,8 @@ namespace YoutubeDownloadHelper.Gui
         void aboutMenuItem_Click (object sender, RoutedEventArgs e)
         {
 			this.embeddedLibraries = this.embeddedLibraries ?? new ProjectAssemblies(true);
-            (new About (System.Diagnostics.FileVersionInfo.GetVersionInfo(System.Reflection.Assembly.GetExecutingAssembly().Location), this.embeddedLibraries)).Show();
+            (new About (this, System.Diagnostics.FileVersionInfo.GetVersionInfo(System.Reflection.Assembly.GetExecutingAssembly().Location), this.embeddedLibraries)).Show();
+            this.MainProgramElements.WindowEnabled = false;
         }
     }
 
@@ -155,10 +157,6 @@ namespace YoutubeDownloadHelper.Gui
             set
             {
                 this.isWindowEnabled = value;
-                if (!value)
-                {
-                	this.CurrentDownloadOutputText = "Starting Downloading Process....";
-                }
                 this.CurrentDownloadProgress = 0;
                 RaisePropertyChanged("WindowEnabled");
             }

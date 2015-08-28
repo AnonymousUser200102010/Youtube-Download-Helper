@@ -95,9 +95,7 @@
 						VerticalAlignment="Top"
 						Margin="166,33,0,0" />
 					<xctk:IntegerUpDown
-						Increment="120"
 						Maximum="600"
-						Minimum="144"
 						MouseWheelActiveTrigger="Focused"
 						Value="{Binding SelectedResolution, Mode=TwoWay}"
 						FontSize="14"
@@ -108,7 +106,9 @@
 						Height="22"
 						Width="49.6"
 						HorizontalAlignment="Left"
-						Margin="232,34,0,0" />
+						Margin="232,34,0,0"
+						Minimum="24"
+						Increment="120" />
 					<TextBlock
 						Foreground="#FF000000"
 						x:Name="basicUserInfoText"

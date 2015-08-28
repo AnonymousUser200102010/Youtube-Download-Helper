@@ -24,7 +24,6 @@ namespace YoutubeDownloadHelper.Code
 
         public async void DownloadHandler (MainWindow mainWindow, int selectedIndex)
         {
-        	Console.WriteLine(mainWindow.Dispatcher.CheckAccess());
             var urlList = new Collection<Video> ();
             var finishedUrls = new Collection<Video> ();
             mainWindow.Dispatcher.Invoke((Action)(() =>
@@ -53,7 +52,7 @@ namespace YoutubeDownloadHelper.Code
                 catch (Exception ex)
                 {	
                     var exceptionMessage = ex.Message;
-                    retryCount[position]++;
+                    retryCount[position] += ex is NotSupportedException ? maxRetrys + 1 : 1;
                     if (retryCount[position] <= maxRetrys)
                     {
                         mainWindow.Dispatcher.Invoke((Action)(() =>
@@ -65,7 +64,7 @@ namespace YoutubeDownloadHelper.Code
                     }
                     else
                     {	
-                        if (finishedUrls.Count < 5) finishedUrls.Clear();                   	
+                        if (finishedUrls.Count < 5) finishedUrls.Clear();
                         mainWindow.Dispatcher.Invoke((Action)(() =>
                         {
                             mainWindow.MainProgramElements.CurrentDownloadOutputText = exceptionMessage.Truncate(100);
@@ -96,162 +95,113 @@ namespace YoutubeDownloadHelper.Code
 
         private async Task<bool> DownloadVideo (Video video, MainWindow mainWindow)
         {       	
-		
-            /*
-		    * Get the available video formats.
-		    * We'll work with them in the video and audio download examples.
-		    */
             IEnumerable<VideoInfo> videoInfos = DownloadUrlResolver.GetDownloadUrls(video.Location, false);
 		    
-            if ((video.VideoFormat != VideoType.Mp4 && videoInfos.Any(info => (info.Resolution == video.Quality && info.VideoType == video.VideoFormat)) || video.VideoFormat == VideoType.Mp4 && video.Quality == 360) || video.IsAudioFile)
+            VideoInfo currentVideo = videoInfos.FirstOrDefault(info => !video.IsAudioFile ? (info.VideoType == video.VideoFormat && info.Resolution == video.Quality) : (video.AudioFormat == AudioType.Mp3 && info.AudioType == video.AudioFormat && info.AudioBitrate == video.Quality));
+            
+            if (currentVideo != default(VideoInfo) || (video.VideoFormat == VideoType.Mp4 && video.Quality == 360 && !video.IsAudioFile))
             {
-                VideoInfo currentVideo = videoInfos.First(info => !video.IsAudioFile ? (info.VideoType == video.VideoFormat && info.Resolution == video.Quality) : (info.AudioType == video.AudioFormat && info.AudioBitrate == video.Quality));
                 mainWindow.Dispatcher.Invoke((Action)(() =>
                 {
-                    mainWindow.MainProgramElements.CurrentDownloadOutputText = string.Format(CultureInfo.InstalledUICulture, "Downloading '{0}{1}' at {2}{3}", currentVideo.Title.Truncate(56), currentVideo.VideoExtension, currentVideo.Resolution, !video.IsAudioFile ? "p resolution" : " bitrate");
+            		mainWindow.MainProgramElements.CurrentDownloadOutputText = string.Format(CultureInfo.InstalledUICulture, "Downloading '{0}{1}' at {2}{3}", currentVideo.Title.Truncate(56), !video.IsAudioFile ? currentVideo.VideoExtension : currentVideo.AudioExtension, !video.IsAudioFile ? currentVideo.Resolution : currentVideo.AudioBitrate, !video.IsAudioFile ? "p resolution" : " bitrate");
                 }));
 				
-                //DownloadAudio(videoInfos);
-                await this.Download_Actual(videoInfos, mainWindow, video);
+            	await this.BackgroundDownloader(videoInfos, mainWindow, video);;
                 return true;
-            }
-            
-            if (videoInfos.Where(info => info.VideoType == video.VideoFormat).All(info => info.Resolution != video.Quality) || (video.VideoFormat == VideoType.Mp4 && video.Quality != 360 && !video.IsAudioFile))
+            } 
+            else
             {      	
-                var resolutionsEstablished = new List<int> ();
                 var formatsEstablished = new List<VideoType> ();
-                var audioQualitiesEstablished = new List<AudioType> ();
+                var qualitiesEstablished = new List<int> ();
                 using (StreamWriter outfile = new StreamWriter ("Acceptable Options.txt"))
                 {
-                    outfile.Write(string.Format(CultureInfo.CurrentCulture, "This file will show you all formats available for the current URL, as well as the resolutions that are acceptable for that URL.\n\n{0}:\nVideo Formats:\n", video.Location));
+                    outfile.Write(string.Format(CultureInfo.CurrentCulture, "This file will show you all formats available for the current URL, as well as the resolutions that are acceptable for that URL.\n\n{0}:\n\nVideo Formats:\n", video.Location));
                     for (var position = videoInfos.Where(info => info.VideoType != VideoType.Unknown && formatsEstablished.All(format => info.VideoType != format)).Select(info => info.VideoType).GetEnumerator(); position.MoveNext();)
                     {
                         VideoType format = position.Current;
+                        formatsEstablished.Add(format);
                         switch (format)
                         {
                             case VideoType.Mp4:
                                 outfile.Write(string.Format(CultureInfo.CurrentCulture, "Format: {0} | Resolution: {1}p\n", format, "360"));
                                 break;
                             default:
-                                for (var subPosition = videoInfos.Where(info => info.Resolution >= 144 && info.Resolution < 720 && resolutionsEstablished.All(res => info.Resolution != res) && info.VideoType == format).Select(info => info.Resolution).GetEnumerator(); position.MoveNext();)
-                                {
-                                    int resolution = subPosition.Current;
-                                    outfile.Write(string.Format(CultureInfo.CurrentCulture, "Format: {0} | Resolution: {1}p\n", format, resolution));
-                                    resolutionsEstablished.Add(resolution);
-                                }
+                                var validVideos = videoInfos.Where(videoInfo => (videoInfo.Resolution >= UrlShaping.MinimumQuality[typeof(VideoType).ToString()] && videoInfo.Resolution <= UrlShaping.MaximumQuality) && videoInfo.VideoType.Equals(format) && qualitiesEstablished.All(quality => videoInfo.Resolution != quality)).Select(videoInfo => videoInfo.Resolution);
+								foreach (int currentResolution in validVideos)
+								{
+									outfile.Write(string.Format(CultureInfo.CurrentCulture, "Format: {0} | Resolution: {1}p\n", format, currentResolution));
+								}
                                 break;
                         }
-                        resolutionsEstablished.Clear();
-                        formatsEstablished.Add(format);
+                        qualitiesEstablished.Clear();
                     }
-                    outfile.Write("Audio Formats:\n");
+                    
+                    outfile.Write("\nAudio Formats:\n");
+                    var audioQualitiesEstablished = new List<AudioType> ();
+                    
                     for (var position = videoInfos.Where(info => info.AudioType != AudioType.Unknown && audioQualitiesEstablished.All(quality => info.AudioType != quality)).Select(info => info.AudioType).GetEnumerator(); position.MoveNext();)
                     {
                         AudioType format = position.Current;
-                        for (var subPosition = videoInfos.Where(info => resolutionsEstablished.All(bitrate => info.AudioBitrate != bitrate) && info.AudioType == format).Select(info => info.AudioBitrate).GetEnumerator(); position.MoveNext();)
-                        {
-                            int resolution = subPosition.Current;
-                            outfile.Write(string.Format(CultureInfo.CurrentCulture, "Format: {0} | Bitrate: {1}p\n", format, resolution));
-                            resolutionsEstablished.Add(resolution);
-                        }
-                        resolutionsEstablished.Clear();
                         audioQualitiesEstablished.Add(format);
+						var validAudioTracks = videoInfos.Where(videoInfo => (videoInfo.AudioBitrate >= UrlShaping.MinimumQuality[typeof(AudioType).ToString()] && videoInfo.AudioBitrate <= UrlShaping.MaximumQuality) && videoInfo.AudioType.Equals(format)).Select(videoInfo => videoInfo.AudioBitrate);
+						foreach (int currentQuality in validAudioTracks)
+						{
+							outfile.Write(string.Format(CultureInfo.CurrentCulture, "Format: {0} | Bitrate: {1}\n", format, currentQuality));
+						}
+                        qualitiesEstablished.Clear();
                     }
                 }
                 throw new NotSupportedException ("An acceptable options file has been exported to the program's root folder. Check there for more information.");
             }
-            return false;
         }
 
-        private async Task<int> Download_Actual (IEnumerable<VideoInfo> videoInfos, MainWindow mainWindow, Video videoToUse)
+        private async Task<int> BackgroundDownloader (IEnumerable<VideoInfo> videoInfos, MainWindow mainWindow, Video videoToUse)
         {
-            /*
-             * Select the first .mp4 video with 360p resolution
-             */
-            VideoInfo video = videoInfos
-                .First(info => info.VideoType == videoToUse.VideoFormat && info.Resolution == videoToUse.Quality);
-
-            /*
-             * If the video has a decrypted signature, decipher it
-             */
-            if (video.RequiresDecryption) DownloadUrlResolver.DecryptDownloadUrl(video);
-
-            /*
-             * Create the video downloader.
-             * The first argument is the video to download.
-             * The second argument is the path to save the video file.
-             */
+            VideoInfo video = videoInfos.First(info => !videoToUse.IsAudioFile ? (info.VideoType == videoToUse.VideoFormat && info.Resolution == videoToUse.Quality) : (info.AudioType == videoToUse.AudioFormat && info.AudioBitrate == videoToUse.Quality));
             
-            var classCont = new ClassContainer();
+            if (video.RequiresDecryption) DownloadUrlResolver.DecryptDownloadUrl(video);
+            return await FinalDownloadStep(mainWindow, video, videoToUse.IsAudioFile);
+        }
+        
+        private async Task<int> FinalDownloadStep (MainWindow mainWindow, VideoInfo video, bool audioTrack)
+        {
+        	var classCont = new ClassContainer();
             Settings settings = classCont.IOCode.RegistryRead(new Settings());
-            var videoName = RemoveIllegalPathCharacters(video.Title) + video.VideoExtension;
+            var videoName = string.Format("{0}{1}", RemoveIllegalPathCharacters(video.Title), !audioTrack ? video.VideoExtension : video.AudioExtension);
             var videoPath = Path.Combine(settings.TemporarySaveLocation, videoName);
             var finalPath = Path.Combine(settings.MainSaveLocation, videoName);
-            
-            if (!File.Exists(finalPath))
+        	
+        	if (!File.Exists(finalPath))
             {
-                var videoDownloader = new VideoDownloader (video, videoPath);
-                // Register the ProgressChanged event and print the current progress
-                mainWindow.Dispatcher.Invoke((Action)(() =>
-                {
-                    videoDownloader.DownloadProgressChanged += (
-                        (sender, args) => mainWindow.MainProgramElements.CurrentDownloadProgress = (int)args.ProgressPercentage
-                    );
-                }));
-				
-                /*
-	             * Execute the video downloader.
-	             * For GUI applications note, that this method runs synchronously.
-	             */
-                videoDownloader.Execute();
-                if (!videoPath.Equals(finalPath, StringComparison.OrdinalIgnoreCase)) File.Move(videoPath, finalPath);
+        		if(audioTrack)
+        		{
+			        var audioDownloader = new AudioDownloader (video, videoPath);;
+			        
+			        mainWindow.Dispatcher.Invoke((Action)(() =>
+		            {
+		            	audioDownloader.AudioExtractionProgressChanged += 
+		            		(sender, args) => mainWindow.MainProgramElements.CurrentDownloadProgress = (int)(85 + args.ProgressPercentage * 0.15);
+		            }));
+			        
+			        audioDownloader.Execute();
+        		}
+        		else
+        		{
+        			var videoDownloader = new VideoDownloader (video, videoPath);
+        			
+	                mainWindow.Dispatcher.Invoke((Action)(() =>
+	                {
+	                    videoDownloader.DownloadProgressChanged += (
+	                        (sender, args) => mainWindow.MainProgramElements.CurrentDownloadProgress = (int)args.ProgressPercentage
+	                    );
+	                }));
+	                
+	                videoDownloader.Execute();
+        		}
+        		if (!videoPath.Equals(finalPath, StringComparison.OrdinalIgnoreCase)) File.Move(videoPath, finalPath);
             }
-            return 0;
+        	return 0;
         }
-		
-        //				TBD
-        //        private void DownloadAudio (IEnumerable<VideoInfo> videoInfos)
-        //        {
-        //            /*
-        //             * We want the first extractable video with the highest audio quality.
-        //             */
-        //            VideoInfo video = videoInfos
-        //                .Where(info => info.CanExtractAudio)
-        //                .OrderByDescending(info => info.AudioBitrate)
-        //                .First();
-        //
-        //            /*
-        //             * If the video has a decrypted signature, decipher it
-        //             */
-        //            if (video.RequiresDecryption)
-        //            {
-        //                DownloadUrlResolver.DecryptDownloadUrl(video);
-        //            }
-        //
-        //            /*
-        //             * Create the audio downloader.
-        //             * The first argument is the video where the audio should be extracted from.
-        //             * The second argument is the path to save the audio file.
-        //             */
-        //
-        //            var audioDownloader = new AudioDownloader (video, Path.Combine(MainForm.tempDownloadLocation, RemoveIllegalPathCharacters(video.Title) + video.AudioExtension));
-        //
-        //            // Register the progress events. We treat the download progress as 85% of the progress
-        //            // and the extraction progress only as 15% of the progress, because the download will
-        //            // take much longer than the audio extraction.
-        //
-        //            //audioDownloader.DownloadProgressChanged += (sender, args) => MainForm.downloadFinishedPercent = (int)(args.ProgressPercentage * 0.85);
-        //
-        //            audioDownloader.AudioExtractionProgressChanged += (sender, args) => MainForm.downloadFinishedPercent = (int)(85 + args.ProgressPercentage * 0.15);
-        //
-        //            /*
-        //             * Execute the audio downloader.
-        //             * For GUI applications note, that this method runs synchronously.
-        //             */
-        //            audioDownloader.Execute();
-        //
-        //        }
-        //
     }
 }
 

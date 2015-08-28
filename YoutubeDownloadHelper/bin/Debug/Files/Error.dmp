@@ -1,51 +1,26 @@
-[August 27 02:30:24 PM:
+[August 27 07:13:23 PM:
 
 Exception Message:
 
-Unable to connect to the remote server
+An acceptable options file has been exported to the program's root folder. Check there for more information.
 
 Exception Stack Trace:
 
-   at System.Net.WebClient.DownloadDataInternal(Uri address, WebRequest& request)
-   at System.Net.WebClient.DownloadString(Uri address)
-   at System.Net.WebClient.DownloadString(String address)
-   at YoutubeExtractor.HttpHelper.DownloadString(String url) in c:\Users\Erik\Documents\GitHub\Youtube-Download-Helper\YoutubeExtractor\YoutubeExtractor\YoutubeExtractor\HttpHelper.cs:line 28
-   at YoutubeExtractor.DownloadUrlResolver.LoadJson(String url) in c:\Users\Erik\Documents\GitHub\Youtube-Download-Helper\YoutubeExtractor\YoutubeExtractor\YoutubeExtractor\DownloadUrlResolver.cs:line 306
-   at YoutubeExtractor.DownloadUrlResolver.GetDownloadUrls(String videoUrl, Boolean decryptSignature) in c:\Users\Erik\Documents\GitHub\Youtube-Download-Helper\YoutubeExtractor\YoutubeExtractor\YoutubeExtractor\DownloadUrlResolver.cs:line 116
-   at YoutubeDownloadHelper.Code.Download.<DownloadVideo>d__45.MoveNext() in c:\Users\Erik\Documents\GitHub\Youtube-Download-Helper\YoutubeDownloadHelper\code\Download.cs:line 0
+   at YoutubeDownloadHelper.Code.Download.<DownloadVideo>d__3e.MoveNext() in c:\Users\Erik\Documents\GitHub\Youtube-Download-Helper\YoutubeDownloadHelper\code\Download.cs:line 154
 --- End of stack trace from previous location where exception was thrown ---
    at System.Runtime.CompilerServices.TaskAwaiter.ThrowForNonSuccess(Task task)
    at System.Runtime.CompilerServices.TaskAwaiter.HandleNonSuccessAndDebuggerNotification(Task task)
-   at YoutubeDownloadHelper.Code.Download.<DownloadHandler>d__15.MoveNext() in c:\Users\Erik\Documents\GitHub\Youtube-Download-Helper\YoutubeDownloadHelper\code\Download.cs:line 51Inner Exception Message:
+   at YoutubeDownloadHelper.Code.Download.<DownloadHandler>d__15.MoveNext() in c:\Users\Erik\Documents\GitHub\Youtube-Download-Helper\YoutubeDownloadHelper\code\Download.cs:line 50]
 
-No connection could be made because the target machine actively refused it 127.0.0.1:8080
-
-Inner Exception Stack Trace:
-
-   at System.Net.Sockets.Socket.DoConnect(EndPoint endPointSnapshot, SocketAddress socketAddress)
-   at System.Net.ServicePoint.ConnectSocketInternal(Boolean connectFailure, Socket s4, Socket s6, Socket& socket, IPAddress& address, ConnectSocketState state, IAsyncResult asyncResult, Exception& exception)]
-
-[August 27 02:28:43 PM:
+[August 27 07:11:41 PM:
 
 Exception Message:
 
-Unable to connect to the remote server
+An acceptable options file has been exported to the program's root folder. Check there for more information.
 
 Exception Stack Trace:
 
-   at System.Net.WebClient.DownloadDataInternal(Uri address, WebRequest& request)
-
-   at System.Net.WebClient.DownloadString(Uri address)
-
-   at System.Net.WebClient.DownloadString(String address)
-
-   at YoutubeExtractor.HttpHelper.DownloadString(String url) in c:\Users\Erik\Documents\GitHub\Youtube-Download-Helper\YoutubeExtractor\YoutubeExtractor\YoutubeExtractor\HttpHelper.cs:line 28
-
-   at YoutubeExtractor.DownloadUrlResolver.LoadJson(String url) in c:\Users\Erik\Documents\GitHub\Youtube-Download-Helper\YoutubeExtractor\YoutubeExtractor\YoutubeExtractor\DownloadUrlResolver.cs:line 306
-
-   at YoutubeExtractor.DownloadUrlResolver.GetDownloadUrls(String videoUrl, Boolean decryptSignature) in c:\Users\Erik\Documents\GitHub\Youtube-Download-Helper\YoutubeExtractor\YoutubeExtractor\YoutubeExtractor\DownloadUrlResolver.cs:line 116
-
-   at YoutubeDownloadHelper.Code.Download.<DownloadVideo>d__45.MoveNext() in c:\Users\Erik\Documents\GitHub\Youtube-Download-Helper\YoutubeDownloadHelper\code\Download.cs:line 0
+   at YoutubeDownloadHelper.Code.Download.<DownloadVideo>d__3e.MoveNext() in c:\Users\Erik\Documents\GitHub\Youtube-Download-Helper\YoutubeDownloadHelper\code\Download.cs:line 154
 
 --- End of stack trace from previous location where exception was thrown ---
 
@@ -53,37 +28,17 @@ Exception Stack Trace:
 
    at System.Runtime.CompilerServices.TaskAwaiter.HandleNonSuccessAndDebuggerNotification(Task task)
 
-   at YoutubeDownloadHelper.Code.Download.<DownloadHandler>d__15.MoveNext() in c:\Users\Erik\Documents\GitHub\Youtube-Download-Helper\YoutubeDownloadHelper\code\Download.cs:line 51Inner Exception Message:
+   at YoutubeDownloadHelper.Code.Download.<DownloadHandler>d__15.MoveNext() in c:\Users\Erik\Documents\GitHub\Youtube-Download-Helper\YoutubeDownloadHelper\code\Download.cs:line 50]
 
-No connection could be made because the target machine actively refused it 127.0.0.1:8080
-
-Inner Exception Stack Trace:
-
-   at System.Net.Sockets.Socket.DoConnect(EndPoint endPointSnapshot, SocketAddress socketAddress)
-
-   at System.Net.ServicePoint.ConnectSocketInternal(Boolean connectFailure, Socket s4, Socket s6, Socket& socket, IPAddress& address, ConnectSocketState state, IAsyncResult asyncResult, Exception& exception)]
-
-[August 27 02:27:35 PM:
+[August 27 07:02:51 PM:
 
 Exception Message:
 
-Unable to connect to the remote server
+An acceptable options file has been exported to the program's root folder. Check there for more information.
 
 Exception Stack Trace:
 
-   at System.Net.WebClient.DownloadDataInternal(Uri address, WebRequest& request)
-
-   at System.Net.WebClient.DownloadString(Uri address)
-
-   at System.Net.WebClient.DownloadString(String address)
-
-   at YoutubeExtractor.HttpHelper.DownloadString(String url) in c:\Users\Erik\Documents\GitHub\Youtube-Download-Helper\YoutubeExtractor\YoutubeExtractor\YoutubeExtractor\HttpHelper.cs:line 28
-
-   at YoutubeExtractor.DownloadUrlResolver.LoadJson(String url) in c:\Users\Erik\Documents\GitHub\Youtube-Download-Helper\YoutubeExtractor\YoutubeExtractor\YoutubeExtractor\DownloadUrlResolver.cs:line 306
-
-   at YoutubeExtractor.DownloadUrlResolver.GetDownloadUrls(String videoUrl, Boolean decryptSignature) in c:\Users\Erik\Documents\GitHub\Youtube-Download-Helper\YoutubeExtractor\YoutubeExtractor\YoutubeExtractor\DownloadUrlResolver.cs:line 116
-
-   at YoutubeDownloadHelper.Code.Download.<DownloadVideo>d__45.MoveNext() in c:\Users\Erik\Documents\GitHub\Youtube-Download-Helper\YoutubeDownloadHelper\code\Download.cs:line 0
+   at YoutubeDownloadHelper.Code.Download.<DownloadVideo>d__3e.MoveNext() in c:\Users\Erik\Documents\GitHub\Youtube-Download-Helper\YoutubeDownloadHelper\code\Download.cs:line 159
 
 --- End of stack trace from previous location where exception was thrown ---
 
@@ -91,12 +46,130 @@ Exception Stack Trace:
 
    at System.Runtime.CompilerServices.TaskAwaiter.HandleNonSuccessAndDebuggerNotification(Task task)
 
-   at YoutubeDownloadHelper.Code.Download.<DownloadHandler>d__15.MoveNext() in c:\Users\Erik\Documents\GitHub\Youtube-Download-Helper\YoutubeDownloadHelper\code\Download.cs:line 51Inner Exception Message:
+   at YoutubeDownloadHelper.Code.Download.<DownloadHandler>d__15.MoveNext() in c:\Users\Erik\Documents\GitHub\Youtube-Download-Helper\YoutubeDownloadHelper\code\Download.cs:line 50]
 
-No connection could be made because the target machine actively refused it 127.0.0.1:8080
+[August 27 07:00:52 PM:
+
+Exception Message:
+
+Could not parse the Youtube page for URL http://youtube.com/watch?v=O3UBOOZw-FE
+
+This may be due to a change of the Youtube page structure.
+
+Please report this bug at www.github.com/flagbug/YoutubeExtractor/issues
+
+Exception Stack Trace:
+
+   at YoutubeExtractor.DownloadUrlResolver.ThrowYoutubeParseException(Exception innerException, String videoUrl) in c:\Users\Erik\Documents\GitHub\Youtube-Download-Helper\YoutubeExtractor\YoutubeExtractor\YoutubeExtractor\DownloadUrlResolver.cs:line 322
+
+   at YoutubeExtractor.DownloadUrlResolver.GetDownloadUrls(String videoUrl, Boolean decryptSignature) in c:\Users\Erik\Documents\GitHub\Youtube-Download-Helper\YoutubeExtractor\YoutubeExtractor\YoutubeExtractor\DownloadUrlResolver.cs:line 119
+
+   at YoutubeDownloadHelper.Code.Download.<DownloadVideo>d__3e.MoveNext() in c:\Users\Erik\Documents\GitHub\Youtube-Download-Helper\YoutubeDownloadHelper\code\Download.cs:line 0
+
+--- End of stack trace from previous location where exception was thrown ---
+
+   at System.Runtime.CompilerServices.TaskAwaiter.ThrowForNonSuccess(Task task)
+
+   at System.Runtime.CompilerServices.TaskAwaiter.HandleNonSuccessAndDebuggerNotification(Task task)
+
+   at YoutubeDownloadHelper.Code.Download.<DownloadHandler>d__15.MoveNext() in c:\Users\Erik\Documents\GitHub\Youtube-Download-Helper\YoutubeDownloadHelper\code\Download.cs:line 50Inner Exception Message:
+
+Result cannot be called on a failed Match.
 
 Inner Exception Stack Trace:
 
-   at System.Net.Sockets.Socket.DoConnect(EndPoint endPointSnapshot, SocketAddress socketAddress)
+   at System.Text.RegularExpressions.Match.Result(String replacement)
 
-   at System.Net.ServicePoint.ConnectSocketInternal(Boolean connectFailure, Socket s4, Socket s6, Socket& socket, IPAddress& address, ConnectSocketState state, IAsyncResult asyncResult, Exception& exception)]
+   at YoutubeExtractor.DownloadUrlResolver.GetHtml5PlayerVersion(JObject json) in c:\Users\Erik\Documents\GitHub\Youtube-Download-Helper\YoutubeExtractor\YoutubeExtractor\YoutubeExtractor\DownloadUrlResolver.cs:line 237
+
+   at YoutubeExtractor.DownloadUrlResolver.GetDownloadUrls(String videoUrl, Boolean decryptSignature) in c:\Users\Erik\Documents\GitHub\Youtube-Download-Helper\YoutubeExtractor\YoutubeExtractor\YoutubeExtractor\DownloadUrlResolver.cs:line 97]
+
+[August 27 06:54:47 PM:
+
+Exception Message:
+
+An acceptable options file has been exported to the program's root folder. Check there for more information.
+
+Exception Stack Trace:
+
+   at YoutubeDownloadHelper.Code.Download.<DownloadVideo>d__3e.MoveNext() in c:\Users\Erik\Documents\GitHub\Youtube-Download-Helper\YoutubeDownloadHelper\code\Download.cs:line 159
+
+--- End of stack trace from previous location where exception was thrown ---
+
+   at System.Runtime.CompilerServices.TaskAwaiter.ThrowForNonSuccess(Task task)
+
+   at System.Runtime.CompilerServices.TaskAwaiter.HandleNonSuccessAndDebuggerNotification(Task task)
+
+   at YoutubeDownloadHelper.Code.Download.<DownloadHandler>d__15.MoveNext() in c:\Users\Erik\Documents\GitHub\Youtube-Download-Helper\YoutubeDownloadHelper\code\Download.cs:line 50]
+
+[August 27 06:33:23 PM:
+
+Exception Message:
+
+An acceptable options file has been exported to the program's root folder. Check there for more information.
+
+Exception Stack Trace:
+
+   at YoutubeDownloadHelper.Code.Download.<DownloadVideo>d__3e.MoveNext() in c:\Users\Erik\Documents\GitHub\Youtube-Download-Helper\YoutubeDownloadHelper\code\Download.cs:line 161
+
+--- End of stack trace from previous location where exception was thrown ---
+
+   at System.Runtime.CompilerServices.TaskAwaiter.ThrowForNonSuccess(Task task)
+
+   at System.Runtime.CompilerServices.TaskAwaiter.HandleNonSuccessAndDebuggerNotification(Task task)
+
+   at System.Runtime.CompilerServices.TaskAwaiter.ValidateEnd(Task task)
+
+   at YoutubeDownloadHelper.Code.Download.<DownloadHandler>d__15.MoveNext() in c:\Users\Erik\Documents\GitHub\Youtube-Download-Helper\YoutubeDownloadHelper\code\Download.cs:line 51]
+
+[August 27 06:32:49 PM:
+
+Exception Message:
+
+An acceptable options file has been exported to the program's root folder. Check there for more information.
+
+Exception Stack Trace:
+
+   at YoutubeDownloadHelper.Code.Download.<DownloadVideo>d__3e.MoveNext() in c:\Users\Erik\Documents\GitHub\Youtube-Download-Helper\YoutubeDownloadHelper\code\Download.cs:line 161
+
+--- End of stack trace from previous location where exception was thrown ---
+
+   at System.Runtime.CompilerServices.TaskAwaiter.ThrowForNonSuccess(Task task)
+
+   at System.Runtime.CompilerServices.TaskAwaiter.HandleNonSuccessAndDebuggerNotification(Task task)
+
+   at System.Runtime.CompilerServices.TaskAwaiter.ValidateEnd(Task task)
+
+   at YoutubeDownloadHelper.Code.Download.<DownloadHandler>d__15.MoveNext() in c:\Users\Erik\Documents\GitHub\Youtube-Download-Helper\YoutubeDownloadHelper\code\Download.cs:line 51]
+
+[August 27 06:28:27 PM:
+
+Exception Message:
+
+Sequence contains no matching element
+
+Exception Stack Trace:
+
+   at System.Linq.Enumerable.First[TSource](IEnumerable`1 source, Func`2 predicate)
+
+   at YoutubeDownloadHelper.Code.Download.<Download_Actual>d__49.MoveNext() in c:\Users\Erik\Documents\GitHub\Youtube-Download-Helper\YoutubeDownloadHelper\code\Download.cs:line 171
+
+--- End of stack trace from previous location where exception was thrown ---
+
+   at System.Runtime.CompilerServices.TaskAwaiter.ThrowForNonSuccess(Task task)
+
+   at System.Runtime.CompilerServices.TaskAwaiter.HandleNonSuccessAndDebuggerNotification(Task task)
+
+   at System.Runtime.CompilerServices.TaskAwaiter.ValidateEnd(Task task)
+
+   at YoutubeDownloadHelper.Code.Download.<DownloadVideo>d__3e.MoveNext() in c:\Users\Erik\Documents\GitHub\Youtube-Download-Helper\YoutubeDownloadHelper\code\Download.cs:line 116
+
+--- End of stack trace from previous location where exception was thrown ---
+
+   at System.Runtime.CompilerServices.TaskAwaiter.ThrowForNonSuccess(Task task)
+
+   at System.Runtime.CompilerServices.TaskAwaiter.HandleNonSuccessAndDebuggerNotification(Task task)
+
+   at System.Runtime.CompilerServices.TaskAwaiter.ValidateEnd(Task task)
+
+   at YoutubeDownloadHelper.Code.Download.<DownloadHandler>d__15.MoveNext() in c:\Users\Erik\Documents\GitHub\Youtube-Download-Helper\YoutubeDownloadHelper\code\Download.cs:line 51]
