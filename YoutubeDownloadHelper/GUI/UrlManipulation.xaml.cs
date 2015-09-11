@@ -45,7 +45,7 @@ namespace YoutubeDownloadHelper.Gui
             this.MainWindow = mainWindow;
             this.persistantUrlIndex = selectedUrl;
             this.add = add;
-            this.Title = string.Format(CultureInfo.CurrentCulture, "{0} Url(s) {1} the Queue", add ? "Add" : "Modify", add ? "to" : "in");
+            this.Title = string.Format(CultureInfo.CurrentCulture, "{0} the Queue", add ? "Add Url(s) to" : "Modify Url(s) in");
             this.basicManipulateUrlButton.Content = add ? "Add Url to the Queue" : "Modify Current Url";
 
 			if (!add && videoQueue.Any())
@@ -61,7 +61,10 @@ namespace YoutubeDownloadHelper.Gui
 
         private void window1_Closed (object sender, EventArgs e)
         {
-            this.MainWindow.RefreshQueue(videoQueue, persistantUrlIndex);
+        	if(videoQueue.Any())
+        	{
+        		this.MainWindow.RefreshQueue(videoQueue, persistantUrlIndex >= 0 ? persistantUrlIndex : 0);
+        	}
             this.MainWindow.MainProgramElements.WindowEnabled = true;
         }
 
@@ -89,19 +92,22 @@ namespace YoutubeDownloadHelper.Gui
 
         private void basicManipulateUrlButton_Click (object sender, RoutedEventArgs e)
         {
-            var basicQualityValue = (int)this.urlShapingVars.SelectedResolution;
-			var formatType = this.urlShapingVars.AudioOnlyEnabled ? typeof(AudioType).ToString() : typeof(VideoType).ToString();
-			var formatAsString = formatType.Contains("audio", StringComparison.OrdinalIgnoreCase) ? "audio track" : "video";
+            var selectedQualityValue = (int)this.urlShapingVars.SelectedResolution;
+			var formatType = this.urlShapingVars.AudioOnlyEnabled ? typeof(AudioType) : typeof(VideoType);
+			var formatAsString = formatType.Equals(typeof(AudioType)) ? "audio track" : "video";
 			
-            if (!string.IsNullOrWhiteSpace(this.urlShapingVars.BasicText) && !this.urlShapingVars.BasicText.Contains("example", StringComparison.OrdinalIgnoreCase) && basicQualityValue >= UrlShaping.MinimumQuality[formatType] && basicQualityValue <= UrlShaping.MaximumQuality)
+			if ((!add && videoQueue.Any() || add && this.videoQueue.All(video => !video.Location.Equals(this.urlShapingVars.BasicText, StringComparison.OrdinalIgnoreCase))) && !string.IsNullOrWhiteSpace(this.urlShapingVars.BasicText) && !this.urlShapingVars.BasicText.Contains("example", StringComparison.OrdinalIgnoreCase) && selectedQualityValue >= UrlShaping.MinimumQuality[formatType] && selectedQualityValue <= UrlShaping.MaximumQuality)
             {
                 try
                 {
                     Collection<Video> finalizedCollection = videoQueue;
+                    
                     VideoType format = this.urlShapingVars.AudioOnlyEnabled ? VideoType.Mp4 : (VideoType)Enum.Parse(typeof(VideoType), Enum.GetNames(typeof(VideoType)).First(name => name.Contains(this.formatComboBox.SelectedItem.ToString(), StringComparison.OrdinalIgnoreCase)));
+
                     AudioType aFormat = this.urlShapingVars.AudioOnlyEnabled ? (AudioType)Enum.Parse(typeof(AudioType), Enum.GetNames(typeof(AudioType)).First(name => name.Contains(this.formatComboBox.SelectedItem.ToString(), StringComparison.OrdinalIgnoreCase))) : AudioType.Mp3;
-                    var resultantVideo = new Video (add ? finalizedCollection.Count : persistantUrlIndex, this.urlShapingVars.BasicText, basicQualityValue, format, aFormat, this.urlShapingVars.AudioOnlyEnabled);
-					
+                    
+                    var resultantVideo = new Video (add ? finalizedCollection.Count : persistantUrlIndex, this.urlShapingVars.BasicText, selectedQualityValue, format, aFormat, this.urlShapingVars.AudioOnlyEnabled);
+
                     if (add)
                     {
                         finalizedCollection.Add(resultantVideo);
@@ -123,23 +129,27 @@ namespace YoutubeDownloadHelper.Gui
                 	throw new FatalException("A fatal exception has occured.", ex);
                 }
             }
-            else if (basicQualityValue >= UrlShaping.MaximumQuality)
+			else if (add && this.videoQueue.Any(video => video.Location.Equals(this.urlShapingVars.BasicText, StringComparison.OrdinalIgnoreCase)))
+			{
+				this.alertForGenericError(string.Format(CultureInfo.CurrentCulture, "You cannot add duplicate URLs.", formatAsString), "Attempt To Add Duplicate Prevented");
+			}
+            else if (selectedQualityValue >= UrlShaping.MaximumQuality)
             {
-                this.basicUserInfoText.Text = "Generic Error";
-                Xceed.Wpf.Toolkit.MessageBox.Show(string.Format(CultureInfo.CurrentCulture, "The quality you set for this {0} is too high.", formatAsString), "Quality Unsupported", MessageBoxButton.OK, MessageBoxImage.Stop);
+            	this.alertForGenericError(string.Format(CultureInfo.CurrentCulture, "The quality you set for this {0} is too high.", formatAsString), "Quality Unsupported");
                 this.urlShapingVars.SelectedResolution = UrlShaping.MaximumQuality;
             }
-            else if (basicQualityValue < UrlShaping.MinimumQuality[formatType])
-            {
-            	this.basicUserInfoText.Text = "Generic Error";
-                Xceed.Wpf.Toolkit.MessageBox.Show(string.Format(CultureInfo.CurrentCulture, "The quality you set for this {0} is too low.", formatAsString), "Quality Unsupported", MessageBoxButton.OK, MessageBoxImage.Stop);
-                this.urlShapingVars.SelectedResolution = UrlShaping.MinimumQuality[formatType];
-            }
-            else
-            {
-                this.basicUserInfoText.Text = "Generic Error";
-                Xceed.Wpf.Toolkit.MessageBox.Show(string.Format(CultureInfo.CurrentCulture, "Some or all values of the{0} URL are invalid.", add ? " new" : string.Empty), "URL Invalid", MessageBoxButton.OK, MessageBoxImage.Hand);
-            }
+            else if (selectedQualityValue < UrlShaping.MinimumQuality[formatType])
+			{
+				this.alertForGenericError(string.Format(CultureInfo.CurrentCulture, "The quality you set for this {0} is too low.", formatAsString), "Quality Unsupported");
+				this.urlShapingVars.SelectedResolution = UrlShaping.MinimumQuality[formatType];
+			}
+			else this.alertForGenericError(string.Format(CultureInfo.CurrentCulture, "Some or all values of the{0} URL are invalid.", add ? " new" : string.Empty), "URL Invalid");
+        }
+        
+        private void alertForGenericError (string body, string title)
+        {
+        	this.basicUserInfoText.Text = "Generic Error";
+            Xceed.Wpf.Toolkit.MessageBox.Show(body, title, MessageBoxButton.OK, MessageBoxImage.Hand);
         }
         
         private void clearBasicUrlElements (bool selectTextBox)
@@ -189,7 +199,7 @@ namespace YoutubeDownloadHelper.Gui
         /// <summary>
         /// Returns the lowest quality the user is allowed to set a video to in the basic tab.
         /// </summary>
-        public static IDictionary<string, int> MinimumQuality { get { return new Dictionary<string, int> { { typeof(VideoType).ToString(), 144 }, { typeof(AudioType).ToString(), 24 } }; } }
+        public static IDictionary<Type, int> MinimumQuality { get { return new Dictionary<Type, int> { { typeof(VideoType), 144 }, { typeof(AudioType), 24 } }; } }
         
         /// <summary>
         /// Returns the highest quality the user is allowed to set a video to in the basic tab.

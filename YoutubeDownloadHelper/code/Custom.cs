@@ -2,7 +2,9 @@
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
+using System.Diagnostics;
 using System.Globalization;
+using System.IO;
 using System.Linq;
 using System.Reflection;
 using System.Security.Permissions;
@@ -138,17 +140,23 @@ namespace YoutubeDownloadHelper.Code
     public class Settings : INotifyPropertyChanged
     {
         private bool schedulingEnabled;
-        private Collection<string> saveLocations = new Collection<string> { "C:\\", "C:\\" };
+        private Collection<string> saveLocations = new Collection<string> 
+        { 
+        	string.Format(CultureInfo.InvariantCulture, "{0}{1}", AppDomain.CurrentDomain.BaseDirectory, "Finished Downloads\\"), 
+        	string.Format(CultureInfo.InvariantCulture, "{0}{1}", AppDomain.CurrentDomain.BaseDirectory, "Temp\\") 
+        };
+        private ObservableCollection<string> validationLocations = new ObservableCollection<string>(new List<string>());
         private readonly Collection<string> schedulingTimes = new Collection<string> 
         {
             DateTime.Now.ToString("hh:mm:ss tt", CultureInfo.InvariantCulture),
             DateTime.Now.AddMinutes(1).ToString("hh:mm:ss tt", CultureInfo.InvariantCulture)
         };
-        private const string scheduling = "Schedual Downloads";
+        private const string scheduling = "Schedule Downloads";
+        private const string schedualStart = "Schedule Time Start";
+        private const string schedualEnd = "Schedule Time End";
         private const string mainDownloadLocation = "Download Location";
         private const string temporaryDownloadLocation = "Temporary Download Location";
-        private const string schedualStart = "Schedual Time Start";
-        private const string schedualEnd = "Schedual Time End";
+        private const string validationDirectory = "Directory To Validate";
 
         /// <summary>
         /// The value indicating whether scheduling within the program is enabled.
@@ -200,6 +208,20 @@ namespace YoutubeDownloadHelper.Code
                 RaisePropertyChanged("TemporarySaveLocation");
             } 
         }
+        
+        public ObservableCollection<string> ValidationLocations
+        {
+        	get
+        	{
+        		return this.validationLocations;
+        	}
+        	set
+        	{
+        		IOFunc.DeleteRegistrySubkey(Storage.RegistryRoot, App.IsDebugging);
+        		this.validationLocations = value;
+        		RaisePropertyChanged("ValidationLocations");
+        	}
+        }
 
         /// <summary>
         /// An array containing the scheduling times.
@@ -243,8 +265,13 @@ namespace YoutubeDownloadHelper.Code
         		{ new RegistryEntry(temporaryDownloadLocation, this.TemporarySaveLocation) },
         		{ new RegistryEntry(schedualStart, this.schedulingTimes[0]) },
         		{ new RegistryEntry(schedualEnd, this.schedulingTimes[1]) }
-            }.AsEnumerable();
-            return returnValue;
+            };
+            for (var position = ValidationLocations.GetEnumerator(); position.MoveNext();)
+			{
+				string directory = position.Current;
+				returnValue.Add(new RegistryEntry(string.Format(CultureInfo.CurrentCulture, "{0}:{1}", validationDirectory, ValidationLocations.IndexOf(directory)), directory));
+			}
+            return returnValue.AsEnumerable();
         }
         
         /// <summary>
@@ -285,61 +312,40 @@ namespace YoutubeDownloadHelper.Code
                 var valueAsString = currentItem.Value.ToString();
                 if (!string.IsNullOrEmpty(valueAsString))
                 {
-                    switch (name)
-                    {
-                        case scheduling:
-                            this.Scheduling = bool.Parse(valueAsString);
-                            break;
-                        case mainDownloadLocation:
-                            this.MainSaveLocation = valueAsString;
-                            break;
-                        case temporaryDownloadLocation:
-                            this.TemporarySaveLocation = valueAsString;
-                            break;
-                        case schedualStart:
-                            if (this.Schedule.Any()) this.Schedule.Insert(0, valueAsString);
-                            else this.Schedule.Add(valueAsString);
-                            break;
-                        case schedualEnd:
-                            if (this.Schedule.Count() >= 2) this.Schedule.Insert(1, valueAsString);
-                            else this.Schedule.Add(valueAsString);
-                            break;
-                        default:
-                            throw new ParsingException (string.Format(CultureInfo.CurrentCulture, "'{0}' could not be assimilated into the current instance of settings because no value in settings contain '{0}'", name));
-                    }
+                	if (name.Contains(validationDirectory, StringComparison.OrdinalIgnoreCase))
+	                {
+                		this.ValidationLocations.Add(valueAsString);
+	                }
+                	else
+                	{
+	                    switch (name)
+	                    {
+	                        case scheduling:
+	                            this.Scheduling = bool.Parse(valueAsString);
+	                            break;
+	                        case mainDownloadLocation:
+	                            this.MainSaveLocation = valueAsString;
+	                            break;
+	                        case temporaryDownloadLocation:
+	                            this.TemporarySaveLocation = valueAsString;
+	                            break;
+	                        case schedualStart:
+	                            if (this.Schedule.Any()) this.Schedule.Insert(0, valueAsString);
+	                            else this.Schedule.Add(valueAsString);
+	                            break;
+	                        case schedualEnd:
+	                            if (this.Schedule.Count() >= 2) this.Schedule.Insert(1, valueAsString);
+	                            else this.Schedule.Add(valueAsString);
+	                            break;
+	                        default:
+	                            throw new ParsingException (string.Format(CultureInfo.CurrentCulture, "'{0}' could not be assimilated into the current instance of settings because no value in settings contain '{0}'", name));
+	                    }
+                	}
                 }
             }
             return this;
         }
         #endregion
-
-        /// <summary>
-        /// The container for user-defined program settings.
-        /// </summary>
-        public Settings () {}
-
-        /// <summary>
-        /// The container for user-defined program settings.
-        /// </summary>
-        /// <param name="scheduling">
-        /// The user defined value for whether scheduling is enabled.
-        /// </param>
-        /// <param name="mainSaveLoc">
-        /// The user defined value for the primary save location.
-        /// </param>
-        /// <param name="tempSaveLoc">
-        /// The user defined value for the secondary save location.
-        /// </param>
-        /// <param name="schedule">
-        /// The user defined start/end time of scheduling.
-        /// </param>
-        public Settings (bool scheduling, string mainSaveLoc, string tempSaveLoc, Collection<string> schedule)
-        {
-            this.Scheduling = scheduling;
-            this.MainSaveLocation = mainSaveLoc;
-            this.TemporarySaveLocation = tempSaveLoc;
-            this.schedulingTimes = schedule;
-        }
     }
 
     public class ClassContainer
@@ -401,7 +407,13 @@ namespace YoutubeDownloadHelper.Code
         /// <remarks>
         ///  Excludes the project assembly itself and all system assemblies.
         /// </remarks>
-        public IEnumerable<Library> Assemblies { get { return assemblyStore; } }
+        public IEnumerable<Library> Assemblies { get { return assemblyStore.OrderBy(o => o.Name); } }
+        
+        private bool isSafeToRecall;
+        /// <summary>
+        /// If true, this container is safe to discard when finished, and recall again when needed.
+        /// </summary>
+        public bool RecallIsSafe { get { return this.isSafeToRecall; } }
         
         /// <summary>
         /// A container for the external assemblies referenced in the project.
@@ -414,29 +426,61 @@ namespace YoutubeDownloadHelper.Code
         /// </exception>
         public ProjectAssemblies (bool doNotStoreAssemblyReferences)
         {
+        	var AssembliesToFind = new List<string> 
+        	{
+        		"youtubeextractor",
+        		"xceed.wpf.toolkit",
+        		"universalhandlerslibrary",
+        		"newtonsoft.json",
+        		"microsoft.windowsapicodepack.shell",
+        		"microsoft.windowsapicodepack",
+        		"costura.fody",
+        		"fody"
+        	};
 			var currentAssembly = Assembly.GetExecutingAssembly();
-			var allAssemblies = currentAssembly.GetManifestResourceNames().Where(n => n.EndsWith(".dll", StringComparison.OrdinalIgnoreCase)).GetEnumerator();
-            for (var position = allAssemblies; position.MoveNext();)
-            {
-                string resource = position.Current;
-                using (var stream = currentAssembly.GetManifestResourceStream(resource))
-                {
-                    if (stream == null) continue;
-                    try
-                    {
-                        var bytes = new byte[stream.Length];
-                        stream.Read(bytes, 0, bytes.Length);
-                        assemblyStore.Add(new Library (Assembly.ReflectionOnlyLoad(bytes)));
-                        if(doNotStoreAssemblyReferences) assemblyStore.Last().ReleaseAssembly();
-                    }
-                    catch (Exception ex)
-                    {
-                        System.Diagnostics.Debug.Print(string.Format(CultureInfo.CurrentCulture, "Failed to load: {0}, Exception: {1}", resource, ex.Message));
-                        throw new ParsingException (string.Format(CultureInfo.CurrentCulture, "While pulling the libraries from the program for use in the frontend, an error caused the process to stop. ({0})", ex.Message), ex);
-                    }
-                    stream.Close();
-                }
-            }
+			
+			var referencedAssemblies = currentAssembly.GetReferencedAssemblies().Where(n => AssembliesToFind.Any(subN => n.Name.Equals(subN, StringComparison.OrdinalIgnoreCase))).GetEnumerator();
+			for (var position = referencedAssemblies; position.MoveNext();)
+			{
+				AssemblyName assembly = position.Current;
+				AssembliesToFind.RemoveAll(n => assembly.Name.Equals(n, StringComparison.OrdinalIgnoreCase));
+				
+				assemblyStore.Add(new Library(assembly));
+				if(doNotStoreAssemblyReferences) assemblyStore.Last().ReleaseAssembly();
+			}
+			int numberOfAssemblies = assemblyStore.Count;
+			
+			if(AssembliesToFind.Any())
+			{
+				var embeddedAssemblies = currentAssembly.GetManifestResourceNames().Where(n => n.EndsWith(".dll", StringComparison.OrdinalIgnoreCase)).GetEnumerator();
+	            for (var position = embeddedAssemblies; position.MoveNext();)
+	            {
+	                string resource = position.Current;
+	                using (var stream = currentAssembly.GetManifestResourceStream(resource))
+	                {
+	                    if (stream == null) continue;
+	                    try
+	                    {
+	                        var bytes = new byte[stream.Length];
+	                        stream.Read(bytes, 0, bytes.Length);
+							var assembly = Assembly.ReflectionOnlyLoad(bytes).GetName();
+							if(AssembliesToFind.Any(n => assembly.Name.Contains(n, StringComparison.OrdinalIgnoreCase)))
+							{
+		                        assemblyStore.Add(new Library(assembly));
+		                        if(doNotStoreAssemblyReferences) assemblyStore.Last().ReleaseAssembly();
+							}
+	                    }
+	                    catch (Exception ex)
+	                    {
+							Debug.Print(string.Format(CultureInfo.CurrentCulture, "Failed to load: {0}, Exception: {1}", resource, ex.Message));
+	                        throw new ParsingException (string.Format(CultureInfo.CurrentCulture, "While pulling the libraries from the program for use in the frontend, an error caused the process to stop. ({0})", ex.Message), ex);
+	                    }
+	                    stream.Close();
+	                }
+	            }
+	            if(numberOfAssemblies >= assemblyStore.Count) this.isSafeToRecall = true;
+			}
+			else this.isSafeToRecall = true;
         }
 
         /// <summary>
@@ -456,7 +500,8 @@ namespace YoutubeDownloadHelper.Code
             for (var position = compiledParties.GetEnumerator(); position.MoveNext();)
             {
                 var currentLibrary = position.Current;
-                returnString += string.Format(CultureInfo.CurrentCulture, currentLibrary != compiledParties.Last() ? "{0}: {1}\n" : "{0}: {1}", currentLibrary.Name, currentLibrary.Version);
+                returnString += string.Format(CultureInfo.CurrentCulture, "{0}: V. {1}", currentLibrary.Name, currentLibrary.Version);
+				if (currentLibrary != compiledParties.Last()) returnString += "\n";
             }
             return returnString;
         }
@@ -486,10 +531,6 @@ namespace YoutubeDownloadHelper.Code
 				}
 				return this.assembly;
 			}
-    		private set
-    		{
-    			this.assembly = value;
-    		}
     	}
     	
         /// <summary>
@@ -508,9 +549,9 @@ namespace YoutubeDownloadHelper.Code
         /// <param name="file">
         /// The Assembly reference.
         /// </param>
-        public Library (Assembly file)
+        public Library (AssemblyName file)
         {
-            this.Assembly = file.GetName();
+            this.assembly = file;
             this.Name = this.Assembly.Name;
             this.Version = this.Assembly.Version;
         }
@@ -526,7 +567,7 @@ namespace YoutubeDownloadHelper.Code
         /// </summary>
         public void ReleaseAssembly()
         {
-        	this.Assembly = null;
+        	this.assembly = null;
         }
     }
 }

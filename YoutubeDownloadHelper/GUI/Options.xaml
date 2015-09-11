@@ -9,8 +9,8 @@
 	Width="553"
 	Icon="C:\Users\Erik\Documents\GitHub\Youtube-Download-Helper\YoutubeDownloadHelper\Icons and Images\YDHIcon.ico" xmlns:d="http://schemas.microsoft.com/expression/blend/2008" xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
 	mc:Ignorable="d"
-	Height="180"
-	ResizeMode="NoResize">
+	ResizeMode="NoResize"
+	Height="198">
 	<Grid>
 		<GroupBox
 			Header="Scheduler"
@@ -103,30 +103,32 @@
 			x:Name="folderSelectButton"
 			RenderTransformOrigin="0.5,0.5"
 			Click="folderSelectButton_Click"
-			Margin="7.6,73.2,0,0"
-			VerticalAlignment="Top"
+			Margin="8,0,0,32"
+			VerticalAlignment="Bottom"
 			HorizontalAlignment="Left"
 			Grid.Row="0"
 			Grid.Column="0"
-			Height="44"
-			Width="60">
+			Height="49.199999999999989"
+			Width="59">
 			<Grid
 				x:Name="selectFolderGrid"
 				Background="{x:Null}"
 				IsHitTestVisible="True"
 				IsEnabled="True"
 				Opacity="1"
-				Visibility="Visible">
+				Visibility="Visible"
+				Width="50"
+				Height="42">
 				<Image
 					x:Name="folderImage"
+					Source="C:\Users\Erik\Documents\GitHub\Youtube-Download-Helper\YoutubeDownloadHelper\Icons and Images\FolderIcon.ico"
 					Grid.Column="0"
 					Grid.Row="0"
 					HorizontalAlignment="Center"
 					VerticalAlignment="Center"
-					Width="46"
-					Height="37"
 					Margin="0,0,0,0"
-					Source="C:\Users\Erik\Documents\GitHub\Youtube-Download-Helper\YoutubeDownloadHelper\Icons and Images\FolderIcon.ico" />
+					Width="87"
+					Height="37" />
 			</Grid>
 		</Button>
 		<TabControl
@@ -136,10 +138,11 @@
 			Grid.Column="0"
 			Grid.Row="0"
 			HorizontalAlignment="Left"
-			VerticalAlignment="Center"
-			Width="459.4"
-			Height="58"
-			Margin="75,35,0,0">
+			VerticalAlignment="Bottom"
+			Margin="75,0,0,32"
+			Width="459"
+			Height="77.199999999999989"
+			FontSize="13">
 			<TabItem
 				x:Name="mainTab"
 				Header="Main Save Location">
@@ -150,7 +153,8 @@
 					x:Name="mainSaveTextBox"
 					Background="#FFFFFFFF"
 					Text="{Binding MainSaveLocation}"
-					FontSize="11"></TextBox>
+					FontSize="11"
+					ClipToBounds="False"></TextBox>
 			</TabItem>
 			<TabItem
 				x:Name="tempSaveLocation"
@@ -163,6 +167,15 @@
 					Background="#FFFFFFFF"
 					Text="{Binding TemporarySaveLocation}"
 					FontSize="11"></TextBox>
+			</TabItem>
+			<TabItem
+				x:Name="validationDirectories"
+				Header="Validation Directories">
+				<ListView
+					x:Name="validationDirListView"
+					ItemsSource="{Binding ValidationLocations}"
+					SelectionMode="Single"
+					FontSize="11" />
 			</TabItem>
 		</TabControl>
 		<CheckBox

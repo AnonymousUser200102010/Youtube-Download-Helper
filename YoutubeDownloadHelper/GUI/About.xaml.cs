@@ -58,35 +58,17 @@ namespace YoutubeDownloadHelper.Gui
         /// <summary>
         /// The name of the program.
         /// </summary>
-        public string ProjectName
-        {
-            get
-            {
-                return ProgramInformation.ProductName;
-            }
-        }
+        public string ProjectName { get { return ProgramInformation.ProductName; } }
 
         /// <summary>
         /// The program's copyright.
         /// </summary>
-        public string Copyright
-        {
-            get
-            {
-                return ProgramInformation.LegalCopyright;
-            }
-        }
+        public string Copyright { get { return ProgramInformation.LegalCopyright; } }
 
         /// <summary>
         /// The program's main objective.
         /// </summary>
-        public string Goal
-        {
-            get
-            {
-                return ProgramInformation.Comments;
-            }
-        }
+        public string Goal { get { return ProgramInformation.Comments; } }
 
         /// <summary>
         /// Version information for the program.
@@ -95,7 +77,7 @@ namespace YoutubeDownloadHelper.Gui
         {
             get
             {
-                return string.Format(CultureInfo.CurrentCulture, "[Third Party Libraries/Software:\n{0}]\n[First Party Libraries/Software:\n{1}: {2}\n{3}]", embeddedLibraries.ToString(Party.Third), this.ProjectName, this.ProgramInformation.FileVersion, embeddedLibraries.ToString(Party.First));
+                return string.Format(CultureInfo.CurrentCulture, "[Third Party Libraries/Software:\n{0}]\n[First Party Libraries/Software:\n{1}: V. {2}\n{3}]", embeddedLibraries.ToString(Party.Third), this.ProjectName, this.ProgramInformation.FileVersion, embeddedLibraries.ToString(Party.First));
             }
         }
 

@@ -26,14 +26,14 @@ namespace YoutubeDownloadHelper.Gui
         {
         	var convertedCollection = new ObservableCollection<Video>(collectionToAssimilate);
             this.MainProgramElements.Videos.Replace(convertedCollection);
-            this.MainProgramElements.Videos.WriteToFile(Storage.File);
+            this.MainProgramElements.Videos.WriteToFile(Storage.QueueFile);
             this.MainProgramElements.CurrentlySelectedQueueIndex = newIndex;
-            this.queueListView.ScrollIntoView(this.queueListView.SelectedItem);
         }
 
-        public void ValidateMoveButtonAvailability (ObservableCollection<Video> collectionToCheck)
+        public void ValidateAvailabilityOfSpecialItems (ObservableCollection<Video> collectionToCheck)
         {
             var countCheck = collectionToCheck.Count > 1;
+            this.modifyUrlButton.IsEnabled = collectionToCheck.Any();
             this.moveQueuedItemDown.IsEnabled = countCheck; 
             this.moveQueuedItemUp.IsEnabled = countCheck;
         }
@@ -124,14 +124,15 @@ namespace YoutubeDownloadHelper.Gui
 	    		this.MainProgramElements.WindowEnabled = false;
 	    		this.MainProgramElements.CurrentDownloadOutputText = "Starting Downloading Process....";
 	    		int selectedIndex = this.queueListView.SelectedIndex;
-	    		Task.Factory.StartNew(() => { (new ClassContainer ()).DownloadingCode.DownloadHandler(this, selectedIndex); });
+	    		Task.Run(() => { (new ClassContainer ()).DownloadingCode.DownloadHandler(this, selectedIndex); });
 	    	}
         }
 
         void aboutMenuItem_Click (object sender, RoutedEventArgs e)
         {
 			this.embeddedLibraries = this.embeddedLibraries ?? new ProjectAssemblies(true);
-            (new About (this, System.Diagnostics.FileVersionInfo.GetVersionInfo(System.Reflection.Assembly.GetExecutingAssembly().Location), this.embeddedLibraries)).Show();
+			(new About (this, System.Diagnostics.FileVersionInfo.GetVersionInfo(System.Reflection.Assembly.GetExecutingAssembly().Location), this.embeddedLibraries)).Show();
+			if (this.embeddedLibraries.RecallIsSafe) this.embeddedLibraries = null;
             this.MainProgramElements.WindowEnabled = false;
         }
     }
@@ -169,7 +170,7 @@ namespace YoutubeDownloadHelper.Gui
         {
             get
             {
-                this.main.ValidateMoveButtonAvailability(this.main.VideoQueue.Items);
+                this.main.ValidateAvailabilityOfSpecialItems(this.main.VideoQueue.Items);
                 return this.main.VideoQueue.Items;
             }
             set
@@ -191,6 +192,7 @@ namespace YoutubeDownloadHelper.Gui
             set
             {
                 selectedQueue = value;
+                this.main.queueListView.ScrollIntoView(this.main.queueListView.Items.GetItemAt(value));
                 RaisePropertyChanged("CurrentlySelectedQueueIndex");
             }
         }

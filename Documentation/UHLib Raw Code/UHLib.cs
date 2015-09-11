@@ -27,6 +27,27 @@ namespace UniversalHandlersLibrary
         /// The entry's value
         /// </summary>
         public object Value { get; set; }
+        
+        /// <summary>
+        /// The separator used when converting this value into a string. Can also be used to split lines read from a settings file.
+        /// </summary>
+        public static string Separator
+        {
+        	get
+        	{
+        		return " = ";
+        	}
+        }
+        
+		///
+		///      <summary>Returns a string that represents the current object.</summary>
+		///      <returns>A string that represents the current object.</returns>
+		///      <filterpriority>2</filterpriority>
+		///
+		public override string ToString()
+		{
+			return string.Format(CultureInfo.InvariantCulture ,"{0}{1}{2}", Name, Separator, Value);
+		}
 
         /// <summary>
         /// A registry value.
@@ -668,7 +689,7 @@ namespace UniversalHandlersLibrary
         /// </param>
         public static bool CheckBeginningParameters (string applicationName, bool debugMode)
         {
-        	if (debugMode) BackEnd.SetupConsole();
+        	//if (debugMode) BackEnd.SetupConsole();
 			return Process.GetProcessesByName(applicationName).Count() <= 1 || debugMode;
         }
     }
@@ -679,101 +700,128 @@ namespace UniversalHandlersLibrary
     public static class IOFunc
     {
     	#region Registry Functions and Overloads
-    	/// <summary>
-    	/// Reads a series of values from the registry.
-    	/// </summary>
-    	/// <param name="returnValue">
-    	/// The collection to write the read values to.
-    	/// </param>
-    	/// <param name="mainRegistrySubkey">
-    	/// The top of the registry tree.
-    	/// </param>
-    	/// <param name="debugging">
-    	/// The program who called this function is debugging.
-    	/// </param>
-    	/// <returns>
-    	/// Returns a collection of objects whose said objects represent individual registry entries.
-    	/// </returns>
-    	public static IEnumerable<RegistryEntry> ReadFromRegistry (this IEnumerable<RegistryEntry> returnValue, string mainRegistrySubkey, bool debugging)
-        {
-    		return (new Collection<RegistryEntry>(returnValue.ToList())).ReadFromRegistry(mainRegistrySubkey, debugging);
-        }
-    	
-    	/// <summary>
-    	/// Reads a series of values from the registry.
-    	/// </summary>
-    	/// <param name="returnValue">
-    	/// The collection to write the read values to.
-    	/// </param>
-    	/// <param name="mainRegistrySubkey">
-    	/// The top of the registry tree.
-    	/// </param>
-    	/// <param name="debugging">
-    	/// The program who called this function is debugging.
-    	/// </param>
-    	/// <returns>
-    	/// Returns a collection of objects whose said objects represent individual registry entries.
-    	/// </returns>
-    	public static IEnumerable<RegistryEntry> ReadFromRegistry (this Collection<RegistryEntry> returnValue, string mainRegistrySubkey, bool debugging)
-        {
-    		var registrySubkey = string.Format(CultureInfo.InvariantCulture, "SOFTWARE\\{0}\\{1}\\", mainRegistrySubkey, debugging ?  "Debug" : Environment.UserName);
-    		InternalFunction.CheckParameters(registrySubkey, InternalFunction.InternalCondition.RegistrySubkey);
-            using (RegistryKey programKey = Registry.LocalMachine.OpenSubKey(registrySubkey, true))
-            {
-            	var registryValues = programKey.GetValueNames().GetEnumerator();
-            	for (var position = registryValues; position.MoveNext();)
-				{
-            		string registryEntry = position.Current.ToString();
-					returnValue.Add(new RegistryEntry(registryEntry, programKey.GetValue(registryEntry)));
-				}
-				programKey.Close();
-            }
-            return returnValue.AsEnumerable();
-        }
-    	
-    	/// <summary>
-    	/// Writes a series of values to the registry.
-    	/// </summary>
-    	/// <param name="registryValues">
-    	/// A collection of objects which represent individual registry entries.
-    	/// </param>
-    	/// <param name="mainRegistrySubkey">
-    	/// The top of the registry tree.
-    	/// </param>
-    	/// <param name="debugging">
-    	/// The program who called this function is debugging.
-    	/// </param>
-    	public static void WriteToRegistry (this IEnumerable<RegistryEntry> registryValues, string mainRegistrySubkey, bool debugging)
-        {
-    		WriteToRegistry(registryValues.GetEnumerator(), mainRegistrySubkey, debugging);
-        }
-    	
-    	/// <summary>
-    	/// Writes a series of values to the registry.
-    	/// </summary>
-    	/// <param name="registryValues">
-    	/// A collection of objects which represent individual registry entries.
-    	/// </param>
-    	/// <param name="mainRegistrySubkey">
-    	/// The top of the registry tree.
-    	/// </param>
-    	/// <param name="debugging">
-    	/// The program who called this function is debugging.
-    	/// </param>
-    	public static void WriteToRegistry (this IEnumerator<RegistryEntry> registryValues, string mainRegistrySubkey, bool debugging)
-        {
-    		var registrySubkey = string.Format(CultureInfo.InvariantCulture, "SOFTWARE\\{0}\\{1}\\", mainRegistrySubkey, debugging ?  "Debug" : Environment.UserName);
-    		InternalFunction.CheckParameters(registrySubkey, InternalFunction.InternalCondition.RegistrySubkey);
-            using (RegistryKey programKey = Registry.LocalMachine.OpenSubKey(registrySubkey, true))
-            {
-				for (var position = registryValues; position.MoveNext();)
-				{
-					var item = position.Current;
-					programKey.SetValue(item.Name, item.Value);
-				}
-				programKey.Close();
-            }
-        }
+    		#region Clear Registry Functions and Overloads
+    		/// <summary>
+	    	/// Deletes a subkey and all it's child keys from the registry.
+	    	/// </summary>
+	    	/// <param name="mainRegistrySubkey">
+	    	/// The root (sub)key.
+	    	/// </param>
+	    	/// <param name="debugging">
+	    	/// The program who called this function is debugging.
+	    	/// </param>
+	    	/// <returns>
+	    	/// Returns a collection of objects whose said objects represent individual registry entries.
+	    	/// </returns>
+	    	public static void DeleteRegistrySubkey (string mainRegistrySubkey, bool debugging)
+	        {
+	    		var registrySubkey = string.Format(CultureInfo.InvariantCulture, "SOFTWARE\\{0}\\{1}\\", mainRegistrySubkey, debugging ?  "Debug" : Environment.UserName);
+	    		InternalFunction.CheckParameters(registrySubkey, InternalFunction.InternalCondition.RegistrySubkey);
+	            using (RegistryKey programKey = Registry.LocalMachine.OpenSubKey(string.Format(CultureInfo.InvariantCulture, "SOFTWARE\\{0}\\", mainRegistrySubkey), true))
+	            {
+	            	programKey.DeleteSubKeyTree(debugging ?  "Debug" : Environment.UserName);
+					programKey.Close();
+	            }
+	        }
+    		#endregion
+	    	#region Read Registry Functions and Overloads
+	    	/// <summary>
+	    	/// Reads a series of values from the registry.
+	    	/// </summary>
+	    	/// <param name="returnValue">
+	    	/// The collection to write the read values to.
+	    	/// </param>
+	    	/// <param name="mainRegistrySubkey">
+	    	/// The top of the registry tree.
+	    	/// </param>
+	    	/// <param name="debugging">
+	    	/// The program who called this function is debugging.
+	    	/// </param>
+	    	/// <returns>
+	    	/// Returns a collection of objects whose said objects represent individual registry entries.
+	    	/// </returns>
+	    	public static IEnumerable<RegistryEntry> ReadFromRegistry (this IEnumerable<RegistryEntry> returnValue, string mainRegistrySubkey, bool debugging)
+	        {
+	    		return (new Collection<RegistryEntry>(returnValue.ToList())).ReadFromRegistry(mainRegistrySubkey, debugging);
+	        }
+	    	
+	    	/// <summary>
+	    	/// Reads a series of values from the registry.
+	    	/// </summary>
+	    	/// <param name="returnValue">
+	    	/// The collection to write the read values to.
+	    	/// </param>
+	    	/// <param name="mainRegistrySubkey">
+	    	/// The top of the registry tree.
+	    	/// </param>
+	    	/// <param name="debugging">
+	    	/// The program who called this function is debugging.
+	    	/// </param>
+	    	/// <returns>
+	    	/// Returns a collection of objects whose said objects represent individual registry entries.
+	    	/// </returns>
+	    	public static IEnumerable<RegistryEntry> ReadFromRegistry (this Collection<RegistryEntry> returnValue, string mainRegistrySubkey, bool debugging)
+	        {
+	    		var registrySubkey = string.Format(CultureInfo.InvariantCulture, "SOFTWARE\\{0}\\{1}\\", mainRegistrySubkey, debugging ?  "Debug" : Environment.UserName);
+	    		InternalFunction.CheckParameters(registrySubkey, InternalFunction.InternalCondition.RegistrySubkey);
+	            using (RegistryKey programKey = Registry.LocalMachine.OpenSubKey(registrySubkey, true))
+	            {
+	            	var registryValues = programKey.GetValueNames().GetEnumerator();
+	            	for (var position = registryValues; position.MoveNext();)
+					{
+	            		string registryEntry = position.Current.ToString();
+						returnValue.Add(new RegistryEntry(registryEntry, programKey.GetValue(registryEntry)));
+					}
+					programKey.Close();
+	            }
+	            return returnValue.AsEnumerable();
+	        }
+	    	#endregion
+	    	#region Write Registry Functions and Overloads
+	    	/// <summary>
+	    	/// Writes a series of values to the registry.
+	    	/// </summary>
+	    	/// <param name="registryValues">
+	    	/// A collection of objects which represent individual registry entries.
+	    	/// </param>
+	    	/// <param name="mainRegistrySubkey">
+	    	/// The top of the registry tree.
+	    	/// </param>
+	    	/// <param name="debugging">
+	    	/// The program who called this function is debugging.
+	    	/// </param>
+	    	public static void WriteToRegistry (this IEnumerable<RegistryEntry> registryValues, string mainRegistrySubkey, bool debugging)
+	        {
+	    		WriteToRegistry(registryValues.GetEnumerator(), mainRegistrySubkey, debugging);
+	        }
+	    	
+	    	/// <summary>
+	    	/// Writes a series of values to the registry.
+	    	/// </summary>
+	    	/// <param name="registryValues">
+	    	/// A collection of objects which represent individual registry entries.
+	    	/// </param>
+	    	/// <param name="mainRegistrySubkey">
+	    	/// The top of the registry tree.
+	    	/// </param>
+	    	/// <param name="debugging">
+	    	/// The program who called this function is debugging.
+	    	/// </param>
+	    	public static void WriteToRegistry (this IEnumerator<RegistryEntry> registryValues, string mainRegistrySubkey, bool debugging)
+	        {
+	    		var registrySubkey = string.Format(CultureInfo.InvariantCulture, "SOFTWARE\\{0}\\{1}\\", mainRegistrySubkey, debugging ?  "Debug" : Environment.UserName);
+	    		InternalFunction.CheckParameters(registrySubkey, InternalFunction.InternalCondition.RegistrySubkey);
+	            using (RegistryKey programKey = Registry.LocalMachine.OpenSubKey(registrySubkey, true))
+	            {
+					for (var position = registryValues; position.MoveNext();)
+					{
+						var item = position.Current;
+						programKey.SetValue(item.Name, item.Value);
+					}
+					programKey.Close();
+	            }
+	        }
+	    	#endregion
     	#endregion
     	#region File IO Functions and Overloads
     		#region Add To Functions and Overloads
@@ -1027,96 +1075,98 @@ namespace UniversalHandlersLibrary
 	        }
 	        #endregion
         #endregion
-        #region Create Hierarchy Functions and Overloads
-        /// <summary>
-        /// Creates a folder hierarchy based on the default values.
-        /// </summary>
-        public static void CreateFolderTree ()
-        {
-        	CreateFolderTree(GenericFolderOptions.BaseFolderRoot, GenericFolderOptions.NewStyleFileTree);
-        }
-        
-        /// <summary>
-        /// Creates a folder hierarchy of your choosing using the directory hierarchy provided.
-        /// </summary>
-        /// <param name="directory">
-        /// An array of strings with the FULL directory path of the folder you'd like to create.
-        /// </param>
-        /// <example>
-        /// "SomeDrive\\SomeRoot\\SomeFolder\\" is a correct value for the array. You can also use "SomeFolder\\SomeSubFolder\\" as well to indicate the root directory is the application's root directory. "SomeDrive\\SomeRoot\\SomeFolder" is not correct.
-        /// </example>
-        public static void CreateFolderTree (string directory)
-        {
-        	CreateFolderTree(new Collection<string> { directory });
-        }
-        
-        /// <summary>
-        /// Creates a folder hierarchy of your choosing using the directory hierarchy provided.
-        /// </summary>
-        /// <param name="appendedDirectoryRoot">
-        /// The directory root to be applied to all folders in the directory hierarchy.
-        /// </param>
-        /// <example>
-        /// "C:\\".
-        /// </example>
-        /// <param name="directory">
-        /// A list of directories with the FULL directory path of the folder you'd like to create.
-        /// </param>
-        /// <example>
-        /// If there is no appended directory root provided: "SomeDrive\\SomeRoot\\SomeFolder\\" is a correct value for the array. You can also use "SomeFolder\\SomeSubFolder\\" as well to indicate the root directory is the application's root directory. "SomeDrive\\SomeRoot\\SomeFolder" is not correct.
-        /// </example>
-        /// <example>
-        /// If there is an appended directory root provided: "SomeFolder\\" is a correct value for the array. You can also use "SomeFolder\\SomeSubFolder\\" as well, and so on. "SomeFolder" is not correct
-        /// </example>
-        public static void CreateFolderTree (string appendedDirectoryRoot, string directory)
-        {
-        	CreateFolderTree(appendedDirectoryRoot, new Collection<string> { directory });
-        }
-
-        /// <summary>
-        /// Creates a folder hierarchy of your choosing using the directory hierarchy provided.
-        /// </summary>
-        /// <param name="directoryHierarchy">
-        /// An array of strings with the FULL directory path of the folder you'd like to create.
-        /// </param>
-        /// <example>
-        /// "SomeDrive\\SomeRoot\\SomeFolder\\" is a correct value for the array. You can also use "SomeFolder\\SomeSubFolder\\" as well to indicate the root directory is the application's root directory. "SomeDrive\\SomeRoot\\SomeFolder" is not correct.
-        /// </example>
-        public static void CreateFolderTree (IEnumerable<string> directoryHierarchy)
-        {
-            CreateFolderTree(null, directoryHierarchy);
-        }
-
-        /// <summary>
-        /// Creates a folder hierarchy of your choosing using the directory hierarchy provided.
-        /// </summary>
-        /// <param name="appendedDirectoryRoot">
-        /// The directory root to be applied to all folders in the directory hierarchy.
-        /// </param>
-        /// <example>
-        /// "C:\\".
-        /// </example>
-        /// <param name="directoryHierarchy">
-        /// A list of directories with the FULL directory path of the folder you'd like to create.
-        /// </param>
-        /// <example>
-        /// If there is no appended directory root provided: "SomeDrive\\SomeRoot\\SomeFolder\\" is a correct value for the array. You can also use "SomeFolder\\SomeSubFolder\\" as well to indicate the root directory is the application's root directory. "SomeDrive\\SomeRoot\\SomeFolder" is not correct.
-        /// </example>
-        /// <example>
-        /// If there is an appended directory root provided: "SomeFolder\\" is a correct value for the array. You can also use "SomeFolder\\SomeSubFolder\\" as well, and so on. "SomeFolder" is not correct
-        /// </example>
-        public static void CreateFolderTree (string appendedDirectoryRoot, IEnumerable<string> directoryHierarchy)
-        {
-            if (directoryHierarchy != null && directoryHierarchy.Any())
-            {
-            	var directoriesToCreate = directoryHierarchy.Where(dir => !Directory.Exists(dir));
-            	for (var position = directoriesToCreate.GetEnumerator(); position.MoveNext();)
-                {
-                	string correctedDirectory = string.IsNullOrEmpty(appendedDirectoryRoot) ? position.Current : string.Format(CultureInfo.InvariantCulture, "{0}\\{1}\\", appendedDirectoryRoot, position.Current);
-					Directory.CreateDirectory(correctedDirectory);
-                }
-            }
-        }
+        #region Directory IO Functions and Overloads
+	        #region Create Hierarchy Functions and Overloads
+	        /// <summary>
+	        /// Creates a folder hierarchy based on the default values.
+	        /// </summary>
+	        public static void CreateFolderTree ()
+	        {
+	        	CreateFolderTree(GenericFolderOptions.BaseFolderRoot, GenericFolderOptions.NewStyleFileTree);
+	        }
+	        
+	        /// <summary>
+	        /// Creates a folder hierarchy of your choosing using the directory hierarchy provided.
+	        /// </summary>
+	        /// <param name="directory">
+	        /// An array of strings with the FULL directory path of the folder you'd like to create.
+	        /// </param>
+	        /// <example>
+	        /// "SomeDrive\\SomeRoot\\SomeFolder\\" is a correct value for the array. You can also use "SomeFolder\\SomeSubFolder\\" as well to indicate the root directory is the application's root directory. "SomeDrive\\SomeRoot\\SomeFolder" is not correct.
+	        /// </example>
+	        public static void CreateFolderTree (string directory)
+	        {
+	        	CreateFolderTree(new Collection<string> { directory });
+	        }
+	        
+	        /// <summary>
+	        /// Creates a folder hierarchy of your choosing using the directory hierarchy provided.
+	        /// </summary>
+	        /// <param name="appendedDirectoryRoot">
+	        /// The directory root to be applied to all folders in the directory hierarchy.
+	        /// </param>
+	        /// <example>
+	        /// "C:\\".
+	        /// </example>
+	        /// <param name="directory">
+	        /// A list of directories with the FULL directory path of the folder you'd like to create.
+	        /// </param>
+	        /// <example>
+	        /// If there is no appended directory root provided: "SomeDrive\\SomeRoot\\SomeFolder\\" is a correct value for the array. You can also use "SomeFolder\\SomeSubFolder\\" as well to indicate the root directory is the application's root directory. "SomeDrive\\SomeRoot\\SomeFolder" is not correct.
+	        /// </example>
+	        /// <example>
+	        /// If there is an appended directory root provided: "SomeFolder\\" is a correct value for the array. You can also use "SomeFolder\\SomeSubFolder\\" as well, and so on. "SomeFolder" is not correct
+	        /// </example>
+	        public static void CreateFolderTree (string appendedDirectoryRoot, string directory)
+	        {
+	        	CreateFolderTree(appendedDirectoryRoot, new Collection<string> { directory });
+	        }
+	
+	        /// <summary>
+	        /// Creates a folder hierarchy of your choosing using the directory hierarchy provided.
+	        /// </summary>
+	        /// <param name="directoryHierarchy">
+	        /// An array of strings with the FULL directory path of the folder you'd like to create.
+	        /// </param>
+	        /// <example>
+	        /// "SomeDrive\\SomeRoot\\SomeFolder\\" is a correct value for the array. You can also use "SomeFolder\\SomeSubFolder\\" as well to indicate the root directory is the application's root directory. "SomeDrive\\SomeRoot\\SomeFolder" is not correct.
+	        /// </example>
+	        public static void CreateFolderTree (IEnumerable<string> directoryHierarchy)
+	        {
+	            CreateFolderTree(null, directoryHierarchy);
+	        }
+	
+	        /// <summary>
+	        /// Creates a folder hierarchy of your choosing using the directory hierarchy provided.
+	        /// </summary>
+	        /// <param name="appendedDirectoryRoot">
+	        /// The directory root to be applied to all folders in the directory hierarchy.
+	        /// </param>
+	        /// <example>
+	        /// "C:\\".
+	        /// </example>
+	        /// <param name="directoryHierarchy">
+	        /// A list of directories with the FULL directory path of the folder you'd like to create.
+	        /// </param>
+	        /// <example>
+	        /// If there is no appended directory root provided: "SomeDrive\\SomeRoot\\SomeFolder\\" is a correct value for the array. You can also use "SomeFolder\\SomeSubFolder\\" as well to indicate the root directory is the application's root directory. "SomeDrive\\SomeRoot\\SomeFolder" is not correct.
+	        /// </example>
+	        /// <example>
+	        /// If there is an appended directory root provided: "SomeFolder\\" is a correct value for the array. You can also use "SomeFolder\\SomeSubFolder\\" as well, and so on. "SomeFolder" is not correct
+	        /// </example>
+	        public static void CreateFolderTree (string appendedDirectoryRoot, IEnumerable<string> directoryHierarchy)
+	        {
+	            if (directoryHierarchy != null && directoryHierarchy.Any())
+	            {
+	            	var directoriesToCreate = directoryHierarchy.Where(dir => !Directory.Exists(dir));
+	            	for (var position = directoriesToCreate.GetEnumerator(); position.MoveNext();)
+	                {
+	                	string correctedDirectory = string.IsNullOrEmpty(appendedDirectoryRoot) ? position.Current : string.Format(CultureInfo.InvariantCulture, "{0}\\{1}\\", appendedDirectoryRoot, position.Current);
+						Directory.CreateDirectory(correctedDirectory);
+	                }
+	            }
+	        }
+	        #endregion
         #endregion
     }
 

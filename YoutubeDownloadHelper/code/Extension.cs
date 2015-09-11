@@ -27,7 +27,7 @@ namespace YoutubeDownloadHelper.Code
         {
             try
             {
-            	var urlList = (new Collection<string>()).AddFileContents(Storage.File);
+            	var urlList = (new Collection<string>()).AddFileContents(Storage.QueueFile);
             	if (urlList.Any()) collectionToUse.Replace(urlList.ConvertToVideoCollection(0));
             }
             catch (Exception ex)

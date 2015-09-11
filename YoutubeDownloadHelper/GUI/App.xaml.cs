@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Linq;
 using System.Windows;
+using UniversalHandlersLibrary;
 
 namespace YoutubeDownloadHelper
 {
@@ -18,12 +19,23 @@ namespace YoutubeDownloadHelper
         { 
         	get
         	{
-        		var debug = false;
         		#if DEBUG
-	            debug = true;
+	            return true;
+	            #else
+	            return false;
 	            #endif
-	            return debug;
         	} 
+        }
+        
+        /// <summary>
+        /// The current operating system is a version of Windows.
+        /// </summary>
+        public static bool IsWindowsMachine
+        {
+        	get
+        	{
+        		return Environment.OSVersion.Platform.ToString().Contains("win", StringComparison.OrdinalIgnoreCase);
+        	}
         }
 
         /// <summary>
@@ -35,7 +47,7 @@ namespace YoutubeDownloadHelper
             HandleArgs(args);
             string programName = System.Reflection.Assembly.GetExecutingAssembly().GetName().Name;
             
-            if (UniversalHandlersLibrary.BackEnd.CheckBeginningParameters(programName, IsDebugging))
+            if (BackEnd.CheckBeginningParameters(programName, IsDebugging))
             {
                 (new Application ()).Run(new YoutubeDownloadHelper.Gui.MainWindow (downloadImmediately));
             }
@@ -50,10 +62,10 @@ namespace YoutubeDownloadHelper
             for (int position = 0, argsLength = args.Length; position < argsLength; position++)
             {
                 string arg = args[position];
-                if (UniversalHandlersLibrary.GlobalFunctions.Contains(arg, "start", StringComparison.OrdinalIgnoreCase))
-                {
-                    downloadImmediately = true;
-                }
+				if (arg.Contains("start", StringComparison.OrdinalIgnoreCase))
+				{
+					downloadImmediately = true;
+				}
             }
         }
     }

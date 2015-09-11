@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.Diagnostics;
 using System.Globalization;
 using System.Linq;
 using YoutubeExtractor;
@@ -63,9 +64,11 @@ namespace YoutubeDownloadHelper.Code
                 try
                 {
                     var vagueVideoInfo = stringPosition.Split(new char[0], StringSplitOptions.RemoveEmptyEntries);
+                    
                     var format = bool.Parse(vagueVideoInfo[3]) ? VideoType.Mp4 : (VideoType)Enum.Parse(typeof(VideoType), Enum.GetNames(typeof(VideoType)).First(name => name.Contains(vagueVideoInfo[2], StringComparison.OrdinalIgnoreCase)));
                     var aFormat = bool.Parse(vagueVideoInfo[3]) ? (AudioType)Enum.Parse(typeof(AudioType), Enum.GetNames(typeof(AudioType)).First(name => name.Contains(vagueVideoInfo[2], StringComparison.OrdinalIgnoreCase))) : AudioType.Mp3;
-                    queue.Add(new Video (initialPosition + queue.Count, vagueVideoInfo[0], int.Parse(vagueVideoInfo[1], CultureInfo.InvariantCulture), format, aFormat, bool.Parse(vagueVideoInfo[3])));
+                    
+                    queue.Add(new Video (initialPosition + queue.Count(), vagueVideoInfo[0], int.Parse(vagueVideoInfo[1], CultureInfo.InvariantCulture), format, aFormat, bool.Parse(vagueVideoInfo[3])));
                 }
                 catch (Exception ex)
                 {
