@@ -2,51 +2,47 @@
 
 namespace YoutubeDownloadHelper
 {
-    /// <summary>
-    /// A generic exception thrown when converting operations could not complete for some reason.
-    /// </summary>
+	/// <summary>
+	/// A generic exception thrown when converting operations could not complete for some reason.
+	/// </summary>
     [Serializable]
-    public class InvalidConversionException : Exception
-    {
-        public InvalidConversionException ()
-        {
-        }
+	public class InvalidConversionException : Exception
+	{
+		public InvalidConversionException ()
+		{
+		}
 
-        public InvalidConversionException (string message) : base(message)
-        {
-        }
+		public InvalidConversionException (string message) : base(message)
+		{
+		}
 
-        public InvalidConversionException (string message, Exception inner) : base(message, inner)
-        {
-        }
-			
-        // A constructor is needed for serialization when an
-        // exception propagates from a remoting server to the client.
-        protected InvalidConversionException (System.Runtime.Serialization.SerializationInfo info, System.Runtime.Serialization.StreamingContext context) : base(info, context)
-        {
-        }
-    }
+		public InvalidConversionException (string message, Exception inner) : base(message, inner)
+		{
+		}
 
-    /// <summary>
-    /// Thrown when parsing operations could not finish.
-    /// </summary>
+		protected InvalidConversionException (System.Runtime.Serialization.SerializationInfo info, System.Runtime.Serialization.StreamingContext context) : base(info, context)
+		{
+		}
+	}
+
+	/// <summary>
+	/// Thrown when parsing operations could not finish.
+	/// </summary>
     [Serializable]
-    public class ParsingException : Exception
-    {
-        public ParsingException ()
-        {
-        }
+	public class ParsingException : Exception
+	{
+		public ParsingException ()
+		{
+		}
 
-        public ParsingException (string message) : base(message)
-        {
-        }
+		public ParsingException (string message) : base(message)
+		{
+		}
 
-        public ParsingException (string message, Exception inner) : base(message, inner)
-        {
-        }
-			
-        // A constructor is needed for serialization when an
-        // exception propagates from a remoting server to the client.
+		public ParsingException (string message, Exception inner) : base(message, inner)
+		{
+		}
+		
         protected ParsingException (System.Runtime.Serialization.SerializationInfo info, System.Runtime.Serialization.StreamingContext context) : base(info, context)
         {
         }
@@ -70,9 +66,30 @@ namespace YoutubeDownloadHelper
         {
         }
 			
-        // A constructor is needed for serialization when an
-        // exception propagates from a remoting server to the client.
         protected FatalException (System.Runtime.Serialization.SerializationInfo info, System.Runtime.Serialization.StreamingContext context) : base(info, context)
+        {
+        }
+    }
+    
+    /// <summary>
+    /// Used as a generic "stop" and to communicate that the download cancelled non-fatally.
+    /// </summary>
+    [Serializable]
+    public class DownloadCanceledException : Exception
+    {
+        public DownloadCanceledException ()
+        {
+        }
+
+        public DownloadCanceledException (string message) : base(message)
+        {
+        }
+
+        public DownloadCanceledException (string message, Exception inner) : base(message, inner)
+        {
+        }
+			
+        protected DownloadCanceledException (System.Runtime.Serialization.SerializationInfo info, System.Runtime.Serialization.StreamingContext context) : base(info, context)
         {
         }
     }

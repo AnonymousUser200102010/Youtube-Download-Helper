@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
+using System.Diagnostics;
 using System.Globalization;
 using System.Threading.Tasks;
 using System.Windows;
@@ -25,17 +26,22 @@ namespace YoutubeDownloadHelper.Gui
         public void RefreshQueue (Collection<Video> collectionToAssimilate, int newIndex)
         {
         	var convertedCollection = new ObservableCollection<Video>(collectionToAssimilate);
-            this.MainProgramElements.Videos.Replace(convertedCollection);
+            this.MainProgramElements.Videos = convertedCollection;
             this.MainProgramElements.Videos.WriteToFile(Storage.QueueFile);
             this.MainProgramElements.CurrentlySelectedQueueIndex = newIndex;
         }
 
         public void ValidateAvailabilityOfSpecialItems (ObservableCollection<Video> collectionToCheck)
         {
-            var countCheck = collectionToCheck.Count > 1;
-            this.modifyUrlButton.IsEnabled = collectionToCheck.Any();
-            this.moveQueuedItemDown.IsEnabled = countCheck; 
-            this.moveQueuedItemUp.IsEnabled = countCheck;
+        	if(this.modifyUrlButton != null && this.startDownloadingButton != null && this.moveQueuedItemDown != null && this.moveQueuedItemUp != null)
+        	{
+	            this.modifyUrlButton.IsEnabled = collectionToCheck.Any();
+	            this.startDownloadingButton.IsEnabled = collectionToCheck.Any();
+	            
+	            var countCheck = collectionToCheck.Count > 1;
+	            this.moveQueuedItemDown.IsEnabled = countCheck; 
+	            this.moveQueuedItemUp.IsEnabled = countCheck;
+        	}
         }
 
         public MainWindow (bool downloadImmediately)
@@ -44,6 +50,7 @@ namespace YoutubeDownloadHelper.Gui
             this.MainProgramElements = new MainProgramElements (this as MainWindow);
             this.DataContext = MainProgramElements;
             InitializeComponent();
+            ValidateAvailabilityOfSpecialItems(this.videoQueue.Items);
             if (downloadImmediately) this.DownloadButton_Click(this.startDownloadingButton, new RoutedEventArgs ());
         }
 
@@ -119,19 +126,13 @@ namespace YoutubeDownloadHelper.Gui
 
         void DownloadButton_Click (object sender, RoutedEventArgs e)
         {
-		    if (this.MainProgramElements.Videos.Any())
-		    {
-	    		this.MainProgramElements.WindowEnabled = false;
-	    		this.MainProgramElements.CurrentDownloadOutputText = "Starting Downloading Process....";
-	    		int selectedIndex = this.queueListView.SelectedIndex;
-	    		Task.Run(() => { (new ClassContainer ()).DownloadingCode.DownloadHandler(this, selectedIndex); });
-	    	}
+	    	Task.Run(() => { (new ClassContainer ()).DownloadingCode.DownloadHandler(this.MainProgramElements); });
         }
 
         void aboutMenuItem_Click (object sender, RoutedEventArgs e)
         {
 			this.embeddedLibraries = this.embeddedLibraries ?? new ProjectAssemblies(true);
-			(new About (this, System.Diagnostics.FileVersionInfo.GetVersionInfo(System.Reflection.Assembly.GetExecutingAssembly().Location), this.embeddedLibraries)).Show();
+			(new About (this, FileVersionInfo.GetVersionInfo(System.Reflection.Assembly.GetExecutingAssembly().Location), this.embeddedLibraries)).Show();
 			if (this.embeddedLibraries.RecallIsSafe) this.embeddedLibraries = null;
             this.MainProgramElements.WindowEnabled = false;
         }
@@ -145,10 +146,18 @@ namespace YoutubeDownloadHelper.Gui
         private string downOutput = string.Empty;
         //private bool areUpDownEnabled = false;
         private bool isWindowEnabled = true;
+        
+        public void RefreshQueue (Collection<Video> collectionToAssimilate, int newIndex)
+        {
+        	this.main.RefreshQueue(collectionToAssimilate, newIndex);
+        }
 
         /// <summary>
         /// The enabled status of this window.
         /// </summary>
+        /// <remarks>
+        /// The setting of this value is thread-safe. The getting is not.
+        /// </remarks>
         public bool WindowEnabled
         {
             get
@@ -157,8 +166,11 @@ namespace YoutubeDownloadHelper.Gui
             }
             set
             {
-                this.isWindowEnabled = value;
-                this.CurrentDownloadProgress = 0;
+            	this.main.Dispatcher.Invoke((Action)(() =>
+            	{
+	                this.isWindowEnabled = value;
+                	this.CurrentDownloadProgress = 0;
+            	}));
                 RaisePropertyChanged("WindowEnabled");
             }
         }
@@ -166,16 +178,24 @@ namespace YoutubeDownloadHelper.Gui
         /// <summary>
         /// The video queue.
         /// </summary>
+        /// <remarks>
+        /// This is a fully thread-safe operation.
+        /// </remarks>
         public ObservableCollection<Video> Videos
         {
             get
             {
-                this.main.ValidateAvailabilityOfSpecialItems(this.main.VideoQueue.Items);
-                return this.main.VideoQueue.Items;
+            	ObservableCollection<Video> returnValue = new ObservableCollection<Video>();
+            	this.main.queueListView.Dispatcher.Invoke((Action)(() =>
+            	{
+	                this.main.ValidateAvailabilityOfSpecialItems(this.main.VideoQueue.Items);
+	                returnValue = this.main.VideoQueue.Items;
+            	}));
+            	return returnValue;
             }
             set
             {
-            	this.main.VideoQueue.Items.Replace(value);
+            	this.main.queueListView.Dispatcher.Invoke((Action)(() => this.main.VideoQueue.Items.Replace(value)));
                 RaisePropertyChanged("Videos");
             }
         }
@@ -183,16 +203,24 @@ namespace YoutubeDownloadHelper.Gui
         /// <summary>
         /// The currently selected queue item for this window.
         /// </summary>
+        /// <remarks>
+        /// This is a fully thread-safe operation.
+        /// </remarks>
         public int CurrentlySelectedQueueIndex
         {
             get
             {
-                return this.Videos.Any() ? selectedQueue : -1;
+            	int returnValue = 0;
+            	this.main.queueListView.Dispatcher.Invoke((Action)(() => returnValue = this.Videos.Any() ? this.selectedQueue : -1));
+                return returnValue;
             }
             set
             {
-                selectedQueue = value;
-                this.main.queueListView.ScrollIntoView(this.main.queueListView.Items.GetItemAt(value));
+            	this.main.queueListView.Dispatcher.Invoke((Action)(() =>
+            	{
+	                this.selectedQueue = value;
+                	this.main.queueListView.ScrollIntoView(this.main.queueListView.Items.GetItemAt(value));
+            	}));
                 RaisePropertyChanged("CurrentlySelectedQueueIndex");
             }
         }
@@ -200,15 +228,20 @@ namespace YoutubeDownloadHelper.Gui
         /// <summary>
         /// The download progress for the current download (if any).
         /// </summary>
+        /// <remarks>
+        /// This is a fully thread-safe operation.
+        /// </remarks>
         public int CurrentDownloadProgress
         { 
             get
             {
-                return downProgress;
+            	int returnValue = 0;
+            	this.main.downloadProgressBar.Dispatcher.Invoke((Action)(() => returnValue = this.downProgress));
+                return returnValue;
             }
             set
             {
-                downProgress = value;
+            	this.main.downloadProgressBar.Dispatcher.Invoke((Action)(() => this.downProgress = value));
                 RaisePropertyChanged("CurrentDownloadProgress");
             } 
         }
@@ -216,15 +249,18 @@ namespace YoutubeDownloadHelper.Gui
         /// <summary>
         /// The text for the download progress bar in this window.
         /// </summary>
+        /// <remarks>
+        /// The setting of this value is thread-safe. The getting is not.
+        /// </remarks>
         public string CurrentDownloadOutputText
         { 
             get
             {
-                return downOutput;
+                return this.downOutput;
             }
             set
             {
-                downOutput = value;
+            	this.main.downloadProgressText.Dispatcher.Invoke((Action)(() => this.downOutput = value));
                 RaisePropertyChanged("CurrentDownloadOutputText");
             }
         }

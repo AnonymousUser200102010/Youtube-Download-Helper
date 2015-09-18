@@ -6,7 +6,7 @@
    <Modules>
     <Module Name="youtubedownloadhelper.exe">
      <Messages>
-      <Message TypeName="AssembliesShouldHaveValidStrongNames" Category="Microsoft.Design" CheckId="CA2210" Status="Active" Created="2015-09-10 17:46:38Z" FixCategory="NonBreaking">
+      <Message TypeName="AssembliesShouldHaveValidStrongNames" Category="Microsoft.Design" CheckId="CA2210" Status="Active" Created="2015-09-17 07:44:08Z" FixCategory="NonBreaking">
        <Issue Name="NoStrongName" Certainty="95" Level="CriticalError">Sign 'YoutubeDownloadHelper.exe' with a strong name key.</Issue>
       </Message>
      </Messages>
@@ -15,24 +15,17 @@
        <Types>
         <Type Name="Download" Kind="Class" Accessibility="Public" ExternallyVisible="True">
          <Members>
-          <Member Name="#Downloader(System.Collections.Generic.IEnumerable`1&lt;YoutubeExtractor.VideoInfo&gt;,YoutubeDownloadHelper.Gui.MainWindow,YoutubeDownloadHelper.Code.Video)" Kind="Method" Static="True" Accessibility="Private" ExternallyVisible="False">
+          <Member Name="#DownloadHandler(YoutubeDownloadHelper.Gui.MainProgramElements)" Kind="Method" Static="False" Accessibility="Public" ExternallyVisible="True">
            <Messages>
-            <Message Id="System.Collections.ObjectModel.Collection`1&lt;System.String&gt;" TypeName="DoNotIgnoreMethodResults" Category="Microsoft.Usage" CheckId="CA1806" Status="Active" Created="2015-09-10 17:46:38Z" FixCategory="NonBreaking">
-             <Issue Name="ObjectCreation" Certainty="95" Level="Warning">'Download.Downloader(IEnumerable&lt;VideoInfo&gt;, MainWindow, Video)' creates a new instance of 'Collection&lt;string&gt;' which is never used. Pass the instance as an argument to another method, assign the instance to a variable, or remove the object creation if it is unnecessary.</Issue>
+            <Message TypeName="DoNotCatchGeneralExceptionTypes" Category="Microsoft.Design" CheckId="CA1031" Status="Active" Created="2015-09-17 07:44:08Z" FixCategory="NonBreaking">
+             <Issue Certainty="95" Level="CriticalError">Modify 'Download.DownloadHandler(MainProgramElements)' to catch a more specific exception than 'Exception' or rethrow the exception.</Issue>
             </Message>
            </Messages>
           </Member>
-          <Member Name="#DownloadHandler(YoutubeDownloadHelper.Gui.MainWindow,System.Int32)" Kind="Method" Static="False" Accessibility="Public" ExternallyVisible="True">
+          <Member Name="#SetupDownload(YoutubeDownloadHelper.Code.Video,YoutubeDownloadHelper.Gui.MainProgramElements)" Kind="Method" Static="True" Accessibility="Private" ExternallyVisible="False">
            <Messages>
-            <Message TypeName="DoNotCatchGeneralExceptionTypes" Category="Microsoft.Design" CheckId="CA1031" Status="Active" Created="2015-09-10 17:46:38Z" FixCategory="NonBreaking">
-             <Issue Certainty="95" Level="CriticalError">Modify 'Download.DownloadHandler(MainWindow, int)' to catch a more specific exception than 'Exception' or rethrow the exception.</Issue>
-            </Message>
-           </Messages>
-          </Member>
-          <Member Name="#SetupDownload(YoutubeDownloadHelper.Code.Video,YoutubeDownloadHelper.Gui.MainWindow)" Kind="Method" Static="True" Accessibility="Private" ExternallyVisible="False">
-           <Messages>
-            <Message TypeName="DoNotCatchGeneralExceptionTypes" Category="Microsoft.Design" CheckId="CA1031" Status="Active" Created="2015-09-10 17:46:38Z" FixCategory="NonBreaking">
-             <Issue Certainty="95" Level="CriticalError">Modify 'Download.SetupDownload(Video, MainWindow)' to catch a more specific exception than 'Exception' or rethrow the exception.</Issue>
+            <Message TypeName="DoNotCatchGeneralExceptionTypes" Category="Microsoft.Design" CheckId="CA1031" Status="Active" Created="2015-09-17 07:44:08Z" FixCategory="NonBreaking">
+             <Issue Certainty="95" Level="CriticalError">Modify 'Download.SetupDownload(Video, MainProgramElements)' to catch a more specific exception than 'Exception' or rethrow the exception.</Issue>
             </Message>
            </Messages>
           </Member>
@@ -40,7 +33,7 @@
         </Type>
         <Type Name="IStorage" Kind="Interface" Accessibility="Public" ExternallyVisible="True">
          <Messages>
-          <Message TypeName="AvoidEmptyInterfaces" Category="Microsoft.Design" CheckId="CA1040" Status="Active" Created="2015-09-10 17:46:38Z" FixCategory="Breaking">
+          <Message TypeName="AvoidEmptyInterfaces" Category="Microsoft.Design" CheckId="CA1040" Status="Active" Created="2015-09-17 07:44:08Z" FixCategory="Breaking">
            <Issue Certainty="90" Level="Warning">Define a custom attribute to replace 'IStorage'.</Issue>
           </Message>
          </Messages>
@@ -51,7 +44,7 @@
            <Accessors>
             <Accessor Name="#get_Assembly()" Kind="Method" Static="False" Accessibility="Public" ExternallyVisible="True">
              <Messages>
-              <Message TypeName="DoNotRaiseExceptionsInUnexpectedLocations" Category="Microsoft.Design" CheckId="CA1065" Status="Active" Created="2015-09-10 17:46:38Z" FixCategory="Breaking">
+              <Message TypeName="DoNotRaiseExceptionsInUnexpectedLocations" Category="Microsoft.Design" CheckId="CA1065" Status="Active" Created="2015-09-17 07:44:08Z" FixCategory="Breaking">
                <Issue Name="PropertyGetter" Certainty="90" Level="Warning">'Library.Assembly.get()' creates an exception of type 'FatalException', an exception type that should not be raised in a property. If this exception instance might be raised, use a different exception type, convert this property into a method, or change this property's logic so that it no longer raises an exception.</Issue>
               </Message>
              </Messages>
@@ -64,7 +57,7 @@
          <Members>
           <Member Name="#ValidationLocations" Kind="Property" Static="False" Accessibility="Public" ExternallyVisible="True">
            <Messages>
-            <Message TypeName="CollectionPropertiesShouldBeReadOnly" Category="Microsoft.Usage" CheckId="CA2227" Status="Active" Created="2015-09-10 17:46:38Z" FixCategory="Breaking">
+            <Message TypeName="CollectionPropertiesShouldBeReadOnly" Category="Microsoft.Usage" CheckId="CA2227" Status="Active" Created="2015-09-17 07:44:08Z" FixCategory="Breaking">
              <Issue Certainty="75" Level="Warning">Change 'Settings.ValidationLocations' to be read-only by removing the property setter.</Issue>
             </Message>
            </Messages>
@@ -79,7 +72,7 @@
          <Members>
           <Member Name="#Videos" Kind="Property" Static="False" Accessibility="Public" ExternallyVisible="True">
            <Messages>
-            <Message TypeName="CollectionPropertiesShouldBeReadOnly" Category="Microsoft.Usage" CheckId="CA2227" Status="Active" Created="2015-09-10 17:46:38Z" FixCategory="Breaking">
+            <Message TypeName="CollectionPropertiesShouldBeReadOnly" Category="Microsoft.Usage" CheckId="CA2227" Status="Active" Created="2015-09-17 07:44:08Z" FixCategory="Breaking">
              <Issue Certainty="75" Level="Warning">Change 'MainProgramElements.Videos' to be read-only by removing the property setter.</Issue>
             </Message>
            </Messages>
@@ -90,7 +83,7 @@
          <Members>
           <Member Name="#FormatList" Kind="Property" Static="False" Accessibility="Public" ExternallyVisible="True">
            <Messages>
-            <Message TypeName="CollectionPropertiesShouldBeReadOnly" Category="Microsoft.Usage" CheckId="CA2227" Status="Active" Created="2015-09-10 17:46:38Z" FixCategory="Breaking">
+            <Message TypeName="CollectionPropertiesShouldBeReadOnly" Category="Microsoft.Usage" CheckId="CA2227" Status="Active" Created="2015-09-17 07:44:08Z" FixCategory="Breaking">
              <Issue Certainty="75" Level="Warning">Change 'UrlShaping.FormatList' to be read-only by removing the property setter.</Issue>
             </Message>
            </Messages>
@@ -144,16 +137,6 @@
    <Email>[none]</Email>
    <MessageLevel Certainty="95">CriticalError</MessageLevel>
    <File Name="designrules.dll" Version="10.0.0.0" />
-  </Rule>
-  <Rule TypeName="DoNotIgnoreMethodResults" Category="Microsoft.Usage" CheckId="CA1806">
-   <Name>Do not ignore method results</Name>
-   <Description>The result of methods that return new instances of strings should be assigned to a variable and subsequently used. If the result of a method that creates a new object, such as String.ToLower(), is not assigned to a variable, the call is wasted.</Description>
-   <Resolution Name="ObjectCreation">{0} creates a new instance of {1} which is never used. Pass the instance as an argument to another method, assign the instance to a variable, or remove the object creation if it is unnecessary.</Resolution>
-   <Owner />
-   <Url>http://msdn.microsoft.com/library/ms182273(VS.100).aspx</Url>
-   <Email>[none]</Email>
-   <MessageLevel Certainty="95">Warning</MessageLevel>
-   <File Name="usagerules.dll" Version="10.0.0.0" />
   </Rule>
   <Rule TypeName="DoNotRaiseExceptionsInUnexpectedLocations" Category="Microsoft.Design" CheckId="CA1065">
    <Name>Do not raise exceptions in unexpected locations</Name>

@@ -140,13 +140,14 @@ namespace YoutubeDownloadHelper.Code
     public class Settings : INotifyPropertyChanged
     {
         private bool schedulingEnabled;
-        private Collection<string> saveLocations = new Collection<string> 
+        private bool continueOnFail;
+        private ICollection<string> saveLocations = new Collection<string> 
         { 
         	string.Format(CultureInfo.InvariantCulture, "{0}{1}", AppDomain.CurrentDomain.BaseDirectory, "Finished Downloads\\"), 
         	string.Format(CultureInfo.InvariantCulture, "{0}{1}", AppDomain.CurrentDomain.BaseDirectory, "Temp\\") 
         };
         private ObservableCollection<string> validationLocations = new ObservableCollection<string>(new List<string>());
-        private readonly Collection<string> schedulingTimes = new Collection<string> 
+        private ICollection<string> schedulingTimes = new Collection<string> 
         {
             DateTime.Now.ToString("hh:mm:ss tt", CultureInfo.InvariantCulture),
             DateTime.Now.AddMinutes(1).ToString("hh:mm:ss tt", CultureInfo.InvariantCulture)
@@ -157,6 +158,7 @@ namespace YoutubeDownloadHelper.Code
         private const string mainDownloadLocation = "Download Location";
         private const string temporaryDownloadLocation = "Temporary Download Location";
         private const string validationDirectory = "Directory To Validate";
+        private const string continueDownloadOnFail = "Force Continue Downloading";
 
         /// <summary>
         /// The value indicating whether scheduling within the program is enabled.
@@ -176,6 +178,25 @@ namespace YoutubeDownloadHelper.Code
                 RaisePropertyChanged("Scheduling");
             } 
         }
+        
+        /// <summary>
+        /// The value indicating whether, during download, the downloader will quit or continue on an error or other fatal condition.
+        /// </summary>
+        /// <description>
+        /// The user has disabled stopping the downloading process upon failing.
+        /// </description>
+        public bool ContinueOnFail
+        {
+        	get
+        	{
+        		return this.continueOnFail;
+        	}
+        	set
+        	{
+        		this.continueOnFail = value;
+        		RaisePropertyChanged("ContinueOnFail");
+        	}
+        }
 
         /// <summary>
         /// The save directory where finished files will be moved to.
@@ -184,11 +205,11 @@ namespace YoutubeDownloadHelper.Code
         { 
             get
             {
-                return this.saveLocations[0];
+            	return this.saveLocations.ElementAtOrDefault(0);
             } 
             set
             {
-                this.saveLocations[0] = value;
+            	this.saveLocations = new Collection<string>{ value, this.saveLocations.ElementAt(1) };
                 RaisePropertyChanged("MainSaveLocation");
             } 
         }
@@ -200,11 +221,11 @@ namespace YoutubeDownloadHelper.Code
         { 
             get
             {
-                return this.saveLocations[1];
+                return this.saveLocations.ElementAtOrDefault(1);
             } 
             set
             {
-                this.saveLocations[1] = value;
+            	this.saveLocations = new Collection<string>{ this.saveLocations.ElementAt(0), value };
                 RaisePropertyChanged("TemporarySaveLocation");
             } 
         }
@@ -226,12 +247,12 @@ namespace YoutubeDownloadHelper.Code
         /// <summary>
         /// An array containing the scheduling times.
         /// </summary>
-        public Collection<string> Schedule
+        public ICollection<string> Schedule
         { 
             get { return this.schedulingTimes; }
             //TO-DO: IMPLIMENT SCHEDULING.
         }
-		
+        
         #region INotifyPropertyChanged Members
 
         public event PropertyChangedEventHandler PropertyChanged;
@@ -261,10 +282,11 @@ namespace YoutubeDownloadHelper.Code
             var returnValue = new List<RegistryEntry> 
             {
         		{ new RegistryEntry(scheduling, this.Scheduling) },
+        		{ new RegistryEntry(continueDownloadOnFail, this.ContinueOnFail) },
         		{ new RegistryEntry(mainDownloadLocation, this.MainSaveLocation) },
         		{ new RegistryEntry(temporaryDownloadLocation, this.TemporarySaveLocation) },
-        		{ new RegistryEntry(schedualStart, this.schedulingTimes[0]) },
-        		{ new RegistryEntry(schedualEnd, this.schedulingTimes[1]) }
+        		{ new RegistryEntry(schedualStart, this.Schedule.ElementAtOrDefault(0)) },
+        		{ new RegistryEntry(schedualEnd, this.Schedule.ElementAtOrDefault(1)) }
             };
             for (var position = ValidationLocations.GetEnumerator(); position.MoveNext();)
 			{
@@ -330,12 +352,15 @@ namespace YoutubeDownloadHelper.Code
 	                            this.TemporarySaveLocation = valueAsString;
 	                            break;
 	                        case schedualStart:
-	                            if (this.Schedule.Any()) this.Schedule.Insert(0, valueAsString);
-	                            else this.Schedule.Add(valueAsString);
+								if (this.Schedule.Any()) this.schedulingTimes = new Collection<string>{ valueAsString, this.Schedule.ElementAtOrDefault(1) };
+								else this.Schedule.Add(valueAsString);
 	                            break;
 	                        case schedualEnd:
-	                            if (this.Schedule.Count() >= 2) this.Schedule.Insert(1, valueAsString);
+	                            if (this.Schedule.Count() >= 2) this.schedulingTimes = new Collection<string>{this.Schedule.ElementAt(0), valueAsString};
 	                            else this.Schedule.Add(valueAsString);
+	                            break;
+	                        case continueDownloadOnFail:
+	                            this.ContinueOnFail = bool.Parse(valueAsString);
 	                            break;
 	                        default:
 	                            throw new ParsingException (string.Format(CultureInfo.CurrentCulture, "'{0}' could not be assimilated into the current instance of settings because no value in settings contain '{0}'", name));
@@ -371,14 +396,14 @@ namespace YoutubeDownloadHelper.Code
         /// </summary>
         public ClassContainer ()
         {
-            this.DownloadingCode = new Download ();
             this.IOCode = new Storage();
+            this.DownloadingCode = new Download (this.IOCode);
             this.BakedExceptionCode = new PrebakedError ();
         }
     }
 
     /// <summary>
-    /// Originating party catagory.
+    /// Originating party category.
     /// </summary>
     public enum Party
     {
@@ -399,7 +424,7 @@ namespace YoutubeDownloadHelper.Code
     [PermissionSetAttribute(SecurityAction.Demand, Name = "FullTrust")]
     public class ProjectAssemblies
     {
-        private readonly Collection<Library> assemblyStore = new Collection<Library> ();
+        private readonly ICollection<Library> assemblyStore = new Collection<Library> ();
 
         /// <summary>
         /// All assemblies used in the project.
@@ -422,7 +447,7 @@ namespace YoutubeDownloadHelper.Code
         /// Do not store any of the read libraries as an assembly reference.
         /// </param>
         /// <exception cref="T:YoutubeDownloadHelper.ParsingException">
-        /// Thrown during the intialization process of this class if some portion fails.
+        /// Thrown during the initialization process of this class if some portion fails.
         /// </exception>
         public ProjectAssemblies (bool doNotStoreAssemblyReferences)
         {

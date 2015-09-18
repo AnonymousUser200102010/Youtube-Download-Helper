@@ -6,7 +6,7 @@
    <Modules>
     <Module Name="youtubedownloadhelper.exe">
      <Messages>
-      <Message TypeName="AssembliesShouldHaveValidStrongNames" Category="Microsoft.Design" CheckId="CA2210" Status="Active" Created="2015-09-11 10:51:00Z" FixCategory="NonBreaking">
+      <Message TypeName="AssembliesShouldHaveValidStrongNames" Category="Microsoft.Design" CheckId="CA2210" Status="Active" Created="2015-09-18 09:46:55Z" FixCategory="NonBreaking">
        <Issue Name="NoStrongName" Certainty="95" Level="CriticalError">Sign 'YoutubeDownloadHelper.exe' with a strong name key.</Issue>
       </Message>
      </Messages>
@@ -15,17 +15,17 @@
        <Types>
         <Type Name="Download" Kind="Class" Accessibility="Public" ExternallyVisible="True">
          <Members>
-          <Member Name="#DownloadHandler(YoutubeDownloadHelper.Gui.MainWindow,System.Int32)" Kind="Method" Static="False" Accessibility="Public" ExternallyVisible="True">
+          <Member Name="#DownloadHandler(YoutubeDownloadHelper.Gui.MainProgramElements)" Kind="Method" Static="False" Accessibility="Public" ExternallyVisible="True">
            <Messages>
-            <Message TypeName="DoNotCatchGeneralExceptionTypes" Category="Microsoft.Design" CheckId="CA1031" Status="Active" Created="2015-09-11 10:51:00Z" FixCategory="NonBreaking">
-             <Issue Certainty="95" Level="CriticalError" Path="c:\Users\Erik\Documents\GitHub\Youtube-Download-Helper\YoutubeDownloadHelper\code" File="Download.cs" Line="80">Modify 'Download.DownloadHandler(MainWindow, int)' to catch a more specific exception than 'Exception' or rethrow the exception.</Issue>
+            <Message TypeName="DoNotCatchGeneralExceptionTypes" Category="Microsoft.Design" CheckId="CA1031" Status="Active" Created="2015-09-18 09:46:55Z" FixCategory="NonBreaking">
+             <Issue Certainty="95" Level="CriticalError" Path="c:\Users\Erik\Documents\GitHub\Youtube-Download-Helper\YoutubeDownloadHelper\code" File="Download.cs" Line="84">Modify 'Download.DownloadHandler(MainProgramElements)' to catch a more specific exception than 'Exception' or rethrow the exception.</Issue>
             </Message>
            </Messages>
           </Member>
-          <Member Name="#SetupDownload(YoutubeDownloadHelper.Code.Video,YoutubeDownloadHelper.Gui.MainWindow)" Kind="Method" Static="True" Accessibility="Private" ExternallyVisible="False">
+          <Member Name="#SetupDownload(YoutubeDownloadHelper.Code.Video,YoutubeDownloadHelper.Gui.MainProgramElements)" Kind="Method" Static="False" Accessibility="Private" ExternallyVisible="False">
            <Messages>
-            <Message TypeName="DoNotCatchGeneralExceptionTypes" Category="Microsoft.Design" CheckId="CA1031" Status="Active" Created="2015-09-11 10:51:00Z" FixCategory="NonBreaking">
-             <Issue Certainty="95" Level="CriticalError" Path="c:\Users\Erik\Documents\GitHub\Youtube-Download-Helper\YoutubeDownloadHelper\code" File="Download.cs" Line="200">Modify 'Download.SetupDownload(Video, MainWindow)' to catch a more specific exception than 'Exception' or rethrow the exception.</Issue>
+            <Message TypeName="DoNotCatchGeneralExceptionTypes" Category="Microsoft.Design" CheckId="CA1031" Status="Active" Created="2015-09-18 09:46:55Z" FixCategory="NonBreaking">
+             <Issue Certainty="95" Level="CriticalError" Path="c:\Users\Erik\Documents\GitHub\Youtube-Download-Helper\YoutubeDownloadHelper\code" File="Download.cs" Line="197">Modify 'Download.SetupDownload(Video, MainProgramElements)' to catch a more specific exception than 'Exception' or rethrow the exception.</Issue>
             </Message>
            </Messages>
           </Member>
@@ -33,7 +33,7 @@
         </Type>
         <Type Name="IStorage" Kind="Interface" Accessibility="Public" ExternallyVisible="True">
          <Messages>
-          <Message TypeName="AvoidEmptyInterfaces" Category="Microsoft.Design" CheckId="CA1040" Status="Active" Created="2015-09-11 10:51:00Z" FixCategory="Breaking">
+          <Message TypeName="AvoidEmptyInterfaces" Category="Microsoft.Design" CheckId="CA1040" Status="Active" Created="2015-09-18 09:46:55Z" FixCategory="Breaking">
            <Issue Certainty="90" Level="Warning">Define a custom attribute to replace 'IStorage'.</Issue>
           </Message>
          </Messages>
@@ -44,8 +44,8 @@
            <Accessors>
             <Accessor Name="#get_Assembly()" Kind="Method" Static="False" Accessibility="Public" ExternallyVisible="True">
              <Messages>
-              <Message TypeName="DoNotRaiseExceptionsInUnexpectedLocations" Category="Microsoft.Design" CheckId="CA1065" Status="Active" Created="2015-09-11 10:51:00Z" FixCategory="Breaking">
-               <Issue Name="PropertyGetter" Certainty="90" Level="Warning" Path="c:\Users\Erik\Documents\GitHub\Youtube-Download-Helper\YoutubeDownloadHelper\code" File="Custom.cs" Line="528">'Library.Assembly.get()' creates an exception of type 'FatalException', an exception type that should not be raised in a property. If this exception instance might be raised, use a different exception type, convert this property into a method, or change this property's logic so that it no longer raises an exception.</Issue>
+              <Message TypeName="DoNotRaiseExceptionsInUnexpectedLocations" Category="Microsoft.Design" CheckId="CA1065" Status="Active" Created="2015-09-18 09:46:55Z" FixCategory="Breaking">
+               <Issue Name="PropertyGetter" Certainty="90" Level="Warning" Path="c:\Users\Erik\Documents\GitHub\Youtube-Download-Helper\YoutubeDownloadHelper\code" File="Custom.cs" Line="553">'Library.Assembly.get()' creates an exception of type 'FatalException', an exception type that should not be raised in a property. If this exception instance might be raised, use a different exception type, convert this property into a method, or change this property's logic so that it no longer raises an exception.</Issue>
               </Message>
              </Messages>
             </Accessor>
@@ -57,8 +57,8 @@
          <Members>
           <Member Name="#ValidationLocations" Kind="Property" Static="False" Accessibility="Public" ExternallyVisible="True">
            <Messages>
-            <Message TypeName="CollectionPropertiesShouldBeReadOnly" Category="Microsoft.Usage" CheckId="CA2227" Status="Active" Created="2015-09-11 10:51:00Z" FixCategory="Breaking">
-             <Issue Certainty="75" Level="Warning" Path="c:\Users\Erik\Documents\GitHub\Youtube-Download-Helper\YoutubeDownloadHelper\code" File="Custom.cs" Line="216">Change 'Settings.ValidationLocations' to be read-only by removing the property setter.</Issue>
+            <Message TypeName="CollectionPropertiesShouldBeReadOnly" Category="Microsoft.Usage" CheckId="CA2227" Status="Active" Created="2015-09-18 09:46:55Z" FixCategory="Breaking">
+             <Issue Certainty="75" Level="Warning" Path="c:\Users\Erik\Documents\GitHub\Youtube-Download-Helper\YoutubeDownloadHelper\code" File="Custom.cs" Line="237">Change 'Settings.ValidationLocations' to be read-only by removing the property setter.</Issue>
             </Message>
            </Messages>
           </Member>
@@ -72,8 +72,8 @@
          <Members>
           <Member Name="#Videos" Kind="Property" Static="False" Accessibility="Public" ExternallyVisible="True">
            <Messages>
-            <Message TypeName="CollectionPropertiesShouldBeReadOnly" Category="Microsoft.Usage" CheckId="CA2227" Status="Active" Created="2015-09-11 10:51:00Z" FixCategory="Breaking">
-             <Issue Certainty="75" Level="Warning" Path="c:\Users\Erik\Documents\GitHub\Youtube-Download-Helper\YoutubeDownloadHelper\GUI" File="MainWindow.xaml.cs" Line="173">Change 'MainProgramElements.Videos' to be read-only by removing the property setter.</Issue>
+            <Message TypeName="CollectionPropertiesShouldBeReadOnly" Category="Microsoft.Usage" CheckId="CA2227" Status="Active" Created="2015-09-18 09:46:55Z" FixCategory="Breaking">
+             <Issue Certainty="75" Level="Warning" Path="c:\Users\Erik\Documents\GitHub\Youtube-Download-Helper\YoutubeDownloadHelper\GUI" File="MainWindow.xaml.cs" Line="188">Change 'MainProgramElements.Videos' to be read-only by removing the property setter.</Issue>
             </Message>
            </Messages>
           </Member>
@@ -83,7 +83,7 @@
          <Members>
           <Member Name="#FormatList" Kind="Property" Static="False" Accessibility="Public" ExternallyVisible="True">
            <Messages>
-            <Message TypeName="CollectionPropertiesShouldBeReadOnly" Category="Microsoft.Usage" CheckId="CA2227" Status="Active" Created="2015-09-11 10:51:00Z" FixCategory="Breaking">
+            <Message TypeName="CollectionPropertiesShouldBeReadOnly" Category="Microsoft.Usage" CheckId="CA2227" Status="Active" Created="2015-09-18 09:46:55Z" FixCategory="Breaking">
              <Issue Certainty="75" Level="Warning" Path="c:\Users\Erik\Documents\GitHub\Youtube-Download-Helper\YoutubeDownloadHelper\GUI" File="UrlManipulation.xaml.cs" Line="326">Change 'UrlShaping.FormatList' to be read-only by removing the property setter.</Issue>
             </Message>
            </Messages>

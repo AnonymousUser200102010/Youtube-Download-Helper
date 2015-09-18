@@ -57,7 +57,8 @@
 						Width="334"
 						HorizontalAlignment="Stretch"
 						VerticalAlignment="Top"
-						BorderThickness="0,0,0,0"></Button>
+						BorderThickness="0,0,0,0"
+						IsEnabled="False"></Button>
 					<Button
 						x:Name="moveQueuedItemUp"
 						Background="{x:Null}"
@@ -282,7 +283,8 @@
 			VerticalAlignment="Bottom"
 			Margin="0,0,0,33.2"
 			Width="678.4"
-			Height="30" />
+			Height="30"
+			IsEnabled="False" />
 		<Grid.ColumnDefinitions></Grid.ColumnDefinitions>
 	</Grid>
 </Window>

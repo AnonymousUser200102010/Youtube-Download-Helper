@@ -24,13 +24,13 @@ namespace YoutubeDownloadHelper.Code
         /// The string representation of a list of urls.
         /// </param>
         /// <param name="initialPosition">
-        /// The intial position in the list to be used when creating the list.
+        /// The initial position in the list to be used when creating the list.
         /// </param>
         /// <returns>
         /// Returns a parsed list of videos.
         /// </returns>
         /// <exception cref="T:YoutubeDownloadHelper.ParsingException">
-        /// Thrown when a Url in the value array could not be parsed.
+        /// Thrown when a url in the value array could not be parsed.
         /// </exception>
         public static ObservableCollection<Video> ConvertToVideoCollection (this IEnumerable<string> value, int initialPosition)
         {
@@ -47,13 +47,13 @@ namespace YoutubeDownloadHelper.Code
         /// The string representation of a list of urls.
         /// </param>
         /// <param name="initialPosition">
-        /// The intial position in the list to be used when creating the list.
+        /// The initial position in the list to be used when creating the list.
         /// </param>
         /// <returns>
         /// Returns a parsed list of videos.
         /// </returns>
         /// <exception cref="T:YoutubeDownloadHelper.ParsingException">
-        /// Thrown when a Url in the value array could not be parsed.
+        /// Thrown when a url in the value array could not be parsed.
         /// </exception>
         public static ObservableCollection<Video> ConvertToVideoCollection (this IEnumerator<string> value, int initialPosition)
         {

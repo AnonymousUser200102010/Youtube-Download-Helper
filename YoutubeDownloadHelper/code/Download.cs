@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.Diagnostics;
 using System.Globalization;
 using System.IO;
 using System.Linq;
@@ -14,6 +15,13 @@ namespace YoutubeDownloadHelper.Code
 {
     public class Download : IDownload
     {
+    	private Settings settingsStore;
+    	private Settings UserSettings { get { return settingsStore; } }
+    	public Download(IStorage storage)
+    	{
+    		this.settingsStore = storage.RegistryRead(new Settings());
+    	}
+    	
         private static string RemoveIllegalPathCharacters (string path)
         {
             string regexSearch = new string (Path.GetInvalidFileNameChars()) + new string (Path.GetInvalidPathChars());
@@ -21,107 +29,99 @@ namespace YoutubeDownloadHelper.Code
             return r.Replace(path, "");
         }
         
-        private static Collection<Video> Sort (Collection<Video> collectionToSort)
-        {
-        	for (var position = collectionToSort.GetEnumerator(); position.MoveNext();)
-			{
-        		position.Current.Position = collectionToSort.IndexOf(position.Current);
-			}
-			return collectionToSort;
-        }
+//        private static Collection<Video> Sort (Collection<Video> collectionToSort)
+//        {
+//        	for (var position = collectionToSort.GetEnumerator(); position.MoveNext();)
+//			{
+//        		position.Current.Position = collectionToSort.IndexOf(position.Current);
+//			}
+//			return collectionToSort;
+//        }
 
-        public void DownloadHandler (MainWindow mainWindow, int selectedIndex)
+        public void DownloadHandler (MainProgramElements mainWindow)
         {
-            var urlList = new Collection<Video> ();
-            mainWindow.Dispatcher.Invoke((Action)(() =>
-            	urlList.Replace(mainWindow.MainProgramElements.Videos))
-            );
+	    	#region Initialization
+	    	mainWindow.WindowEnabled = false;
+	    	mainWindow.CurrentDownloadOutputText = "Starting Downloading Process....";
+	    	
+        	int selectedIndex = mainWindow.CurrentlySelectedQueueIndex;
+        	ReadOnlyCollection<Video> urlList = mainWindow.Videos.ToList().AsReadOnly();
             urlList.WriteToFile(Storage.QueueFile, ".bak");
-            int finishedVideoCount = 0;
+            List<Video> finishedVideos = new List<Video>();
             int[] retryCount = new int[urlList.Count + 1];
             const int maxRetrys = 4;
             
+            Thread.Sleep(1000);
+            #endregion  
+            #region Handle Download Cycle
 			int position = 0, urlListCount = urlList.Count;
             while (position < urlListCount)
 			{
             	bool exceptionWasCaught = false;
+            	var ableToRetryOnFail = retryCount[position] <= maxRetrys;
 				var video = urlList[position];
 				try
 				{
-					mainWindow.Dispatcher.Invoke((Action)(() => 
+					mainWindow.CurrentlySelectedQueueIndex = position;
+					if (retryCount[position] <= 0)
 					{
-						mainWindow.MainProgramElements.CurrentlySelectedQueueIndex = position;
-						if (retryCount[position] <= 0)
-						{
-							mainWindow.MainProgramElements.CurrentDownloadOutputText = string.Format(CultureInfo.InstalledUICulture, "Beginning download from '{0}'", video.Location);
-						}
-						mainWindow.MainProgramElements.CurrentDownloadProgress = 0;
-					}));
+						mainWindow.CurrentDownloadOutputText = string.Format(CultureInfo.InstalledUICulture, "Beginning download from '{0}'", video.Location);
+					}
+					mainWindow.CurrentDownloadProgress = 0;
 					
 					//var result = await Task.Run(() => Download.SetupDownload(video, mainWindow));
-					var result = Download.SetupDownload(video, mainWindow);
+					var result = this.SetupDownload(video, mainWindow);
 					
-					if (!result.Item1)
+					if (result is DownloadCanceledException)
 					{
-						urlList.Remove(video);
-						finishedVideoCount++;
+						mainWindow.CurrentDownloadOutputText = result.Message;
+						if (App.IsDebugging) result.Message.Log("Youtube Download Helper");
+						Thread.Sleep(1000);
 					}
-					else if (result.Item2 is OperationCanceledException)
-					{
-						mainWindow.Dispatcher.Invoke((Action)(() => 
-						{
-							mainWindow.MainProgramElements.CurrentDownloadOutputText = string.Format(CultureInfo.InstalledUICulture, "The download of '{0}' has been canceled for a non-fatal reason.", video.Location);
-						}));
-						if (App.IsDebugging) result.Item2.Message.Log("Youtube Download Helper");
-						Thread.Sleep(850);
-					}
-					else throw result.Item2;
+					else if (result != null) throw result;
+					finishedVideos.Add(video);
 				}
 				catch (Exception ex)
 				{
 					exceptionWasCaught = true;
 					var exceptionMessage = ex.Message;
 					retryCount[position] += ex is NotSupportedException ? maxRetrys + 1 : 1;
-					if (retryCount[position] <= maxRetrys)
+					if (ableToRetryOnFail)
 					{
-						mainWindow.Dispatcher.Invoke((Action)(() => 
-						{
-							mainWindow.MainProgramElements.CurrentDownloadOutputText = string.Format(CultureInfo.InstalledUICulture, "URL {0}: {1}. Retrying.... ({2}/{3})", video.Position, exceptionMessage.Truncate(50), (retryCount[position]).ToString(CultureInfo.CurrentCulture), maxRetrys);
-						}));
+						mainWindow.CurrentDownloadOutputText = string.Format(CultureInfo.InstalledUICulture, "URL {0}: {1}. Retrying.... ({2}/{3})", video.Position, exceptionMessage.Truncate(50), (retryCount[position]).ToString(CultureInfo.CurrentCulture), maxRetrys);
 						Thread.Sleep(850);
 					}
-					else
+					else if (!UserSettings.ContinueOnFail)
 					{
-						mainWindow.Dispatcher.Invoke((Action)(() => 
-						{
-							mainWindow.MainProgramElements.CurrentDownloadOutputText = exceptionMessage.Truncate(100);
-						}));
+						mainWindow.CurrentDownloadOutputText = exceptionMessage.Truncate(100);
 						ex.Log(GenericCondition.None);
 						break;
 					}
 				}
-				if (!exceptionWasCaught) position++;
+				if (!exceptionWasCaught || (!ableToRetryOnFail && UserSettings.ContinueOnFail )) position++;
 			}
-            mainWindow.Dispatcher.Invoke((Action)(() =>
+            #endregion
+            #region Final Steps
+            bool noMajorErrors = retryCount.All(count => count <= maxRetrys);
+            if (noMajorErrors || (!noMajorErrors && finishedVideos.Count() > 5))
+			{
+            	var leftOverVideos = urlList.Where(url => finishedVideos.All(finishedUrl => !url.ToString().Equals(finishedUrl.ToString())));
+				mainWindow.Videos = new ObservableCollection<Video>(leftOverVideos);
+			}
+            
+            if (noMajorErrors) mainWindow.CurrentDownloadOutputText = "Finished!";
+			else if (string.IsNullOrWhiteSpace(mainWindow.CurrentDownloadOutputText))
+			{
+				mainWindow.CurrentDownloadOutputText = "An Error Has Occurred!";
+			}
+			
+            if (mainWindow.Videos.Any())
             {
-				if (!urlList.Equals(mainWindow.MainProgramElements.Videos) && finishedVideoCount > 5)
-				{
-					Download.Sort(urlList);
-					mainWindow.MainProgramElements.Videos.Replace(urlList);
-				}
-                if (mainWindow.MainProgramElements.Videos.Any())
-                {
-                	mainWindow.RefreshQueue(mainWindow.MainProgramElements.Videos, selectedIndex > mainWindow.MainProgramElements.Videos.All() ? mainWindow.MainProgramElements.Videos.All() : selectedIndex);
-                }
-                mainWindow.MainProgramElements.Videos.WriteToFile(Storage.QueueFile);
-				if (retryCount.All(count => count <= maxRetrys)) mainWindow.MainProgramElements.CurrentDownloadOutputText = "Finished!";
-				else if (string.IsNullOrWhiteSpace(mainWindow.MainProgramElements.CurrentDownloadOutputText))
-				{
-					mainWindow.MainProgramElements.CurrentDownloadOutputText = "An Error Has Occurred!";
-				}
-                mainWindow.MainProgramElements.CurrentDownloadProgress = 0;
-                mainWindow.MainProgramElements.WindowEnabled = true;
-            }));
+            	mainWindow.RefreshQueue(mainWindow.Videos, selectedIndex > mainWindow.Videos.All() ? 0 : selectedIndex);
+            }
+            mainWindow.Videos.WriteToFile(Storage.QueueFile);
+            mainWindow.WindowEnabled = true;
+            #endregion
         }
 
 //        private void DownloadThread ()
@@ -129,7 +129,7 @@ namespace YoutubeDownloadHelper.Code
 //        	
 //        }
         
-        private static Tuple<bool, Exception> SetupDownload (Video video, MainWindow mainWindow)
+        private Exception SetupDownload (Video video, MainProgramElements mainWindow)
         {
         	try
         	{
@@ -143,14 +143,11 @@ namespace YoutubeDownloadHelper.Code
 	        		
 	        	if (currentVideo != default(VideoInfo))
 	            {
-	                mainWindow.Dispatcher.Invoke((Action)(() =>
-	                {
-	            		mainWindow.MainProgramElements.CurrentDownloadOutputText = string.Format(CultureInfo.InstalledUICulture, "Downloading (#{0}) '{1}{2}' at {3}{4}", video.Position, currentVideo.Title.Truncate(56), !video.IsAudioFile ? currentVideo.VideoExtension : currentVideo.AudioExtension, !video.IsAudioFile ? currentVideo.Resolution : currentVideo.AudioBitrate, !video.IsAudioFile ? "p resolution" : " bitrate");
-	                }));
+	                mainWindow.CurrentDownloadOutputText = string.Format(CultureInfo.InstalledUICulture, "Downloading (#{0}) '{1}{2}' at {3}{4}", video.Position, currentVideo.Title.Truncate(56), !video.IsAudioFile ? currentVideo.VideoExtension : currentVideo.AudioExtension, !video.IsAudioFile ? currentVideo.Resolution : currentVideo.AudioBitrate, !video.IsAudioFile ? "p resolution" : " bitrate");
 					
-	        		Download.Downloader(videoInfos, mainWindow, video);
+	        		this.Downloader(videoInfos, mainWindow, video);
 	        		
-	        		return new Tuple<bool, Exception> (false, null);
+	        		return null;
 	            } 
 	            else
 	            {      	
@@ -197,53 +194,38 @@ namespace YoutubeDownloadHelper.Code
 	                throw new NotSupportedException ("An acceptable options file has been exported to the program's root folder. Check there for more information.");
 	            }
         	}
-        	catch (Exception ex) { return new Tuple<bool, Exception> (true, ex); }
+        	catch (Exception ex) { return ex; }
         }
 
-        private static void Downloader (IEnumerable<VideoInfo> videoInfos, MainWindow mainWindow, Video videoToUse)
+        private void Downloader (IEnumerable<VideoInfo> videoInfos, MainProgramElements mainWindow, Video videoToUse)
         {
         	bool audioTrack = videoToUse.IsAudioFile;
             VideoInfo video = videoInfos.First(info => !audioTrack ? (info.VideoType == videoToUse.VideoFormat && info.Resolution == videoToUse.Quality) : (info.AudioType == videoToUse.AudioFormat && info.AudioBitrate == videoToUse.Quality));
             
             if (video.RequiresDecryption) DownloadUrlResolver.DecryptDownloadUrl(video);
-            var classCont = new ClassContainer();
-            var settings = classCont.IOCode.RegistryRead(new Settings());
             
             string videoName = string.Format(CultureInfo.InvariantCulture, "{0}{1}", RemoveIllegalPathCharacters(video.Title), !audioTrack ? video.VideoExtension : video.AudioExtension);
-            string temporaryDownloadPath = Path.Combine(settings.TemporarySaveLocation, videoName);
-            string movingPath = Path.Combine(settings.MainSaveLocation, videoName);
-            if (settings.ValidationLocations.All(path => !File.Exists(Path.Combine(path, videoName))) && !File.Exists(movingPath))
+            string temporaryDownloadPath = Path.Combine(this.UserSettings.TemporarySaveLocation, videoName);
+            string movingPath = Path.Combine(this.UserSettings.MainSaveLocation, videoName);
+            if (this.UserSettings.ValidationLocations.All(path => !File.Exists(Path.Combine(path, videoName))) && !File.Exists(movingPath))
             {
         		if(audioTrack)
         		{
 			        var audioDownloader = new AudioDownloader (video, temporaryDownloadPath);;
-			        
-			        mainWindow.Dispatcher.Invoke((Action)(() =>
-		            {
-		            	audioDownloader.AudioExtractionProgressChanged += 
-		            		(sender, args) => mainWindow.MainProgramElements.CurrentDownloadProgress = (int)(85 + args.ProgressPercentage * 0.15);
-		            }));
-			        
+			        audioDownloader.AudioExtractionProgressChanged += (sender, args) => mainWindow.CurrentDownloadProgress = (int)(85 + args.ProgressPercentage * 0.15);
 			        audioDownloader.Execute();
         		}
         		else
         		{
         			var videoDownloader = new VideoDownloader (video, temporaryDownloadPath);
-        			
-	                mainWindow.Dispatcher.Invoke((Action)(() =>
-	                {
-	                    videoDownloader.DownloadProgressChanged += (
-	                        (sender, args) => mainWindow.MainProgramElements.CurrentDownloadProgress = (int)args.ProgressPercentage
-	                    );
-	                }));
-	                
+        			videoDownloader.DownloadProgressChanged += ((sender, args) => mainWindow.CurrentDownloadProgress = (int)args.ProgressPercentage);
 	                videoDownloader.Execute();
         		}
         		if (!temporaryDownloadPath.Equals(movingPath, StringComparison.OrdinalIgnoreCase)) File.Move(temporaryDownloadPath, movingPath);
             }
             else
             {
-            	throw new OperationCanceledException();
+            	throw new DownloadCanceledException(string.Format(CultureInfo.CurrentCulture, "The download of '{0}({1})' has been canceled because it already existed.", RemoveIllegalPathCharacters(video.Title).Truncate(10), videoToUse.Location));
             }
         }
     }

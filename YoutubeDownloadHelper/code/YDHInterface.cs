@@ -17,10 +17,7 @@ namespace YoutubeDownloadHelper.Code
         /// <remarks>
         /// Usually this is the main application window.
         /// </remarks>
-        /// <param name="selectedIndex">
-        /// The index in the queue this process will use when downloading.
-        /// </param>
-        void DownloadHandler (YoutubeDownloadHelper.Gui.MainWindow mainWindow, int selectedIndex);
+        void DownloadHandler (YoutubeDownloadHelper.Gui.MainProgramElements mainWindow);
     }
     
     public interface IStorage : IRegEdit {}
