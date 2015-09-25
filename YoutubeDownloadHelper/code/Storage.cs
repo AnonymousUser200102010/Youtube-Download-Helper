@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Globalization;
 using System.Linq;
 using UniversalHandlersLibrary;
@@ -48,8 +49,8 @@ namespace YoutubeDownloadHelper.Code
         
         public Settings RegistryRead (Settings settings)
         {
-			var settingsInformation = new System.Collections.Generic.List<RegistryEntry>();
-			if (App.IsWindowsMachine) settingsInformation = settings.AsEnumerable().ReadFromRegistry(registryRootValue, App.IsDebugging).ToList();
+			var settingsInformation = new List<RegistryEntry>();
+			if (App.IsWindowsMachine) settingsInformation = (new Settings()).AsEnumerable(SettingsReturnType.Essential).ReadFromRegistry(registryRootValue, App.IsDebugging).ToList();
 			else
 			{
 				var settingsFromFile = new System.Collections.ObjectModel.Collection<string>().AddFileContents(RegistryFile);
@@ -65,14 +66,13 @@ namespace YoutubeDownloadHelper.Code
 			return settings.Replace(settingsInformation);
         }
 
-        public void RegistryWrite (Settings settings)
+        public void RegistryWrite (IEnumerable<RegistryEntry> settings)
         {
-        	var settingsToWrite = settings.AsEnumerable();
-			if (App.IsWindowsMachine) settingsToWrite.WriteToRegistry(registryRootValue, App.IsDebugging);
+			if (App.IsWindowsMachine) settings.WriteToRegistry(registryRootValue, App.IsDebugging);
 			else
 			{
-				var linesToWrite = new System.Collections.Generic.List<string>();
-				for (var position = settingsToWrite.GetEnumerator(); position.MoveNext();)
+				var linesToWrite = new List<string>();
+				for (var position = settings.GetEnumerator(); position.MoveNext();)
 				{
 					linesToWrite.Add(string.Format(CultureInfo.CurrentCulture, "{0}\n", position.Current.ToString()));
 				}

@@ -15,6 +15,7 @@ namespace YoutubeDownloadHelper.Gui
     {
         private readonly MainWindow MainWindow;
         private readonly Settings savedSettings = (new ClassContainer()).IOCode.RegistryRead(new Settings ());
+        private bool resetWidths;
 
         /// <summary>
         /// Options window.
@@ -31,7 +32,18 @@ namespace YoutubeDownloadHelper.Gui
 
         private void window1_Closed (object sender, EventArgs e)
         {
-        	if (!(bool)doNotSaveOnClose.IsChecked) (new ClassContainer()).IOCode.RegistryWrite(savedSettings);
+			if (!(bool)doNotSaveOnClose.IsChecked)
+			{
+				(new ClassContainer()).IOCode.RegistryWrite(savedSettings.AsEnumerable(SettingsReturnType.Essential));
+				if(resetWidths)
+	        	{
+	        		this.MainWindow.MainProgramElements.QueuePositionTagWidth = this.savedSettings.QueuePositionTagWidth;
+		        	this.MainWindow.MainProgramElements.QueueLocationTagWidth = this.savedSettings.QueueLocationTagWidth;
+		        	this.MainWindow.MainProgramElements.QueueQualityTagWidth = this.savedSettings.QueueQualityTagWidth;
+		        	this.MainWindow.MainProgramElements.QueueFormatTagWidth = this.savedSettings.QueueFormatTagWidth;
+		        	this.MainWindow.MainProgramElements.QueueIsAudioTagWidth = this.savedSettings.QueueIsAudioTagWidth;
+	        	}
+			}
             this.MainWindow.MainProgramElements.WindowEnabled = true;
         }
 
@@ -75,5 +87,14 @@ namespace YoutubeDownloadHelper.Gui
                 dialog.Dispose();
             }
         }
+		void resetTagsButton_Click(object sender, RoutedEventArgs e)
+		{
+			var messageBox = Xceed.Wpf.Toolkit.MessageBox.Show("Are you sure you want to reset the 'tag' width values? You can always change them again later.", "Confirmation", MessageBoxButton.YesNo, MessageBoxImage.Question, MessageBoxResult.Yes);
+	        if (messageBox == MessageBoxResult.Yes)
+	        {
+	        	resetWidths = true;
+	        	this.savedSettings.ResetTagWidthsToDefault();
+	        }
+		}
     }
 }

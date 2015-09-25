@@ -1,4 +1,5 @@
 ﻿using System;
+using UniversalHandlersLibrary;
 
 namespace YoutubeDownloadHelper
 {
@@ -100,6 +101,7 @@ namespace YoutubeDownloadHelper
         {
             Xceed.Wpf.Toolkit.MessageBox.Show(ex.Message, "Fatal System Error", System.Windows.MessageBoxButton.OK, System.Windows.MessageBoxImage.Error);
             Environment.Exit(0);
+            new FatalException("A fatal exception has occurred.", ex).Log();
         }
     }
 }

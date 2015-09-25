@@ -1,28 +1,9 @@
-[September 17 04:58:35 AM:
+[September 23 02:58:27 AM:
 
 Exception Message:
 
-Unable to connect to the remote server
-
-Exception Stack Trace:
-
-   at YoutubeDownloadHelper.Code.Download.DownloadHandler(MainProgramElements mainWindow)Inner Exception Message:
-
-An attempt was made to access a socket in a way forbidden by its access permissions 216.58.217.46:80
-
-Inner Exception Stack Trace:
-
-   at System.Net.Sockets.Socket.DoConnect(EndPoint endPointSnapshot, SocketAddress socketAddress)
-   at System.Net.ServicePoint.ConnectSocketInternal(Boolean connectFailure, Socket s4, Socket s6, Socket& socket, IPAddress& address, ConnectSocketState state, IAsyncResult asyncResult, Exception& exception)]
-
-[September 17 12:49:58 AM:
-
-Exception Message:
-
-Could not parse the Youtube page for URL http://youtube.com/watch?v=aKxbk8KDgsA
-
+Could not parse the Youtube page for URL http://youtube.com/watch?v=a8zr9_nUlmo
 This may be due to a change of the Youtube page structure.
-
 Please report this bug at www.github.com/flagbug/YoutubeExtractor/issues
 
 Exception Stack Trace:
@@ -34,16 +15,14 @@ Result cannot be called on a failed Match.
 Inner Exception Stack Trace:
 
    at System.Text.RegularExpressions.Match.Result(String replacement)
-
    at YoutubeExtractor.DownloadUrlResolver.LoadJson(String url) in c:\Users\Erik\Documents\GitHub\Youtube-Download-Helper\YoutubeExtractor\YoutubeExtractor\YoutubeExtractor\DownloadUrlResolver.cs:line 315
-
    at YoutubeExtractor.DownloadUrlResolver.GetDownloadUrls(String videoUrl, Boolean decryptSignature) in c:\Users\Erik\Documents\GitHub\Youtube-Download-Helper\YoutubeExtractor\YoutubeExtractor\YoutubeExtractor\DownloadUrlResolver.cs:line 89]
 
-[September 17 12:45:23 AM:
+[September 23 02:53:58 AM:
 
 Exception Message:
 
-Could not parse the Youtube page for URL http://youtube.com/watch?v=VRf-FAlhGdY
+Could not parse the Youtube page for URL http://youtube.com/watch?v=a8zr9_nUlmo
 
 This may be due to a change of the Youtube page structure.
 
@@ -63,11 +42,11 @@ Inner Exception Stack Trace:
 
    at YoutubeExtractor.DownloadUrlResolver.GetDownloadUrls(String videoUrl, Boolean decryptSignature) in c:\Users\Erik\Documents\GitHub\Youtube-Download-Helper\YoutubeExtractor\YoutubeExtractor\YoutubeExtractor\DownloadUrlResolver.cs:line 89]
 
-[September 17 12:16:36 AM:
+[September 23 02:50:12 AM:
 
 Exception Message:
 
-Could not parse the Youtube page for URL http://youtube.com/watch?v=VRf-FAlhGdY
+Could not parse the Youtube page for URL http://youtube.com/watch?v=0SylqGX-ato
 
 This may be due to a change of the Youtube page structure.
 
@@ -75,7 +54,7 @@ Please report this bug at www.github.com/flagbug/YoutubeExtractor/issues
 
 Exception Stack Trace:
 
-   at YoutubeDownloadHelper.Code.Download.DownloadHandler(MainProgramElements mainWindow, Int32 selectedIndex)Inner Exception Message:
+   at YoutubeDownloadHelper.Code.Download.DownloadHandler(MainProgramElements mainWindow)Inner Exception Message:
 
 Result cannot be called on a failed Match.
 
@@ -87,11 +66,11 @@ Inner Exception Stack Trace:
 
    at YoutubeExtractor.DownloadUrlResolver.GetDownloadUrls(String videoUrl, Boolean decryptSignature) in c:\Users\Erik\Documents\GitHub\Youtube-Download-Helper\YoutubeExtractor\YoutubeExtractor\YoutubeExtractor\DownloadUrlResolver.cs:line 89]
 
-[September 17 12:09:43 AM:
+[September 23 02:05:49 AM:
 
 Exception Message:
 
-Could not parse the Youtube page for URL http://youtube.com/watch?v=VRf-FAlhGdY
+Could not parse the Youtube page for URL http://youtube.com/watch?v=0SylqGX-ato
 
 This may be due to a change of the Youtube page structure.
 
@@ -99,207 +78,7 @@ Please report this bug at www.github.com/flagbug/YoutubeExtractor/issues
 
 Exception Stack Trace:
 
-   at YoutubeDownloadHelper.Code.Download.DownloadHandler(MainProgramElements mainWindow, Int32 selectedIndex)Inner Exception Message:
-
-Result cannot be called on a failed Match.
-
-Inner Exception Stack Trace:
-
-   at System.Text.RegularExpressions.Match.Result(String replacement)
-
-   at YoutubeExtractor.DownloadUrlResolver.LoadJson(String url) in c:\Users\Erik\Documents\GitHub\Youtube-Download-Helper\YoutubeExtractor\YoutubeExtractor\YoutubeExtractor\DownloadUrlResolver.cs:line 315
-
-   at YoutubeExtractor.DownloadUrlResolver.GetDownloadUrls(String videoUrl, Boolean decryptSignature) in c:\Users\Erik\Documents\GitHub\Youtube-Download-Helper\YoutubeExtractor\YoutubeExtractor\YoutubeExtractor\DownloadUrlResolver.cs:line 89]
-
-[September 17 12:05:29 AM:
-
-Exception Message:
-
-Could not parse the Youtube page for URL http://youtube.com/watch?v=VRf-FAlhGdY
-
-This may be due to a change of the Youtube page structure.
-
-Please report this bug at www.github.com/flagbug/YoutubeExtractor/issues
-
-Exception Stack Trace:
-
-   at YoutubeDownloadHelper.Code.Download.DownloadHandler(MainProgramElements mainWindow, Int32 selectedIndex)Inner Exception Message:
-
-Result cannot be called on a failed Match.
-
-Inner Exception Stack Trace:
-
-   at System.Text.RegularExpressions.Match.Result(String replacement)
-
-   at YoutubeExtractor.DownloadUrlResolver.LoadJson(String url) in c:\Users\Erik\Documents\GitHub\Youtube-Download-Helper\YoutubeExtractor\YoutubeExtractor\YoutubeExtractor\DownloadUrlResolver.cs:line 315
-
-   at YoutubeExtractor.DownloadUrlResolver.GetDownloadUrls(String videoUrl, Boolean decryptSignature) in c:\Users\Erik\Documents\GitHub\Youtube-Download-Helper\YoutubeExtractor\YoutubeExtractor\YoutubeExtractor\DownloadUrlResolver.cs:line 89]
-
-[September 17 12:01:24 AM:
-
-Exception Message:
-
-Could not parse the Youtube page for URL http://youtube.com/watch?v=ysvRIR73LOc
-
-This may be due to a change of the Youtube page structure.
-
-Please report this bug at www.github.com/flagbug/YoutubeExtractor/issues
-
-Exception Stack Trace:
-
-   at YoutubeDownloadHelper.Code.Download.DownloadHandler(MainProgramElements mainWindow, Int32 selectedIndex)Inner Exception Message:
-
-Result cannot be called on a failed Match.
-
-Inner Exception Stack Trace:
-
-   at System.Text.RegularExpressions.Match.Result(String replacement)
-
-   at YoutubeExtractor.DownloadUrlResolver.LoadJson(String url) in c:\Users\Erik\Documents\GitHub\Youtube-Download-Helper\YoutubeExtractor\YoutubeExtractor\YoutubeExtractor\DownloadUrlResolver.cs:line 315
-
-   at YoutubeExtractor.DownloadUrlResolver.GetDownloadUrls(String videoUrl, Boolean decryptSignature) in c:\Users\Erik\Documents\GitHub\Youtube-Download-Helper\YoutubeExtractor\YoutubeExtractor\YoutubeExtractor\DownloadUrlResolver.cs:line 89]
-
-[September 16 05:05:04 AM:
-
-Exception Message:
-
-Unable to connect to the remote server
-
-Exception Stack Trace:
-
-   at YoutubeDownloadHelper.Code.Download.DownloadHandler(MainProgramElements mainWindow, Int32 selectedIndex)Inner Exception Message:
-
-An attempt was made to access a socket in a way forbidden by its access permissions 216.58.217.46:80
-
-Inner Exception Stack Trace:
-
-   at System.Net.Sockets.Socket.DoConnect(EndPoint endPointSnapshot, SocketAddress socketAddress)
-
-   at System.Net.ServicePoint.ConnectSocketInternal(Boolean connectFailure, Socket s4, Socket s6, Socket& socket, IPAddress& address, ConnectSocketState state, IAsyncResult asyncResult, Exception& exception)]
-
-[September 16 02:05:22 AM:
-
-Exception Message:
-
-The underlying connection was closed: An unexpected error occurred on a send.
-
-Exception Stack Trace:
-
-   at YoutubeDownloadHelper.Code.Download.DownloadHandler(MainWindow mainWindow, Int32 selectedIndex)Inner Exception Message:
-
-Unable to read data from the transport connection: An existing connection was forcibly closed by the remote host.
-
-Inner Exception Stack Trace:
-
-   at System.Net.Sockets.NetworkStream.Read(Byte[] buffer, Int32 offset, Int32 size)
-
-   at System.Net.FixedSizeReader.ReadPacket(Byte[] buffer, Int32 offset, Int32 count)
-
-   at System.Net.Security.SslState.StartReceiveBlob(Byte[] buffer, AsyncProtocolRequest asyncRequest)
-
-   at System.Net.Security.SslState.StartSendBlob(Byte[] incoming, Int32 count, AsyncProtocolRequest asyncRequest)
-
-   at System.Net.Security.SslState.ForceAuthentication(Boolean receiveFirst, Byte[] buffer, AsyncProtocolRequest asyncRequest)
-
-   at System.Net.Security.SslState.ProcessAuthentication(LazyAsyncResult lazyResult)
-
-   at System.Threading.ExecutionContext.RunInternal(ExecutionContext executionContext, ContextCallback callback, Object state, Boolean preserveSyncCtx)
-
-   at System.Threading.ExecutionContext.Run(ExecutionContext executionContext, ContextCallback callback, Object state, Boolean preserveSyncCtx)
-
-   at System.Threading.ExecutionContext.Run(ExecutionContext executionContext, ContextCallback callback, Object state)
-
-   at System.Net.TlsStream.ProcessAuthentication(LazyAsyncResult result)
-
-   at System.Net.TlsStream.Write(Byte[] buffer, Int32 offset, Int32 size)
-
-   at System.Net.ConnectStream.WriteHeaders(Boolean async)]
-
-[September 16 01:25:14 AM:
-
-Exception Message:
-
-Could not parse the Youtube page for URL http://youtube.com/watch?v=aKxbk8KDgsA
-
-This may be due to a change of the Youtube page structure.
-
-Please report this bug at www.github.com/flagbug/YoutubeExtractor/issues
-
-Exception Stack Trace:
-
-   at YoutubeDownloadHelper.Code.Download.DownloadHandler(MainWindow mainWindow, Int32 selectedIndex)Inner Exception Message:
-
-Result cannot be called on a failed Match.
-
-Inner Exception Stack Trace:
-
-   at System.Text.RegularExpressions.Match.Result(String replacement)
-
-   at YoutubeExtractor.DownloadUrlResolver.LoadJson(String url) in c:\Users\Erik\Documents\GitHub\Youtube-Download-Helper\YoutubeExtractor\YoutubeExtractor\YoutubeExtractor\DownloadUrlResolver.cs:line 315
-
-   at YoutubeExtractor.DownloadUrlResolver.GetDownloadUrls(String videoUrl, Boolean decryptSignature) in c:\Users\Erik\Documents\GitHub\Youtube-Download-Helper\YoutubeExtractor\YoutubeExtractor\YoutubeExtractor\DownloadUrlResolver.cs:line 89]
-
-[September 16 12:18:44 AM:
-
-Exception Message:
-
-Could not parse the Youtube page for URL http://youtube.com/watch?v=WGrYRJDC6gw
-
-This may be due to a change of the Youtube page structure.
-
-Please report this bug at www.github.com/flagbug/YoutubeExtractor/issues
-
-Exception Stack Trace:
-
-   at YoutubeDownloadHelper.Code.Download.DownloadHandler(MainWindow mainWindow, Int32 selectedIndex)Inner Exception Message:
-
-Result cannot be called on a failed Match.
-
-Inner Exception Stack Trace:
-
-   at System.Text.RegularExpressions.Match.Result(String replacement)
-
-   at YoutubeExtractor.DownloadUrlResolver.LoadJson(String url) in c:\Users\Erik\Documents\GitHub\Youtube-Download-Helper\YoutubeExtractor\YoutubeExtractor\YoutubeExtractor\DownloadUrlResolver.cs:line 315
-
-   at YoutubeExtractor.DownloadUrlResolver.GetDownloadUrls(String videoUrl, Boolean decryptSignature) in c:\Users\Erik\Documents\GitHub\Youtube-Download-Helper\YoutubeExtractor\YoutubeExtractor\YoutubeExtractor\DownloadUrlResolver.cs:line 89]
-
-[September 16 12:09:48 AM:
-
-Exception Message:
-
-Could not parse the Youtube page for URL http://youtube.com/watch?v=P5UdCEWe_2c
-
-This may be due to a change of the Youtube page structure.
-
-Please report this bug at www.github.com/flagbug/YoutubeExtractor/issues
-
-Exception Stack Trace:
-
-   at YoutubeDownloadHelper.Code.Download.DownloadHandler(MainWindow mainWindow, Int32 selectedIndex)Inner Exception Message:
-
-Result cannot be called on a failed Match.
-
-Inner Exception Stack Trace:
-
-   at System.Text.RegularExpressions.Match.Result(String replacement)
-
-   at YoutubeExtractor.DownloadUrlResolver.LoadJson(String url) in c:\Users\Erik\Documents\GitHub\Youtube-Download-Helper\YoutubeExtractor\YoutubeExtractor\YoutubeExtractor\DownloadUrlResolver.cs:line 315
-
-   at YoutubeExtractor.DownloadUrlResolver.GetDownloadUrls(String videoUrl, Boolean decryptSignature) in c:\Users\Erik\Documents\GitHub\Youtube-Download-Helper\YoutubeExtractor\YoutubeExtractor\YoutubeExtractor\DownloadUrlResolver.cs:line 89]
-
-[September 16 12:08:19 AM:
-
-Exception Message:
-
-Could not parse the Youtube page for URL http://youtube.com/watch?v=P5UdCEWe_2c
-
-This may be due to a change of the Youtube page structure.
-
-Please report this bug at www.github.com/flagbug/YoutubeExtractor/issues
-
-Exception Stack Trace:
-
-   at YoutubeDownloadHelper.Code.Download.DownloadHandler(MainWindow mainWindow, Int32 selectedIndex)Inner Exception Message:
+   at YoutubeDownloadHelper.Code.Download.DownloadHandler(MainProgramElements mainWindow)Inner Exception Message:
 
 Result cannot be called on a failed Match.
 

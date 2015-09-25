@@ -34,7 +34,6 @@ namespace YoutubeDownloadHelper.Code
     public class Video : INotifyPropertyChanged
     {
         private int _position;
-
         /// <summary>
         /// The position of the Video.
         /// </summary>
@@ -83,7 +82,7 @@ namespace YoutubeDownloadHelper.Code
 
         public override string ToString ()
         {
-            return string.Format(CultureInfo.CurrentCulture, "{0} {1} {2} {3}\n", this.Location, this.Quality, this.Format, this.IsAudioFile);
+            return string.Format(CultureInfo.CurrentCulture, "{0} {1} {2}\n", this.Location, this.Quality, this.Format);
         }
 		
         #region INotifyPropertyChanged Members
@@ -104,7 +103,7 @@ namespace YoutubeDownloadHelper.Code
             }
         }
         #endregion
-    	
+        
         /// <summary>
         /// Represents a video through a set of locally held attributes.
         /// </summary>
@@ -120,34 +119,65 @@ namespace YoutubeDownloadHelper.Code
         /// <param name="format">
         /// The format (or extension) of the video.
         /// </param>
-        /// <param name="audioFormat">
-        /// The format (or extension) of the audio track.
-        /// </param>
-        /// <param name="isAudioOnly">
-        /// Dictates whether this video will be downloaded as a full video or only as an audio track.
-        /// </param>
-        public Video (int pos, string location, int quality, VideoType format, AudioType audioFormat, bool isAudioOnly)
+        public Video (int pos, string location, int quality, VideoType format)
         {
             this.Position = pos;
             this.Location = location;
             this.Quality = quality;
             this.VideoFormat = format;
-            this.AudioFormat = audioFormat;
-            this.IsAudioFile = isAudioOnly;
+            this.AudioFormat = default(AudioType);
+            this.IsAudioFile = false;
+        }
+        
+        /// <summary>
+        /// Represents a video through a set of locally held attributes.
+        /// </summary>
+        /// <param name="pos">
+        /// The position of the Video within the current list.
+        /// </param>
+        /// <param name="location">
+        /// The "location" of the video on the internet. In other words, the string representation of the url for the video.
+        /// </param>
+        /// <param name="quality">
+        /// The consumption quality of the video.
+        /// </param>
+        /// <param name="format">
+        /// The format (or extension) of the video.
+        /// </param>
+        public Video (int pos, string location, int quality, AudioType format)
+        {
+            this.Position = pos;
+            this.Location = location;
+            this.Quality = quality;
+            this.VideoFormat = default(VideoType);
+            this.AudioFormat = format;
+            this.IsAudioFile = true;
         }
     }
-
+    
+    public enum SettingsReturnType
+    {
+	    /// <summary>
+	    /// Returns all user settings which are held within the settings container provided.
+	    /// </summary>
+	    Full,
+	    /// <summary>
+	    /// Returns only essential user settings which must be set and grabbed for the container to work properly.
+	    /// </summary>
+	    Essential
+    }
+    
     public class Settings : INotifyPropertyChanged
     {
         private bool schedulingEnabled;
         private bool continueOnFail;
-        private ICollection<string> saveLocations = new Collection<string> 
+        private IEnumerable<string> saveLocations = new Collection<string> 
         { 
         	string.Format(CultureInfo.InvariantCulture, "{0}{1}", AppDomain.CurrentDomain.BaseDirectory, "Finished Downloads\\"), 
         	string.Format(CultureInfo.InvariantCulture, "{0}{1}", AppDomain.CurrentDomain.BaseDirectory, "Temp\\") 
         };
         private ObservableCollection<string> validationLocations = new ObservableCollection<string>(new List<string>());
-        private ICollection<string> schedulingTimes = new Collection<string> 
+        private IEnumerable<string> schedulingTimes = new Collection<string> 
         {
             DateTime.Now.ToString("hh:mm:ss tt", CultureInfo.InvariantCulture),
             DateTime.Now.AddMinutes(1).ToString("hh:mm:ss tt", CultureInfo.InvariantCulture)
@@ -159,6 +189,113 @@ namespace YoutubeDownloadHelper.Code
         private const string temporaryDownloadLocation = "Temporary Download Location";
         private const string validationDirectory = "Directory To Validate";
         private const string continueDownloadOnFail = "Force Continue Downloading";
+        
+        public const string QueuePositionRegEntry = "Queue: Position Tag Width";
+        public const string QueueLocationRegEntry = "Queue: Location Tag Width";
+        public const string QueueQualityRegEntry = "Queue: Quality Tag Width";
+        public const string QueueFormatRegEntry = "Queue: Format Tag Width";
+        public const string QueueIsAudioRegEntry = "Queue: IsAudio Tag Width";
+        
+        private Collection<int> queueTagWidths = new Collection<int>
+        {
+        	20,
+        	393,
+        	80,
+        	55,
+        	90
+        };
+        
+        public void ResetTagWidthsToDefault()
+        {
+        	IEnumerable<int> defaultTagWidth = new Collection<int>
+	        {
+	        	20,
+	        	393,
+	        	80,
+	        	55,
+	        	90
+        	}.AsEnumerable();
+        	
+			for (int position = 0, queueTagWidthsCount = queueTagWidths.Count; position < queueTagWidthsCount; position++)
+			{
+				queueTagWidths[position] = defaultTagWidth.ElementAt(position);
+			}
+        }
+        
+        /// <summary>
+        /// The length of the UI queue position "tag".
+        /// </summary>
+        public int QueuePositionTagWidth 
+        { 
+        	get
+        	{
+        		return this.queueTagWidths.ElementAtOrDefault(0);
+        	}
+        	set
+        	{
+        		this.queueTagWidths[0] = value;
+        	}
+        }
+        
+        /// <summary>
+        /// The length of the UI queue location "tag".
+        /// </summary>
+        public int QueueLocationTagWidth 
+        { 
+        	get
+        	{
+        		return this.queueTagWidths.ElementAtOrDefault(1);
+        	}
+        	set
+        	{
+        		this.queueTagWidths[1] = value;
+        	}
+        }
+        
+        /// <summary>
+        /// The length of the UI queue quality "tag".
+        /// </summary>
+        public int QueueQualityTagWidth 
+        { 
+        	get
+        	{
+        		return this.queueTagWidths.ElementAtOrDefault(2);
+        	}
+        	set
+        	{
+        		this.queueTagWidths[2] = value;
+        	}
+        }
+        
+        /// <summary>
+        /// The length of the UI format quality "tag".
+        /// </summary>
+        public int QueueFormatTagWidth 
+        { 
+        	get
+        	{
+        		return this.queueTagWidths.ElementAtOrDefault(3);
+        	}
+        	set
+        	{
+        		this.queueTagWidths[3] = value;
+        	}
+        }
+        
+        /// <summary>
+        /// The length of the UI format quality "tag".
+        /// </summary>
+        public int QueueIsAudioTagWidth 
+        { 
+        	get
+        	{
+        		return this.queueTagWidths.ElementAtOrDefault(4);
+        	}
+        	set
+        	{
+        		this.queueTagWidths[4] = value;
+        	}
+        }
 
         /// <summary>
         /// The value indicating whether scheduling within the program is enabled.
@@ -247,7 +384,7 @@ namespace YoutubeDownloadHelper.Code
         /// <summary>
         /// An array containing the scheduling times.
         /// </summary>
-        public ICollection<string> Schedule
+        public IEnumerable<string> Schedule
         { 
             get { return this.schedulingTimes; }
             //TO-DO: IMPLIMENT SCHEDULING.
@@ -277,17 +414,24 @@ namespace YoutubeDownloadHelper.Code
         /// <returns>
         /// Returns a collection of objects which represent the individual user-settings in a format suitable for use in the registry.
         /// </returns>
-        public IEnumerable<RegistryEntry> AsEnumerable ()
+        public IEnumerable<RegistryEntry> AsEnumerable (SettingsReturnType returnType)
         {
-            var returnValue = new List<RegistryEntry> 
-            {
-        		{ new RegistryEntry(scheduling, this.Scheduling) },
-        		{ new RegistryEntry(continueDownloadOnFail, this.ContinueOnFail) },
-        		{ new RegistryEntry(mainDownloadLocation, this.MainSaveLocation) },
-        		{ new RegistryEntry(temporaryDownloadLocation, this.TemporarySaveLocation) },
-        		{ new RegistryEntry(schedualStart, this.Schedule.ElementAtOrDefault(0)) },
-        		{ new RegistryEntry(schedualEnd, this.Schedule.ElementAtOrDefault(1)) }
-            };
+			var list = new List<RegistryEntry>();
+			list.Add(new RegistryEntry(scheduling, this.Scheduling));
+			list.Add(new RegistryEntry(continueDownloadOnFail, this.ContinueOnFail));
+			list.Add(new RegistryEntry(mainDownloadLocation, this.MainSaveLocation));
+			list.Add(new RegistryEntry(temporaryDownloadLocation, this.TemporarySaveLocation));
+			list.Add(new RegistryEntry(schedualStart, this.Schedule.ElementAtOrDefault(0)));
+			list.Add(new RegistryEntry(schedualEnd, this.Schedule.ElementAtOrDefault(1)));
+			if(returnType.Equals(SettingsReturnType.Full))
+			{
+				list.Add(new RegistryEntry(QueuePositionRegEntry, this.QueuePositionTagWidth));
+				list.Add(new RegistryEntry(QueueLocationRegEntry, this.QueueLocationTagWidth));
+				list.Add(new RegistryEntry(QueueQualityRegEntry, this.QueueQualityTagWidth));
+				list.Add(new RegistryEntry(QueueFormatRegEntry, this.QueueFormatTagWidth));
+				list.Add(new RegistryEntry(QueueIsAudioRegEntry, this.QueueIsAudioTagWidth));
+			}
+            var returnValue = list;
             for (var position = ValidationLocations.GetEnumerator(); position.MoveNext();)
 			{
 				string directory = position.Current;
@@ -352,15 +496,28 @@ namespace YoutubeDownloadHelper.Code
 	                            this.TemporarySaveLocation = valueAsString;
 	                            break;
 	                        case schedualStart:
-								if (this.Schedule.Any()) this.schedulingTimes = new Collection<string>{ valueAsString, this.Schedule.ElementAtOrDefault(1) };
-								else this.Schedule.Add(valueAsString);
+	                            this.schedulingTimes = new Collection<string>{ valueAsString, this.Schedule.ElementAtOrDefault(1) };
 	                            break;
 	                        case schedualEnd:
-	                            if (this.Schedule.Count() >= 2) this.schedulingTimes = new Collection<string>{this.Schedule.ElementAt(0), valueAsString};
-	                            else this.Schedule.Add(valueAsString);
+	                            this.schedulingTimes = new Collection<string>{ this.Schedule.ElementAtOrDefault(0), valueAsString };
 	                            break;
 	                        case continueDownloadOnFail:
 	                            this.ContinueOnFail = bool.Parse(valueAsString);
+	                            break;
+	                        case QueuePositionRegEntry:
+	                            this.QueuePositionTagWidth = int.Parse(valueAsString, CultureInfo.InvariantCulture);
+	                            break;
+	                        case QueueLocationRegEntry:
+	                            this.QueueLocationTagWidth = int.Parse(valueAsString, CultureInfo.InvariantCulture);
+	                            break;
+	                        case QueueQualityRegEntry:
+	                            this.QueueQualityTagWidth = int.Parse(valueAsString, CultureInfo.InvariantCulture);
+	                            break;
+	                        case QueueFormatRegEntry:
+	                            this.QueueFormatTagWidth = int.Parse(valueAsString, CultureInfo.InvariantCulture);
+	                            break;
+	                        case QueueIsAudioRegEntry:
+	                            this.QueueIsAudioTagWidth = int.Parse(valueAsString, CultureInfo.InvariantCulture);
 	                            break;
 	                        default:
 	                            throw new ParsingException (string.Format(CultureInfo.CurrentCulture, "'{0}' could not be assimilated into the current instance of settings because no value in settings contain '{0}'", name));
@@ -425,7 +582,6 @@ namespace YoutubeDownloadHelper.Code
     public class ProjectAssemblies
     {
         private readonly ICollection<Library> assemblyStore = new Collection<Library> ();
-
         /// <summary>
         /// All assemblies used in the project.
         /// </summary>

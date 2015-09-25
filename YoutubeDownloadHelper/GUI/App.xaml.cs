@@ -34,7 +34,7 @@ namespace YoutubeDownloadHelper
         {
         	get
         	{
-        		return Environment.OSVersion.Platform.ToString().Contains("win", StringComparison.OrdinalIgnoreCase);
+        		return Environment.OSVersion.Platform.ToString().StartsWith("win", StringComparison.OrdinalIgnoreCase);
         	}
         }
 

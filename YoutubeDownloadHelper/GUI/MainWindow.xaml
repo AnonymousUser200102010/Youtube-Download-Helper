@@ -134,7 +134,7 @@
 						<ListView.View>
 							<GridView>
 								<GridViewColumn
-									Width="20"
+									Width="{Binding QueuePositionTagWidth, Mode=TwoWay}"
 									DisplayMemberBinding="{Binding Position}">
 									<GridViewColumn.Header>
 										<GridViewColumnHeader
@@ -144,7 +144,7 @@
 									</GridViewColumn.Header>
 								</GridViewColumn>
 								<GridViewColumn
-									Width="393"
+									Width="{Binding QueueLocationTagWidth, Mode=TwoWay}"
 									DisplayMemberBinding="{Binding Location}">
 									<GridViewColumn.Header>
 										<GridViewColumnHeader
@@ -154,7 +154,7 @@
 									</GridViewColumn.Header>
 								</GridViewColumn>
 								<GridViewColumn
-									Width="80"
+									Width="{Binding QueueQualityTagWidth, Mode=TwoWay}"
 									DisplayMemberBinding="{Binding Quality}">
 									<GridViewColumn.Header>
 										<GridViewColumnHeader
@@ -164,7 +164,7 @@
 									</GridViewColumn.Header>
 								</GridViewColumn>
 								<GridViewColumn
-									Width="55"
+									Width="{Binding QueueFormatTagWidth, Mode=TwoWay}"
 									DisplayMemberBinding="{Binding Format}">
 									<GridViewColumn.Header>
 										<GridViewColumnHeader
@@ -174,7 +174,7 @@
 									</GridViewColumn.Header>
 								</GridViewColumn>
 								<GridViewColumn
-									Width="90"
+									Width="{Binding QueueIsAudioTagWidth, Mode=TwoWay}"
 									DisplayMemberBinding="{Binding IsAudioFile}">
 									<GridViewColumn.Header>
 										<GridViewColumnHeader

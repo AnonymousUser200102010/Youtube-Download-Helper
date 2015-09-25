@@ -29,15 +29,6 @@ namespace YoutubeDownloadHelper.Code
             return r.Replace(path, "");
         }
         
-//        private static Collection<Video> Sort (Collection<Video> collectionToSort)
-//        {
-//        	for (var position = collectionToSort.GetEnumerator(); position.MoveNext();)
-//			{
-//        		position.Current.Position = collectionToSort.IndexOf(position.Current);
-//			}
-//			return collectionToSort;
-//        }
-
         public void DownloadHandler (MainProgramElements mainWindow)
         {
 	    	#region Initialization
@@ -45,7 +36,7 @@ namespace YoutubeDownloadHelper.Code
 	    	mainWindow.CurrentDownloadOutputText = "Starting Downloading Process....";
 	    	
         	int selectedIndex = mainWindow.CurrentlySelectedQueueIndex;
-        	ReadOnlyCollection<Video> urlList = mainWindow.Videos.ToList().AsReadOnly();
+        	var urlList = mainWindow.Videos.ToList().AsReadOnly();
             urlList.WriteToFile(Storage.QueueFile, ".bak");
             List<Video> finishedVideos = new List<Video>();
             int[] retryCount = new int[urlList.Count + 1];
@@ -58,7 +49,7 @@ namespace YoutubeDownloadHelper.Code
             while (position < urlListCount)
 			{
             	bool exceptionWasCaught = false;
-            	var ableToRetryOnFail = retryCount[position] <= maxRetrys;
+            	bool ableToRetryOnFail = retryCount[position] < maxRetrys;
 				var video = urlList[position];
 				try
 				{
@@ -76,7 +67,7 @@ namespace YoutubeDownloadHelper.Code
 					{
 						mainWindow.CurrentDownloadOutputText = result.Message;
 						if (App.IsDebugging) result.Message.Log("Youtube Download Helper");
-						Thread.Sleep(1000);
+						Thread.Sleep(!UserSettings.ContinueOnFail ? 1000 : 850);
 					}
 					else if (result != null) throw result;
 					finishedVideos.Add(video);
@@ -89,7 +80,6 @@ namespace YoutubeDownloadHelper.Code
 					if (ableToRetryOnFail)
 					{
 						mainWindow.CurrentDownloadOutputText = string.Format(CultureInfo.InstalledUICulture, "URL {0}: {1}. Retrying.... ({2}/{3})", video.Position, exceptionMessage.Truncate(50), (retryCount[position]).ToString(CultureInfo.CurrentCulture), maxRetrys);
-						Thread.Sleep(850);
 					}
 					else if (!UserSettings.ContinueOnFail)
 					{
@@ -97,15 +87,20 @@ namespace YoutubeDownloadHelper.Code
 						ex.Log(GenericCondition.None);
 						break;
 					}
+					if(!UserSettings.ContinueOnFail)
+					{
+						Thread.Sleep(850);
+					}
 				}
-				if (!exceptionWasCaught || (!ableToRetryOnFail && UserSettings.ContinueOnFail )) position++;
+				if (!exceptionWasCaught || (!ableToRetryOnFail && UserSettings.ContinueOnFail)) position++;
 			}
             #endregion
             #region Final Steps
             bool noMajorErrors = retryCount.All(count => count <= maxRetrys);
             if (noMajorErrors || (!noMajorErrors && finishedVideos.Count() > 5))
 			{
-            	var leftOverVideos = urlList.Where(url => finishedVideos.All(finishedUrl => !url.ToString().Equals(finishedUrl.ToString())));
+            	IEnumerable<Video> leftOverVideos = urlList.Where(url => finishedVideos.All(finishedUrl => !url.ToString().Equals(finishedUrl.ToString())));
+            	leftOverVideos.Sort();
 				mainWindow.Videos = new ObservableCollection<Video>(leftOverVideos);
 			}
             
@@ -143,7 +138,7 @@ namespace YoutubeDownloadHelper.Code
 	        		
 	        	if (currentVideo != default(VideoInfo))
 	            {
-	                mainWindow.CurrentDownloadOutputText = string.Format(CultureInfo.InstalledUICulture, "Downloading (#{0}) '{1}{2}' at {3}{4}", video.Position, currentVideo.Title.Truncate(56), !video.IsAudioFile ? currentVideo.VideoExtension : currentVideo.AudioExtension, !video.IsAudioFile ? currentVideo.Resolution : currentVideo.AudioBitrate, !video.IsAudioFile ? "p resolution" : " bitrate");
+	        		mainWindow.CurrentDownloadOutputText = string.Format(CultureInfo.InstalledUICulture, "Downloading (#{0}/{1}) '{2}{3}' at {4}{5}", video.Position, mainWindow.Videos.Count(), currentVideo.Title.Truncate(56), !video.IsAudioFile ? currentVideo.VideoExtension : currentVideo.AudioExtension, !video.IsAudioFile ? currentVideo.Resolution : currentVideo.AudioBitrate, !video.IsAudioFile ? "p resolution" : " bitrate");
 					
 	        		this.Downloader(videoInfos, mainWindow, video);
 	        		
@@ -225,7 +220,7 @@ namespace YoutubeDownloadHelper.Code
             }
             else
             {
-            	throw new DownloadCanceledException(string.Format(CultureInfo.CurrentCulture, "The download of '{0}({1})' has been canceled because it already existed.", RemoveIllegalPathCharacters(video.Title).Truncate(10), videoToUse.Location));
+            	throw new DownloadCanceledException(string.Format(CultureInfo.CurrentCulture, "The download of #{0} '{1}({2})' has been canceled because it already existed.", videoToUse.Position, RemoveIllegalPathCharacters(video.Title).Truncate(10), videoToUse.Location.Truncate(100)));
             }
         }
     }

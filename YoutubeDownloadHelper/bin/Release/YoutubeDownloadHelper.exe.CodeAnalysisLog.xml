@@ -6,25 +6,36 @@
    <Modules>
     <Module Name="youtubedownloadhelper.exe">
      <Messages>
-      <Message TypeName="AssembliesShouldHaveValidStrongNames" Category="Microsoft.Design" CheckId="CA2210" Status="Active" Created="2015-09-17 07:44:08Z" FixCategory="NonBreaking">
+      <Message TypeName="AssembliesShouldHaveValidStrongNames" Category="Microsoft.Design" CheckId="CA2210" Status="Active" Created="2015-09-24 22:40:05Z" FixCategory="NonBreaking">
        <Issue Name="NoStrongName" Certainty="95" Level="CriticalError">Sign 'YoutubeDownloadHelper.exe' with a strong name key.</Issue>
       </Message>
      </Messages>
      <Namespaces>
       <Namespace Name="YoutubeDownloadHelper.Code">
        <Types>
+        <Type Name="Conversion" Kind="Class" Accessibility="Public" ExternallyVisible="True">
+         <Members>
+          <Member Name="#ConvertToVideoCollection(System.Collections.Generic.IEnumerator`1&lt;System.String&gt;,System.Int32)" Kind="Method" Static="True" Accessibility="Public" ExternallyVisible="True">
+           <Messages>
+            <Message TypeName="DoNotCatchGeneralExceptionTypes" Category="Microsoft.Design" CheckId="CA1031" Status="Active" Created="2015-09-24 22:40:05Z" FixCategory="NonBreaking">
+             <Issue Certainty="95" Level="CriticalError">Modify 'Conversion.ConvertToVideoCollection(this IEnumerator&lt;string&gt;, int)' to catch a more specific exception than 'Exception' or rethrow the exception.</Issue>
+            </Message>
+           </Messages>
+          </Member>
+         </Members>
+        </Type>
         <Type Name="Download" Kind="Class" Accessibility="Public" ExternallyVisible="True">
          <Members>
           <Member Name="#DownloadHandler(YoutubeDownloadHelper.Gui.MainProgramElements)" Kind="Method" Static="False" Accessibility="Public" ExternallyVisible="True">
            <Messages>
-            <Message TypeName="DoNotCatchGeneralExceptionTypes" Category="Microsoft.Design" CheckId="CA1031" Status="Active" Created="2015-09-17 07:44:08Z" FixCategory="NonBreaking">
+            <Message TypeName="DoNotCatchGeneralExceptionTypes" Category="Microsoft.Design" CheckId="CA1031" Status="Active" Created="2015-09-24 22:40:05Z" FixCategory="NonBreaking">
              <Issue Certainty="95" Level="CriticalError">Modify 'Download.DownloadHandler(MainProgramElements)' to catch a more specific exception than 'Exception' or rethrow the exception.</Issue>
             </Message>
            </Messages>
           </Member>
-          <Member Name="#SetupDownload(YoutubeDownloadHelper.Code.Video,YoutubeDownloadHelper.Gui.MainProgramElements)" Kind="Method" Static="True" Accessibility="Private" ExternallyVisible="False">
+          <Member Name="#SetupDownload(YoutubeDownloadHelper.Code.Video,YoutubeDownloadHelper.Gui.MainProgramElements)" Kind="Method" Static="False" Accessibility="Private" ExternallyVisible="False">
            <Messages>
-            <Message TypeName="DoNotCatchGeneralExceptionTypes" Category="Microsoft.Design" CheckId="CA1031" Status="Active" Created="2015-09-17 07:44:08Z" FixCategory="NonBreaking">
+            <Message TypeName="DoNotCatchGeneralExceptionTypes" Category="Microsoft.Design" CheckId="CA1031" Status="Active" Created="2015-09-24 22:40:05Z" FixCategory="NonBreaking">
              <Issue Certainty="95" Level="CriticalError">Modify 'Download.SetupDownload(Video, MainProgramElements)' to catch a more specific exception than 'Exception' or rethrow the exception.</Issue>
             </Message>
            </Messages>
@@ -33,7 +44,7 @@
         </Type>
         <Type Name="IStorage" Kind="Interface" Accessibility="Public" ExternallyVisible="True">
          <Messages>
-          <Message TypeName="AvoidEmptyInterfaces" Category="Microsoft.Design" CheckId="CA1040" Status="Active" Created="2015-09-17 07:44:08Z" FixCategory="Breaking">
+          <Message TypeName="AvoidEmptyInterfaces" Category="Microsoft.Design" CheckId="CA1040" Status="Active" Created="2015-09-24 22:40:05Z" FixCategory="Breaking">
            <Issue Certainty="90" Level="Warning">Define a custom attribute to replace 'IStorage'.</Issue>
           </Message>
          </Messages>
@@ -44,7 +55,7 @@
            <Accessors>
             <Accessor Name="#get_Assembly()" Kind="Method" Static="False" Accessibility="Public" ExternallyVisible="True">
              <Messages>
-              <Message TypeName="DoNotRaiseExceptionsInUnexpectedLocations" Category="Microsoft.Design" CheckId="CA1065" Status="Active" Created="2015-09-17 07:44:08Z" FixCategory="Breaking">
+              <Message TypeName="DoNotRaiseExceptionsInUnexpectedLocations" Category="Microsoft.Design" CheckId="CA1065" Status="Active" Created="2015-09-24 22:40:05Z" FixCategory="Breaking">
                <Issue Name="PropertyGetter" Certainty="90" Level="Warning">'Library.Assembly.get()' creates an exception of type 'FatalException', an exception type that should not be raised in a property. If this exception instance might be raised, use a different exception type, convert this property into a method, or change this property's logic so that it no longer raises an exception.</Issue>
               </Message>
              </Messages>
@@ -57,7 +68,7 @@
          <Members>
           <Member Name="#ValidationLocations" Kind="Property" Static="False" Accessibility="Public" ExternallyVisible="True">
            <Messages>
-            <Message TypeName="CollectionPropertiesShouldBeReadOnly" Category="Microsoft.Usage" CheckId="CA2227" Status="Active" Created="2015-09-17 07:44:08Z" FixCategory="Breaking">
+            <Message TypeName="CollectionPropertiesShouldBeReadOnly" Category="Microsoft.Usage" CheckId="CA2227" Status="Active" Created="2015-09-24 22:40:05Z" FixCategory="Breaking">
              <Issue Certainty="75" Level="Warning">Change 'Settings.ValidationLocations' to be read-only by removing the property setter.</Issue>
             </Message>
            </Messages>
@@ -72,8 +83,26 @@
          <Members>
           <Member Name="#Videos" Kind="Property" Static="False" Accessibility="Public" ExternallyVisible="True">
            <Messages>
-            <Message TypeName="CollectionPropertiesShouldBeReadOnly" Category="Microsoft.Usage" CheckId="CA2227" Status="Active" Created="2015-09-17 07:44:08Z" FixCategory="Breaking">
+            <Message TypeName="CollectionPropertiesShouldBeReadOnly" Category="Microsoft.Usage" CheckId="CA2227" Status="Active" Created="2015-09-24 22:40:05Z" FixCategory="Breaking">
              <Issue Certainty="75" Level="Warning">Change 'MainProgramElements.Videos' to be read-only by removing the property setter.</Issue>
+            </Message>
+           </Messages>
+          </Member>
+         </Members>
+        </Type>
+        <Type Name="UrlManipulation" Kind="Class" Accessibility="Public" ExternallyVisible="True">
+         <Members>
+          <Member Name="#basicManipulateUrlButton_Click(System.Object,System.Windows.RoutedEventArgs)" Kind="Method" Static="False" Accessibility="Private" ExternallyVisible="False">
+           <Messages>
+            <Message TypeName="DoNotCatchGeneralExceptionTypes" Category="Microsoft.Design" CheckId="CA1031" Status="Active" Created="2015-09-24 22:40:05Z" FixCategory="NonBreaking">
+             <Issue Certainty="95" Level="CriticalError">Modify 'UrlManipulation.basicManipulateUrlButton_Click(object, RoutedEventArgs)' to catch a more specific exception than 'Exception' or rethrow the exception.</Issue>
+            </Message>
+           </Messages>
+          </Member>
+          <Member Name="#window1_Closing(System.Object,System.EventArgs)" Kind="Method" Static="False" Accessibility="Private" ExternallyVisible="False">
+           <Messages>
+            <Message TypeName="DoNotCatchGeneralExceptionTypes" Category="Microsoft.Design" CheckId="CA1031" Status="Active" Created="2015-09-24 22:40:05Z" FixCategory="NonBreaking">
+             <Issue Certainty="95" Level="CriticalError">Modify 'UrlManipulation.window1_Closing(object, EventArgs)' to catch a more specific exception than 'Exception' or rethrow the exception.</Issue>
             </Message>
            </Messages>
           </Member>
@@ -83,7 +112,7 @@
          <Members>
           <Member Name="#FormatList" Kind="Property" Static="False" Accessibility="Public" ExternallyVisible="True">
            <Messages>
-            <Message TypeName="CollectionPropertiesShouldBeReadOnly" Category="Microsoft.Usage" CheckId="CA2227" Status="Active" Created="2015-09-17 07:44:08Z" FixCategory="Breaking">
+            <Message TypeName="CollectionPropertiesShouldBeReadOnly" Category="Microsoft.Usage" CheckId="CA2227" Status="Active" Created="2015-09-24 22:40:05Z" FixCategory="Breaking">
              <Issue Certainty="75" Level="Warning">Change 'UrlShaping.FormatList' to be read-only by removing the property setter.</Issue>
             </Message>
            </Messages>

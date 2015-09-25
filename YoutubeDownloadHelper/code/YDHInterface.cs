@@ -41,7 +41,7 @@ namespace YoutubeDownloadHelper.Code
         /// <param name="settings">
         /// Values to write to the registry.
         /// </param>
-        void RegistryWrite (Settings settings);
+        void RegistryWrite (System.Collections.Generic.IEnumerable<UniversalHandlersLibrary.RegistryEntry> settings);
     }
     
     public interface IError

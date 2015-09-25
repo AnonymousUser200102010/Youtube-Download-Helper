@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Diagnostics;
@@ -67,7 +68,7 @@ namespace YoutubeDownloadHelper.Gui
 
         void UrlButton_Click (object sender, RoutedEventArgs e)
         {
-            (new UrlManipulation (((Control)sender).Name.Contains("add", StringComparison.OrdinalIgnoreCase), this, this.videoQueue.Items, this.queueListView.SelectedIndex)).Show();
+        	(new UrlManipulation (((Control)sender).Name.Contains("add", StringComparison.OrdinalIgnoreCase), this)).Show();
             this.MainProgramElements.WindowEnabled = false;
         }
 
@@ -89,39 +90,39 @@ namespace YoutubeDownloadHelper.Gui
 
         void queueListView_KeyUp (object sender, KeyEventArgs e)
         {
-            switch (e.Key)
-            {
-                case Key.W:
-                case Key.I:
-                    this.moveQueuedItem_Click(this.moveQueuedItemUp, null);
-                    break;
-                case Key.S:
-                case Key.K:
-                    this.moveQueuedItem_Click(this.moveQueuedItemDown, null);
-                    break;
-                case Key.Delete:
-                case Key.Back:
-                    int previouslySelectedIndex = this.queueListView.SelectedIndex;
-                    if (previouslySelectedIndex > 0 || (this.queueListView.Items.Count - 1) > 0)
-                    {
-                        var finalizedCollection = this.MainProgramElements.Videos;
+        	if(this.MainProgramElements.Videos.Count >= 2)
+        	{
+	            switch (e.Key)
+	            {
+	                case Key.W:
+	                case Key.I:
+	                    this.moveQueuedItem_Click(this.moveQueuedItemUp, null);
+	                    break;
+	                case Key.S:
+	                case Key.K:
+	                    this.moveQueuedItem_Click(this.moveQueuedItemDown, null);
+	                    break;
+	                case Key.Delete:
+	                case Key.Back:
+	                    int previouslySelectedIndex = this.MainProgramElements.CurrentlySelectedQueueIndex;
+	                    var finalizedCollection = this.MainProgramElements.Videos;
 						var messageBox = Xceed.Wpf.Toolkit.MessageBox.Show(string.Format(CultureInfo.InstalledUICulture, "Are you sure you want to permanently delete url '{0}'?", finalizedCollection[previouslySelectedIndex].Location), "Confirmation", MessageBoxButton.YesNo, MessageBoxImage.Question, MessageBoxResult.No);
-                        if (messageBox == MessageBoxResult.Yes)
-                        {
-                            finalizedCollection.RemoveAt(previouslySelectedIndex);
-                            for (int videoPosition = previouslySelectedIndex; videoPosition < finalizedCollection.Count; videoPosition++)
-                            {
-                                finalizedCollection[videoPosition].Position = videoPosition;
-                            }
-                            RefreshQueue(finalizedCollection, previouslySelectedIndex < this.MainProgramElements.Videos.Count - 1 ? previouslySelectedIndex : this.MainProgramElements.Videos.Count - 1);
-                        }
-                    }
-                    else
-                    {
-                        Xceed.Wpf.Toolkit.MessageBox.Show("Could not delete final URL or no URL selected.", "Cannot Delete URL", MessageBoxButton.OK, MessageBoxImage.Error, MessageBoxResult.OK);
-                    }
-                    break;
-            }
+	                    if (messageBox == MessageBoxResult.Yes)
+	                    {
+		                    finalizedCollection.RemoveAt(previouslySelectedIndex);
+		                    for (int videoPosition = previouslySelectedIndex; videoPosition < finalizedCollection.Count; videoPosition++)
+		                    {
+		                    	finalizedCollection[videoPosition].Position = videoPosition;
+		                    }
+		                    RefreshQueue(finalizedCollection, previouslySelectedIndex < this.MainProgramElements.Videos.All() ? previouslySelectedIndex : this.MainProgramElements.Videos.All());
+	                    }
+	                    break;
+	            }
+        	}
+        	else if (e.Key == Key.Delete || e.Key == Key.Back)
+	        {
+	        	Xceed.Wpf.Toolkit.MessageBox.Show("Cannot delete the last URL or the list is empty.", "Invalid Action", MessageBoxButton.OK, MessageBoxImage.Error, MessageBoxResult.OK);
+	        }
         }
 
         void DownloadButton_Click (object sender, RoutedEventArgs e)
@@ -146,7 +147,102 @@ namespace YoutubeDownloadHelper.Gui
         private string downOutput = string.Empty;
         //private bool areUpDownEnabled = false;
         private bool isWindowEnabled = true;
+        private ClassContainer classCont = (new ClassContainer());
         
+        /// <summary>
+        /// This should not be used to hold any important values. It should be used simply as a dummy container for registry I/O operations.
+        /// </summary>
+        private Settings dummySettingsContainer = new Settings();
+        
+        /// <summary>
+        /// The length of the UI queue position "tag".
+        /// </summary>
+        public int QueuePositionTagWidth
+        {
+        	get
+        	{
+        		return this.classCont.IOCode.RegistryRead(dummySettingsContainer).QueuePositionTagWidth;
+        	}
+        	set
+        	{
+        		this.classCont.IOCode.RegistryWrite(new List<RegistryEntry>{ new RegistryEntry(Settings.QueuePositionRegEntry, value) });
+        		this.RaisePropertyChanged("QueuePositionTagWidth");
+        	}
+        }
+        
+        /// <summary>
+        /// The length of the UI queue location "tag".
+        /// </summary>
+        public int QueueLocationTagWidth
+        {
+        	get
+        	{
+        		return this.classCont.IOCode.RegistryRead(dummySettingsContainer).QueueLocationTagWidth;
+        	}
+        	set
+        	{
+        		this.classCont.IOCode.RegistryWrite(new List<RegistryEntry>{ new RegistryEntry(Settings.QueueLocationRegEntry, value) });
+        		this.RaisePropertyChanged("QueueLocationTagWidth");
+        	}
+        }
+        
+        /// <summary>
+        /// The length of the UI queue quality "tag".
+        /// </summary>
+        public int QueueQualityTagWidth
+        {
+        	get
+        	{
+        		return this.classCont.IOCode.RegistryRead(dummySettingsContainer).QueueQualityTagWidth;
+        	}
+        	set
+        	{
+        		this.classCont.IOCode.RegistryWrite(new List<RegistryEntry>{ new RegistryEntry(Settings.QueueQualityRegEntry, value) });
+        		this.RaisePropertyChanged("QueueQualityTagWidth");
+        	}
+        }
+        
+        /// <summary>
+        /// The length of the UI queue format "tag".
+        /// </summary>
+        public int QueueFormatTagWidth
+        {
+        	get
+        	{
+        		return this.classCont.IOCode.RegistryRead(dummySettingsContainer).QueueFormatTagWidth;
+        	}
+        	set
+        	{
+        		this.classCont.IOCode.RegistryWrite(new List<RegistryEntry>{ new RegistryEntry(Settings.QueueFormatRegEntry, value) });
+        		this.RaisePropertyChanged("QueueFormatTagWidth");
+        	}
+        }
+        
+        /// <summary>
+        /// The length of the UI queue IsAudio "tag".
+        /// </summary>
+        public int QueueIsAudioTagWidth
+        {
+        	get
+        	{
+        		return this.classCont.IOCode.RegistryRead(dummySettingsContainer).QueueIsAudioTagWidth;
+        	}
+        	set
+        	{
+        		this.classCont.IOCode.RegistryWrite(new List<RegistryEntry>{ new RegistryEntry(Settings.QueueIsAudioRegEntry, value) });
+        		this.RaisePropertyChanged("QueueIsAudioTagWidth");
+        	}
+        }
+        
+        /// <summary>
+        /// Refresh the main window's queue list.
+        /// </summary>
+        /// <param name="collectionToAssimilate">
+        /// The collection to replace the old list with.
+        /// </param>
+        /// <param name="newIndex">
+        /// The index you wish to select after the refresh is finished.
+        /// </param>
         public void RefreshQueue (Collection<Video> collectionToAssimilate, int newIndex)
         {
         	this.main.RefreshQueue(collectionToAssimilate, newIndex);
@@ -211,7 +307,7 @@ namespace YoutubeDownloadHelper.Gui
             get
             {
             	int returnValue = 0;
-            	this.main.queueListView.Dispatcher.Invoke((Action)(() => returnValue = this.Videos.Any() ? this.selectedQueue : -1));
+            	this.main.queueListView.Dispatcher.Invoke((Action)(() => returnValue = this.Videos.Any() ? this.selectedQueue <= this.Videos.All() ? this.selectedQueue : this.Videos.All() : -1));
                 return returnValue;
             }
             set

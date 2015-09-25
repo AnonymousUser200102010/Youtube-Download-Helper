@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Globalization;
+using System.Diagnostics;
 using System.Windows;
 using System.Linq;
 using YoutubeExtractor;
@@ -31,19 +32,13 @@ namespace YoutubeDownloadHelper.Gui
         /// <param name="mainWindow">
         /// The parent window.
         /// </param>
-        /// <param name="itemsToUse">
-        /// Video collection to manipulate.
-        /// </param>
-        /// <param name="selectedUrl">
-        /// Selected item in the video collection.
-        /// </param>
-        public UrlManipulation (bool add, MainWindow mainWindow, ObservableCollection<Video> itemsToUse, int selectedUrl)
+        public UrlManipulation (bool add, MainWindow mainWindow)
         {
             this.DataContext = this.urlShapingVars;
             InitializeComponent();
-            this.videoQueue = itemsToUse;
+            this.videoQueue = mainWindow.MainProgramElements.Videos;
             this.MainWindow = mainWindow;
-            this.persistantUrlIndex = selectedUrl;
+            this.persistantUrlIndex = mainWindow.MainProgramElements.CurrentlySelectedQueueIndex;
             this.add = add;
             this.Title = string.Format(CultureInfo.CurrentCulture, "{0} the Queue", add ? "Add Url(s) to" : "Modify Url(s) in");
             this.basicManipulateUrlButton.Content = add ? "Add Url to the Queue" : "Modify Current Url";
@@ -83,9 +78,8 @@ namespace YoutubeDownloadHelper.Gui
                 }
                 catch (Exception ex) 
                 { 
-                	this.basicUserInfoText.Text = ex.Message.Truncate(20);
+                	this.basicUserInfoText.Text = "Fatal Error";
             		(new ClassContainer()).BakedExceptionCode.Alert(ex);
-                	throw new FatalException("A fatal exception has occured.", ex);
                 }
             }
         }
@@ -101,13 +95,8 @@ namespace YoutubeDownloadHelper.Gui
                 try
                 {
                     Collection<Video> finalizedCollection = videoQueue;
+                    var resultantVideo = !this.urlShapingVars.AudioOnlyEnabled ? new Video(add ? finalizedCollection.Count : persistantUrlIndex, this.urlShapingVars.BasicText, selectedQualityValue, (VideoType)Enum.Parse(typeof(VideoType), Enum.GetNames(typeof(VideoType)).First(name => name.Contains(this.formatComboBox.SelectedItem.ToString(), StringComparison.OrdinalIgnoreCase)))) : new Video(add ? finalizedCollection.Count : persistantUrlIndex, this.urlShapingVars.BasicText, selectedQualityValue, (AudioType)Enum.Parse(typeof(AudioType), Enum.GetNames(typeof(AudioType)).First(name => name.Contains(this.formatComboBox.SelectedItem.ToString(), StringComparison.OrdinalIgnoreCase))));
                     
-                    VideoType format = this.urlShapingVars.AudioOnlyEnabled ? VideoType.Mp4 : (VideoType)Enum.Parse(typeof(VideoType), Enum.GetNames(typeof(VideoType)).First(name => name.Contains(this.formatComboBox.SelectedItem.ToString(), StringComparison.OrdinalIgnoreCase)));
-
-                    AudioType aFormat = this.urlShapingVars.AudioOnlyEnabled ? (AudioType)Enum.Parse(typeof(AudioType), Enum.GetNames(typeof(AudioType)).First(name => name.Contains(this.formatComboBox.SelectedItem.ToString(), StringComparison.OrdinalIgnoreCase))) : AudioType.Mp3;
-                    
-                    var resultantVideo = new Video (add ? finalizedCollection.Count : persistantUrlIndex, this.urlShapingVars.BasicText, selectedQualityValue, format, aFormat, this.urlShapingVars.AudioOnlyEnabled);
-
                     if (add)
                     {
                         finalizedCollection.Add(resultantVideo);
@@ -124,9 +113,8 @@ namespace YoutubeDownloadHelper.Gui
                 }
                 catch (Exception ex) 
                 { 
-                	this.basicUserInfoText.Text = ex.Message.Truncate(20);
-            		(new ClassContainer()).BakedExceptionCode.Alert(ex); 
-                	throw new FatalException("A fatal exception has occured.", ex);
+                	this.basicUserInfoText.Text = "Fatal Error";
+                	(new ClassContainer()).BakedExceptionCode.Alert(ex); 
                 }
             }
 			else if (add && this.videoQueue.Any(video => video.Location.Equals(this.urlShapingVars.BasicText, StringComparison.OrdinalIgnoreCase)))
@@ -174,17 +162,8 @@ namespace YoutubeDownloadHelper.Gui
 
     public class UrlShaping : INotifyPropertyChanged
     {
-        private readonly IEnumerable<string> videoFormats = new Collection<string> {
-            "Mp4",
-            "Flash",
-            "Mobile",
-            "WebM"
-        };
-        private readonly IEnumerable<string> audioFormats = new Collection<string> {
-            "Mp3",
-            "Aac",
-            "Vorbis"
-    	};
+    	private readonly IEnumerable<string> VideoFormats = Enum.GetNames(typeof(VideoType)).Where(name => !name.Equals(VideoType.Unknown.ToString())).OrderBy(o => o).OrderByDescending(subO => subO.Equals(VideoType.Mp4.ToString()));
+    	private readonly IEnumerable<string> AudioFormats = Enum.GetNames(typeof(AudioType)).Where(name => !name.Equals(AudioType.Unknown.ToString())).OrderBy(o => o).OrderByDescending(subO => subO.Equals(AudioType.Mp3.ToString()));
         
         private bool audioOnlyCheckBoxChecked = false;
         private TextAlignment basicTextAlign = TextAlignment.Center;
@@ -312,7 +291,7 @@ namespace YoutubeDownloadHelper.Gui
             set
             {
                 this.audioOnlyCheckBoxChecked = value;
-                this.FormatList = new ObservableCollection<string>(!value ? this.videoFormats : this.audioFormats);
+                this.FormatList = new ObservableCollection<string>(!value ? this.VideoFormats : this.AudioFormats);
                 this.SelectedFormat = 0;
                 RaisePropertyChanged("AudioOnlyEnabled");
             }
@@ -357,7 +336,7 @@ namespace YoutubeDownloadHelper.Gui
             this.BasicText = UrlShaping.ExampleText;
             this.SelectedFormat = 0;
             this.SelectedResolution = UrlShaping.DefaultResolution;
-            this.FormatList = new ObservableCollection<string>(!this.AudioOnlyEnabled ? this.videoFormats : this.audioFormats);
+            this.FormatList = new ObservableCollection<string>(!this.AudioOnlyEnabled ? this.VideoFormats : this.AudioFormats);
         }
     }
 }

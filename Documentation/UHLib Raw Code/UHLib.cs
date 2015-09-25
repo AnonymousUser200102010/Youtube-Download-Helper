@@ -220,7 +220,7 @@ namespace UniversalHandlersLibrary
         /// <param name="new">
         /// The collection to replace the original with.
         /// </param>
-        public static void Replace<T> (this Collection<T> old, IEnumerable<T> @new)
+        public static void Replace<T> (this ICollection<T> old, IEnumerable<T> @new)
         {
         	old.Replace(@new.GetEnumerator());
         }
@@ -234,7 +234,7 @@ namespace UniversalHandlersLibrary
         /// <param name="new">
         /// The collection to replace the original with.
         /// </param>
-        public static void Replace<T> (this Collection<T> old, IEnumerator<T> @new)
+        public static void Replace<T> (this ICollection<T> old, IEnumerator<T> @new)
         {
             old.Clear();
             for (var position = @new; position.MoveNext();)
@@ -538,6 +538,20 @@ namespace UniversalHandlersLibrary
         /// <param name="caller">
         /// The name you wish to be printed before the message.
         /// </param>
+        public static void Log<T> (this T message, string caller)
+        {
+        	message.ToString().Log(caller);
+        }
+    	
+    	/// <summary>
+        /// Message handler
+        /// </summary>
+        /// <param name="message">
+        /// The message to be handled.
+        /// </param>
+        /// <param name="caller">
+        /// The name you wish to be printed before the message.
+        /// </param>
         public static void Log (this string message, string caller)
         {
         	message.Log(caller, GenericCondition.Prune, 102400);
@@ -699,6 +713,7 @@ namespace UniversalHandlersLibrary
     /// </summary>
     public static class IOFunc
     {
+    	private const string localMachineRootSubKey = "SOFTWARE\\";
     	#region Registry Functions and Overloads
     		#region Clear Registry Functions and Overloads
     		/// <summary>
@@ -710,14 +725,11 @@ namespace UniversalHandlersLibrary
 	    	/// <param name="debugging">
 	    	/// The program who called this function is debugging.
 	    	/// </param>
-	    	/// <returns>
-	    	/// Returns a collection of objects whose said objects represent individual registry entries.
-	    	/// </returns>
 	    	public static void DeleteRegistrySubkey (string mainRegistrySubkey, bool debugging)
 	        {
-	    		var registrySubkey = string.Format(CultureInfo.InvariantCulture, "SOFTWARE\\{0}\\{1}\\", mainRegistrySubkey, debugging ?  "Debug" : Environment.UserName);
+	    		var registrySubkey = string.Format(CultureInfo.InvariantCulture, "{0}\\{1}\\{2}\\", localMachineRootSubKey, mainRegistrySubkey, debugging ?  "Debug" : Environment.UserName);
 	    		InternalFunction.CheckParameters(registrySubkey, InternalFunction.InternalCondition.RegistrySubkey);
-	            using (RegistryKey programKey = Registry.LocalMachine.OpenSubKey(string.Format(CultureInfo.InvariantCulture, "SOFTWARE\\{0}\\", mainRegistrySubkey), true))
+	            using (RegistryKey programKey = Registry.LocalMachine.OpenSubKey(string.Format(CultureInfo.InvariantCulture, "{0}\\{1}\\", localMachineRootSubKey, mainRegistrySubkey), true))
 	            {
 	            	programKey.DeleteSubKeyTree(debugging ?  "Debug" : Environment.UserName);
 					programKey.Close();
@@ -760,9 +772,9 @@ namespace UniversalHandlersLibrary
 	    	/// <returns>
 	    	/// Returns a collection of objects whose said objects represent individual registry entries.
 	    	/// </returns>
-	    	public static IEnumerable<RegistryEntry> ReadFromRegistry (this Collection<RegistryEntry> returnValue, string mainRegistrySubkey, bool debugging)
+	    	public static IEnumerable<RegistryEntry> ReadFromRegistry (this ICollection<RegistryEntry> returnValue, string mainRegistrySubkey, bool debugging)
 	        {
-	    		var registrySubkey = string.Format(CultureInfo.InvariantCulture, "SOFTWARE\\{0}\\{1}\\", mainRegistrySubkey, debugging ?  "Debug" : Environment.UserName);
+	    		var registrySubkey = string.Format(CultureInfo.InvariantCulture, "{0}\\{1}\\{2}\\", localMachineRootSubKey, mainRegistrySubkey, debugging ?  "Debug" : Environment.UserName);
 	    		InternalFunction.CheckParameters(registrySubkey, InternalFunction.InternalCondition.RegistrySubkey);
 	            using (RegistryKey programKey = Registry.LocalMachine.OpenSubKey(registrySubkey, true))
 	            {
@@ -809,7 +821,7 @@ namespace UniversalHandlersLibrary
 	    	/// </param>
 	    	public static void WriteToRegistry (this IEnumerator<RegistryEntry> registryValues, string mainRegistrySubkey, bool debugging)
 	        {
-	    		var registrySubkey = string.Format(CultureInfo.InvariantCulture, "SOFTWARE\\{0}\\{1}\\", mainRegistrySubkey, debugging ?  "Debug" : Environment.UserName);
+	    		var registrySubkey = string.Format(CultureInfo.InvariantCulture, "{0}\\{1}\\{2}\\", localMachineRootSubKey, mainRegistrySubkey, debugging ?  "Debug" : Environment.UserName);
 	    		InternalFunction.CheckParameters(registrySubkey, InternalFunction.InternalCondition.RegistrySubkey);
 	            using (RegistryKey programKey = Registry.LocalMachine.OpenSubKey(registrySubkey, true))
 	            {
@@ -860,7 +872,7 @@ namespace UniversalHandlersLibrary
 	    	/// <returns>
 	    	/// Returns a collection of objects containing the file's contents.
 	    	/// </returns>
-	    	public static IEnumerable<string> AddFileContents (this Collection<string> collectionToUse, string fileToUse, string separator)
+	    	public static IEnumerable<string> AddFileContents (this ICollection<string> collectionToUse, string fileToUse, string separator)
 	        {
 	            if (File.Exists(fileToUse))
 				{
@@ -1329,7 +1341,7 @@ namespace UniversalHandlersLibrary
         /// <param name="pruneCutoff">
         /// The file size at which to prune the file.
         /// </param>
-        internal static void InternalWriter (this Collection<string> fileContents, string file, bool prune, int pruneCutoff)
+        internal static void InternalWriter (this ICollection<string> fileContents, string file, bool prune, int pruneCutoff)
         {
         	fileContents.AddFileContents(file, "\n\n");
 			if (prune) file.PruneCheck(pruneCutoff);

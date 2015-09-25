@@ -6,26 +6,37 @@
    <Modules>
     <Module Name="youtubedownloadhelper.exe">
      <Messages>
-      <Message TypeName="AssembliesShouldHaveValidStrongNames" Category="Microsoft.Design" CheckId="CA2210" Status="Active" Created="2015-09-18 09:46:55Z" FixCategory="NonBreaking">
+      <Message TypeName="AssembliesShouldHaveValidStrongNames" Category="Microsoft.Design" CheckId="CA2210" Status="Active" Created="2015-09-25 14:43:22Z" FixCategory="NonBreaking">
        <Issue Name="NoStrongName" Certainty="95" Level="CriticalError">Sign 'YoutubeDownloadHelper.exe' with a strong name key.</Issue>
       </Message>
      </Messages>
      <Namespaces>
       <Namespace Name="YoutubeDownloadHelper.Code">
        <Types>
+        <Type Name="Conversion" Kind="Class" Accessibility="Public" ExternallyVisible="True">
+         <Members>
+          <Member Name="#ConvertToVideoCollection(System.Collections.Generic.IEnumerator`1&lt;System.String&gt;,System.Int32)" Kind="Method" Static="True" Accessibility="Public" ExternallyVisible="True">
+           <Messages>
+            <Message TypeName="DoNotCatchGeneralExceptionTypes" Category="Microsoft.Design" CheckId="CA1031" Status="Active" Created="2015-09-25 14:43:22Z" FixCategory="NonBreaking">
+             <Issue Certainty="95" Level="CriticalError" Path="c:\Users\Erik\Documents\GitHub\Youtube-Download-Helper\YoutubeDownloadHelper\code" File="Conversion.cs" Line="94">Modify 'Conversion.ConvertToVideoCollection(this IEnumerator&lt;string&gt;, int)' to catch a more specific exception than 'Exception' or rethrow the exception.</Issue>
+            </Message>
+           </Messages>
+          </Member>
+         </Members>
+        </Type>
         <Type Name="Download" Kind="Class" Accessibility="Public" ExternallyVisible="True">
          <Members>
           <Member Name="#DownloadHandler(YoutubeDownloadHelper.Gui.MainProgramElements)" Kind="Method" Static="False" Accessibility="Public" ExternallyVisible="True">
            <Messages>
-            <Message TypeName="DoNotCatchGeneralExceptionTypes" Category="Microsoft.Design" CheckId="CA1031" Status="Active" Created="2015-09-18 09:46:55Z" FixCategory="NonBreaking">
-             <Issue Certainty="95" Level="CriticalError" Path="c:\Users\Erik\Documents\GitHub\Youtube-Download-Helper\YoutubeDownloadHelper\code" File="Download.cs" Line="84">Modify 'Download.DownloadHandler(MainProgramElements)' to catch a more specific exception than 'Exception' or rethrow the exception.</Issue>
+            <Message TypeName="DoNotCatchGeneralExceptionTypes" Category="Microsoft.Design" CheckId="CA1031" Status="Active" Created="2015-09-25 14:43:22Z" FixCategory="NonBreaking">
+             <Issue Certainty="95" Level="CriticalError" Path="c:\Users\Erik\Documents\GitHub\Youtube-Download-Helper\YoutubeDownloadHelper\code" File="Download.cs" Line="75">Modify 'Download.DownloadHandler(MainProgramElements)' to catch a more specific exception than 'Exception' or rethrow the exception.</Issue>
             </Message>
            </Messages>
           </Member>
           <Member Name="#SetupDownload(YoutubeDownloadHelper.Code.Video,YoutubeDownloadHelper.Gui.MainProgramElements)" Kind="Method" Static="False" Accessibility="Private" ExternallyVisible="False">
            <Messages>
-            <Message TypeName="DoNotCatchGeneralExceptionTypes" Category="Microsoft.Design" CheckId="CA1031" Status="Active" Created="2015-09-18 09:46:55Z" FixCategory="NonBreaking">
-             <Issue Certainty="95" Level="CriticalError" Path="c:\Users\Erik\Documents\GitHub\Youtube-Download-Helper\YoutubeDownloadHelper\code" File="Download.cs" Line="197">Modify 'Download.SetupDownload(Video, MainProgramElements)' to catch a more specific exception than 'Exception' or rethrow the exception.</Issue>
+            <Message TypeName="DoNotCatchGeneralExceptionTypes" Category="Microsoft.Design" CheckId="CA1031" Status="Active" Created="2015-09-25 14:43:22Z" FixCategory="NonBreaking">
+             <Issue Certainty="95" Level="CriticalError" Path="c:\Users\Erik\Documents\GitHub\Youtube-Download-Helper\YoutubeDownloadHelper\code" File="Download.cs" Line="192">Modify 'Download.SetupDownload(Video, MainProgramElements)' to catch a more specific exception than 'Exception' or rethrow the exception.</Issue>
             </Message>
            </Messages>
           </Member>
@@ -33,7 +44,7 @@
         </Type>
         <Type Name="IStorage" Kind="Interface" Accessibility="Public" ExternallyVisible="True">
          <Messages>
-          <Message TypeName="AvoidEmptyInterfaces" Category="Microsoft.Design" CheckId="CA1040" Status="Active" Created="2015-09-18 09:46:55Z" FixCategory="Breaking">
+          <Message TypeName="AvoidEmptyInterfaces" Category="Microsoft.Design" CheckId="CA1040" Status="Active" Created="2015-09-25 14:43:22Z" FixCategory="Breaking">
            <Issue Certainty="90" Level="Warning">Define a custom attribute to replace 'IStorage'.</Issue>
           </Message>
          </Messages>
@@ -44,8 +55,8 @@
            <Accessors>
             <Accessor Name="#get_Assembly()" Kind="Method" Static="False" Accessibility="Public" ExternallyVisible="True">
              <Messages>
-              <Message TypeName="DoNotRaiseExceptionsInUnexpectedLocations" Category="Microsoft.Design" CheckId="CA1065" Status="Active" Created="2015-09-18 09:46:55Z" FixCategory="Breaking">
-               <Issue Name="PropertyGetter" Certainty="90" Level="Warning" Path="c:\Users\Erik\Documents\GitHub\Youtube-Download-Helper\YoutubeDownloadHelper\code" File="Custom.cs" Line="553">'Library.Assembly.get()' creates an exception of type 'FatalException', an exception type that should not be raised in a property. If this exception instance might be raised, use a different exception type, convert this property into a method, or change this property's logic so that it no longer raises an exception.</Issue>
+              <Message TypeName="DoNotRaiseExceptionsInUnexpectedLocations" Category="Microsoft.Design" CheckId="CA1065" Status="Active" Created="2015-09-25 14:43:22Z" FixCategory="Breaking">
+               <Issue Name="PropertyGetter" Certainty="90" Level="Warning" Path="c:\Users\Erik\Documents\GitHub\Youtube-Download-Helper\YoutubeDownloadHelper\code" File="Custom.cs" Line="709">'Library.Assembly.get()' creates an exception of type 'FatalException', an exception type that should not be raised in a property. If this exception instance might be raised, use a different exception type, convert this property into a method, or change this property's logic so that it no longer raises an exception.</Issue>
               </Message>
              </Messages>
             </Accessor>
@@ -57,8 +68,8 @@
          <Members>
           <Member Name="#ValidationLocations" Kind="Property" Static="False" Accessibility="Public" ExternallyVisible="True">
            <Messages>
-            <Message TypeName="CollectionPropertiesShouldBeReadOnly" Category="Microsoft.Usage" CheckId="CA2227" Status="Active" Created="2015-09-18 09:46:55Z" FixCategory="Breaking">
-             <Issue Certainty="75" Level="Warning" Path="c:\Users\Erik\Documents\GitHub\Youtube-Download-Helper\YoutubeDownloadHelper\code" File="Custom.cs" Line="237">Change 'Settings.ValidationLocations' to be read-only by removing the property setter.</Issue>
+            <Message TypeName="CollectionPropertiesShouldBeReadOnly" Category="Microsoft.Usage" CheckId="CA2227" Status="Active" Created="2015-09-25 14:43:22Z" FixCategory="Breaking">
+             <Issue Certainty="75" Level="Warning" Path="c:\Users\Erik\Documents\GitHub\Youtube-Download-Helper\YoutubeDownloadHelper\code" File="Custom.cs" Line="374">Change 'Settings.ValidationLocations' to be read-only by removing the property setter.</Issue>
             </Message>
            </Messages>
           </Member>
@@ -72,8 +83,33 @@
          <Members>
           <Member Name="#Videos" Kind="Property" Static="False" Accessibility="Public" ExternallyVisible="True">
            <Messages>
-            <Message TypeName="CollectionPropertiesShouldBeReadOnly" Category="Microsoft.Usage" CheckId="CA2227" Status="Active" Created="2015-09-18 09:46:55Z" FixCategory="Breaking">
-             <Issue Certainty="75" Level="Warning" Path="c:\Users\Erik\Documents\GitHub\Youtube-Download-Helper\YoutubeDownloadHelper\GUI" File="MainWindow.xaml.cs" Line="188">Change 'MainProgramElements.Videos' to be read-only by removing the property setter.</Issue>
+            <Message TypeName="CollectionPropertiesShouldBeReadOnly" Category="Microsoft.Usage" CheckId="CA2227" Status="Active" Created="2015-09-25 14:43:22Z" FixCategory="Breaking">
+             <Issue Certainty="75" Level="Warning" Path="c:\Users\Erik\Documents\GitHub\Youtube-Download-Helper\YoutubeDownloadHelper\GUI" File="MainWindow.xaml.cs" Line="284">Change 'MainProgramElements.Videos' to be read-only by removing the property setter.</Issue>
+            </Message>
+           </Messages>
+          </Member>
+         </Members>
+        </Type>
+        <Type Name="UrlManipulation" Kind="Class" Accessibility="Public" ExternallyVisible="True">
+         <Members>
+          <Member Name="#.ctor(System.Boolean,YoutubeDownloadHelper.Gui.MainWindow)" Kind="Method" Static="False" Accessibility="Public" ExternallyVisible="True">
+           <Messages>
+            <Message Id="System.Int32.ToString" TypeName="SpecifyIFormatProvider" Category="Microsoft.Globalization" CheckId="CA1305" Status="Active" Created="2015-09-25 14:43:22Z" FixCategory="NonBreaking">
+             <Issue Name="IFormatProviderAlternateString" Certainty="95" Level="Error" Path="c:\Users\Erik\Documents\GitHub\Youtube-Download-Helper\YoutubeDownloadHelper\GUI" File="UrlManipulation.xaml.cs" Line="42">Because the behavior of 'int.ToString()' could vary based on the current user's locale settings, replace this call in 'UrlManipulation.UrlManipulation(bool, MainWindow)' with a call to 'int.ToString(IFormatProvider)'. If the result of 'int.ToString(IFormatProvider)' will be displayed to the user, specify 'CultureInfo.CurrentCulture' as the 'IFormatProvider' parameter. Otherwise, if the result will be stored and accessed by software, such as when it is persisted to disk or to a database, specify 'CultureInfo.InvariantCulture'.</Issue>
+            </Message>
+           </Messages>
+          </Member>
+          <Member Name="#basicManipulateUrlButton_Click(System.Object,System.Windows.RoutedEventArgs)" Kind="Method" Static="False" Accessibility="Private" ExternallyVisible="False">
+           <Messages>
+            <Message TypeName="DoNotCatchGeneralExceptionTypes" Category="Microsoft.Design" CheckId="CA1031" Status="Active" Created="2015-09-25 14:43:22Z" FixCategory="NonBreaking">
+             <Issue Certainty="95" Level="CriticalError" Path="c:\Users\Erik\Documents\GitHub\Youtube-Download-Helper\YoutubeDownloadHelper\GUI" File="UrlManipulation.xaml.cs" Line="115">Modify 'UrlManipulation.basicManipulateUrlButton_Click(object, RoutedEventArgs)' to catch a more specific exception than 'Exception' or rethrow the exception.</Issue>
+            </Message>
+           </Messages>
+          </Member>
+          <Member Name="#window1_Closing(System.Object,System.EventArgs)" Kind="Method" Static="False" Accessibility="Private" ExternallyVisible="False">
+           <Messages>
+            <Message TypeName="DoNotCatchGeneralExceptionTypes" Category="Microsoft.Design" CheckId="CA1031" Status="Active" Created="2015-09-25 14:43:22Z" FixCategory="NonBreaking">
+             <Issue Certainty="95" Level="CriticalError" Path="c:\Users\Erik\Documents\GitHub\Youtube-Download-Helper\YoutubeDownloadHelper\GUI" File="UrlManipulation.xaml.cs" Line="80">Modify 'UrlManipulation.window1_Closing(object, EventArgs)' to catch a more specific exception than 'Exception' or rethrow the exception.</Issue>
             </Message>
            </Messages>
           </Member>
@@ -83,8 +119,8 @@
          <Members>
           <Member Name="#FormatList" Kind="Property" Static="False" Accessibility="Public" ExternallyVisible="True">
            <Messages>
-            <Message TypeName="CollectionPropertiesShouldBeReadOnly" Category="Microsoft.Usage" CheckId="CA2227" Status="Active" Created="2015-09-18 09:46:55Z" FixCategory="Breaking">
-             <Issue Certainty="75" Level="Warning" Path="c:\Users\Erik\Documents\GitHub\Youtube-Download-Helper\YoutubeDownloadHelper\GUI" File="UrlManipulation.xaml.cs" Line="326">Change 'UrlShaping.FormatList' to be read-only by removing the property setter.</Issue>
+            <Message TypeName="CollectionPropertiesShouldBeReadOnly" Category="Microsoft.Usage" CheckId="CA2227" Status="Active" Created="2015-09-25 14:43:22Z" FixCategory="Breaking">
+             <Issue Certainty="75" Level="Warning" Path="c:\Users\Erik\Documents\GitHub\Youtube-Download-Helper\YoutubeDownloadHelper\GUI" File="UrlManipulation.xaml.cs" Line="306">Change 'UrlShaping.FormatList' to be read-only by removing the property setter.</Issue>
             </Message>
            </Messages>
           </Member>
@@ -147,6 +183,16 @@
    <Email>[none]</Email>
    <MessageLevel Certainty="90">Error, Warning</MessageLevel>
    <File Name="designrules.dll" Version="10.0.0.0" />
+  </Rule>
+  <Rule TypeName="SpecifyIFormatProvider" Category="Microsoft.Globalization" CheckId="CA1305">
+   <Name>Specify IFormatProvider</Name>
+   <Description>If an overload exists that takes an IFormatProvider argument, it should always be called in favor of an overload that does not. Some methods in the runtime convert a value to or from a string representation and take a string parameter that contains one or more characters, called format specifiers, which indicate how the value is to be converted. If the meaning of the format specifier varies by culture, a formatting object supplies the actual characters used in the string representation. In scenarios where sorting and comparison behavior should never change between cultures, specify CultureInfo.InvariantCulture, otherwise, specify CultureInfo.CurrentCulture.</Description>
+   <Resolution Name="IFormatProviderAlternateString">Because the behavior of {0} could vary based on the current user's locale settings, replace this call in {1} with a call to {2}. If the result of {2} will be displayed to the user, specify {3} as the 'IFormatProvider' parameter. Otherwise, if the result will be stored and accessed by software, such as when it is persisted to disk or to a database, specify {4}.</Resolution>
+   <Owner />
+   <Url>http://msdn.microsoft.com/library/ms182190(VS.100).aspx</Url>
+   <Email>[none]</Email>
+   <MessageLevel Certainty="95">Error</MessageLevel>
+   <File Name="globalizationrules.dll" Version="10.0.0.0" />
   </Rule>
  </Rules>
  <Localized>

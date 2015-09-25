@@ -103,14 +103,15 @@
 			x:Name="folderSelectButton"
 			RenderTransformOrigin="0.5,0.5"
 			Click="folderSelectButton_Click"
-			Grid.Column="0"
-			Grid.Row="0"
-			HorizontalAlignment="Left"
-			VerticalAlignment="Bottom"
+			ToolTip="Change the folder(s) of the currently selected location/directory tab."
 			Margin="8,0,0,58.4"
-			Width="59"
+			VerticalAlignment="Bottom"
+			HorizontalAlignment="Left"
+			Grid.Row="0"
+			Grid.Column="0"
 			Height="49.599999999999994"
-			ToolTip="Change the folder(s) of the currently selected location/directory tab.">
+			Width="59"
+			BorderBrush="#FF000000">
 			<Grid
 				x:Name="selectFolderGrid"
 				Background="{x:Null}"
@@ -118,18 +119,18 @@
 				IsEnabled="True"
 				Opacity="1"
 				Visibility="Visible"
-				Width="50"
-				Height="42">
+				Width="54"
+				Height="44">
 				<Image
 					x:Name="folderImage"
 					Source="C:\Users\Erik\Documents\GitHub\Youtube-Download-Helper\YoutubeDownloadHelper\Icons and Images\FolderIcon.ico"
-					Grid.Column="0"
-					Grid.Row="0"
-					HorizontalAlignment="Center"
-					VerticalAlignment="Center"
 					Margin="0,0,0,0"
-					Width="87"
-					Height="37" />
+					VerticalAlignment="Center"
+					HorizontalAlignment="Center"
+					Grid.Row="0"
+					Grid.Column="0"
+					Height="37"
+					Width="87" />
 			</Grid>
 		</Button>
 		<TabControl
@@ -137,13 +138,13 @@
 			Background="#FFFFFFFF"
 			x:Name="saveLocationsTabControl"
 			FontSize="13"
-			Grid.Column="0"
-			Grid.Row="0"
-			HorizontalAlignment="Left"
-			VerticalAlignment="Bottom"
 			Margin="75,0,0,58.4"
-			Width="459"
-			Height="73">
+			VerticalAlignment="Bottom"
+			HorizontalAlignment="Left"
+			Grid.Row="0"
+			Grid.Column="0"
+			Height="73"
+			Width="459">
 			<TabItem
 				x:Name="mainTab"
 				Header="Main Save Location"
@@ -196,15 +197,32 @@
 			Content="Continue Download On Fail/Error"
 			HorizontalContentAlignment="Left"
 			VerticalContentAlignment="Center"
+			IsChecked="{Binding ContinueOnFail, Mode=TwoWay}"
+			x:Name="continueOnFailCheckBox"
+			ToolTip="If this option is enabled (checked), when downloading videos the downloading process will continue through errors, whether fatal or non-fatal."
 			Grid.Column="0"
 			Grid.Row="0"
 			HorizontalAlignment="Stretch"
-			VerticalAlignment="Top"
-			Margin="8,144,278.4,0"
-			Height="23"
-			IsChecked="{Binding ContinueOnFail, Mode=TwoWay}"
-			x:Name="continueOnFailCheckBox"
-			ToolTip="If this option is enabled (checked), when downloading videos the downloading process will continue through errors, whether fatal or non-fatal." />
+			VerticalAlignment="Stretch"
+			Margin="8,144,278.4,27.2"
+			BorderBrush="#FF8E8F8F"
+			RenderOptions.BitmapScalingMode="Unspecified" />
+		<Button
+			FontWeight="SemiBold"
+			FontStretch="Normal"
+			BorderBrush="#FF000000"
+			Content="Reset Tag Widths"
+			x:Name="resetTagsButton"
+			ToolTip="Resets the widths of all &quot;description tags&quot; located on the main program window."
+			Click="resetTagsButton_Click"
+			FontSize="13"
+			Margin="0,0,7.39999999999998,27.2"
+			VerticalAlignment="Bottom"
+			HorizontalAlignment="Right"
+			Grid.Row="0"
+			Grid.Column="0"
+			Height="23.199999999999989"
+			Width="263" />
 		<Grid.ColumnDefinitions></Grid.ColumnDefinitions>
 		<Grid.RowDefinitions></Grid.RowDefinitions>
 	</Grid>
