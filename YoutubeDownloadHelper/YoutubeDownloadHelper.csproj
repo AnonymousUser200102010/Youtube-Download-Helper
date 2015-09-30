@@ -63,16 +63,13 @@
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="Costura.Fody">
-      <HintPath>packages\Costura.Fody.1.3.3.0\Costura.Fody.dll</HintPath>
-      <Private>True</Private>
+      <HintPath>packages\Costura.Fody.1.3.5.0\Costura.Fody.dll</HintPath>
     </Reference>
     <Reference Include="Fody">
-      <HintPath>packages\Fody.1.29.0\Fody.dll</HintPath>
-      <Private>True</Private>
+      <HintPath>packages\Fody.1.29.3\Fody.dll</HintPath>
     </Reference>
     <Reference Include="FodyCommon">
-      <HintPath>packages\Fody.1.29.0\FodyCommon.dll</HintPath>
-      <Private>False</Private>
+      <HintPath>packages\Fody.1.29.3\FodyCommon.dll</HintPath>
     </Reference>
     <Reference Include="Microsoft.CSharp">
       <RequiredTargetFramework>4.0</RequiredTargetFramework>
@@ -162,24 +159,21 @@
     <Page Include="GUI\App.xaml" />
     <Page Include="GUI\MainWindow.xaml" />
     <Page Include="GUI\Options.xaml" />
-    <Page Include="GUI\UrlManipulation.xaml" />
+    <Page Include="GUI\UrlManipulation.xaml">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Page>
   </ItemGroup>
   <ItemGroup>
     <None Include="app.config" />
     <None Include="FodyWeavers.xml" />
     <None Include="GUI\app.config" />
-    <None Include="Icons and Images\DownArrowImage.png">
-      <CopyToOutputDirectory>Never</CopyToOutputDirectory>
-    </None>
-    <None Include="Icons and Images\FolderIcon.ico">
-      <CopyToOutputDirectory>Never</CopyToOutputDirectory>
-    </None>
-    <None Include="Icons and Images\UpArrowImage.png">
-      <CopyToOutputDirectory>Never</CopyToOutputDirectory>
-    </None>
-    <None Include="Icons and Images\YDHIcon.ico">
-      <CopyToOutputDirectory>Never</CopyToOutputDirectory>
-    </None>
+    <Resource Include="Icons and Images\DownArrowImage.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Resource>
+    <Resource Include="Icons and Images\FolderIcon.ico">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Resource>
+    <Resource Include="Icons and Images\UpArrowImage.png" />
     <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>
@@ -187,9 +181,14 @@
     <Folder Include="code" />
     <Folder Include="Icons and Images" />
   </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Icons and Images\YDHIcon.ico">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Resource>
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
-  <Import Project="packages\Fody.1.29.0\build\Fody.targets" Condition="Exists('packages\Fody.1.29.0\build\Fody.targets')" />
   <Target AfterTargets="AfterBuild;NonWinFodyTarget" Name="CleanReferenceCopyLocalPaths">
     <Delete Files="@(ReferenceCopyLocalPaths->'$(OutDir)%(DestinationSubDirectory)%(Filename)%(Extension)')" />
   </Target>
+  <Import Project="packages\Fody.1.29.3\build\portable-net+sl+win+wpa+wp\Fody.targets" Condition="Exists('packages\Fody.1.29.3\build\portable-net+sl+win+wpa+wp\Fody.targets')" />
 </Project>

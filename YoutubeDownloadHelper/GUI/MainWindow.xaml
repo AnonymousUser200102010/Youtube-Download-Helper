@@ -1,4 +1,4 @@
-﻿<?xml version="1.0" encoding="utf-8"?>
+<?xml version="1.0" encoding="utf-8"?>
 <Window
 	x:Class="YoutubeDownloadHelper.Gui.MainWindow" xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation" xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml" xmlns:xctk="http://schemas.xceed.com/wpf/xaml/toolkit"
 	Background="#FFF0F0F0"
@@ -11,7 +11,7 @@
 	Width="688"
 	Height="534"
 	IsEnabled="{Binding WindowEnabled}"
-	Icon="C:\Users\Erik\Documents\GitHub\Youtube-Download-Helper\YoutubeDownloadHelper\Icons and Images\YDHIcon.ico">
+	Icon="/YoutubeDownloadHelper;component/Icons and Images/YDHIcon.ico">
 	<Grid
 		VerticalAlignment="Stretch"
 		Margin="0,0,0,0"
@@ -87,7 +87,7 @@
 								Margin="0,0,0,0"
 								Width="16"
 								Height="164"
-								Source="C:\Users\Erik\Documents\GitHub\Youtube-Download-Helper\YoutubeDownloadHelper\Icons and Images\UpArrowImage.png" />
+								Source="/YoutubeDownloadHelper;component/Icons and Images/UpArrowImage.png" />
 						</Grid>
 					</Button>
 					<Button
@@ -116,7 +116,7 @@
 								Grid.Column="0"
 								Height="164"
 								Width="16"
-								Source="C:\Users\Erik\Documents\GitHub\Youtube-Download-Helper\YoutubeDownloadHelper\Icons and Images\DownArrowImage.png" />
+								Source="/YoutubeDownloadHelper;component/Icons and Images/DownArrowImage.png" />
 						</Grid>
 					</Button>
 					<ListView

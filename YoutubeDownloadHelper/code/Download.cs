@@ -39,7 +39,7 @@ namespace YoutubeDownloadHelper.Code
         	var urlList = mainWindow.Videos.ToList().AsReadOnly();
             urlList.WriteToFile(Storage.QueueFile, ".bak");
             List<Video> finishedVideos = new List<Video>();
-            int[] retryCount = new int[urlList.Count + 1];
+            List<int> retryCount = new int[urlList.Count + 1].ToList();
             const int maxRetrys = 4;
             
             Thread.Sleep(1000);

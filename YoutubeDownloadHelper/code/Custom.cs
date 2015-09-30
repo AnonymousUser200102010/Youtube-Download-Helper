@@ -13,6 +13,64 @@ using UniversalHandlersLibrary;
 
 namespace YoutubeDownloadHelper.Code
 {
+	public static class EnumDictionaries
+	{
+		private readonly static Dictionary<VideoType, string> videoDictionary = new Dictionary<VideoType, string>();
+		
+		/// <summary>
+		/// A dictionary equivalent of the VideoType Enum.
+		/// </summary>
+		public static Dictionary<VideoType, string> VideoDictionary { get { return EnumDictionaries.videoDictionary; } }
+		
+		private readonly static Dictionary<AudioType, string> audioDictionary = new Dictionary<AudioType, string>();
+		
+		/// <summary>
+		/// A dictionary equivalent of the AudioType Enum.
+		/// </summary>
+		public static Dictionary<AudioType, string> AudioDictionary { get { return EnumDictionaries.audioDictionary; } }
+		
+		/// <summary>
+		/// Fills the dictionaries held within with valid entires.
+		/// </summary>
+		public static void Initiate()
+		{
+			foreach(VideoType video in Enum.GetValues(typeof(VideoType)))
+			{
+				if (video != VideoType.Unknown)
+				{
+					VideoDictionary.Add(video, video.ToString());
+				}
+			}
+			VideoDictionary.OrderBy(o => o.Value);
+			
+			foreach(AudioType audio in Enum.GetValues(typeof(AudioType)))
+			{
+				if (audio != AudioType.Unknown)
+				{
+					AudioDictionary.Add(audio, audio.ToString());
+				}
+			}
+			AudioDictionary.OrderBy(o => o.Value);
+		}
+		
+		/// <summary>
+		/// Find a key by it's value.
+		/// </summary>
+		/// <param name="dictionaryToSearch">
+		/// The dictionary whose key you wish to find with the value.
+		/// </param>
+		/// <param name="value">
+		/// The value to use in the search.
+		/// </param>
+		/// <returns>
+		/// Returns the key associated with the value provided, if it exists. If it does not exist, the default will be returned.
+		/// </returns>
+		public static T AtValue<T>(this Dictionary<T, string> dictionaryToSearch, string value)
+		{
+			return dictionaryToSearch.FirstOrDefault(name => name.Value.Contains(value, StringComparison.OrdinalIgnoreCase)).Key;
+		}
+	}
+	
     public class VideosToDownload
     {
         private readonly ObservableCollection<Video> _items = new ObservableCollection<Video> ();
@@ -63,17 +121,17 @@ namespace YoutubeDownloadHelper.Code
         /// <summary>
         /// The format that the GUI will show.
         /// </summary>
-        public string Format { get { return this.IsAudioFile ? this.AudioFormat.ToString() : this.VideoFormat.ToString(); } }
-
+        public string Format { get; private set; }
+        
         /// <summary>
-        /// The format (or extension) of the video.
+        /// The video format for this video.
         /// </summary>
-        public VideoType VideoFormat { get; private set; }
-
+        public VideoType VideoFormat { get { return EnumDictionaries.VideoDictionary.AtValue(this.Format); } }
+        
         /// <summary>
-        /// The format (or extension) of the audio track.
+        /// The audio format for this video.
         /// </summary>
-        public AudioType AudioFormat { get; private set; }
+        public AudioType AudioFormat { get { return EnumDictionaries.AudioDictionary.AtValue(this.Format); } }
 
         /// <summary>
         /// The download process for this video will only return an audio track.
@@ -124,8 +182,7 @@ namespace YoutubeDownloadHelper.Code
             this.Position = pos;
             this.Location = location;
             this.Quality = quality;
-            this.VideoFormat = format;
-            this.AudioFormat = default(AudioType);
+            this.Format = format.ToString();
             this.IsAudioFile = false;
         }
         
@@ -149,8 +206,7 @@ namespace YoutubeDownloadHelper.Code
             this.Position = pos;
             this.Location = location;
             this.Quality = quality;
-            this.VideoFormat = default(VideoType);
-            this.AudioFormat = format;
+            this.Format = format.ToString();
             this.IsAudioFile = true;
         }
     }

@@ -1,0 +1,180 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Window
+	x:Class="YoutubeDownloadHelper.Gui.UrlManipulation" xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation" xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+	Background="#FFF0F0F0"
+	BorderBrush="#FF000000"
+	Title=""
+	Icon="C:\Users\Erik\Documents\GitHub\Youtube-Download-Helper\YoutubeDownloadHelper\Icons and Images\YDHIcon.ico"
+	Width="553"
+	x:Name="window1"
+	Closed="window1_Closed"
+	Closing="window1_Closing" xmlns:xctk="http://schemas.xceed.com/wpf/xaml/toolkit"
+	ResizeMode="NoResize"
+	Height="196">
+	<Grid>
+		<TabControl
+			Grid.Column="0"
+			Grid.Row="0"
+			HorizontalAlignment="Stretch"
+			VerticalAlignment="Stretch"
+			Margin="0,0,-0.600000000000023,0">
+			<TabItem
+				x:Name="basicView"
+				Header="Basic View">
+				<Grid
+					x:Name="bvGrid">
+					<TextBox
+						x:Name="basicUrlText"
+						Text="{Binding BasicText, Mode=OneWay}"
+						FontSize="12"
+						FontWeight="{Binding BasicUrlBoldness, Mode=OneWay}"
+						FontStyle="{Binding BasicUrlFontStyle, Mode=OneWay}"
+						TextAlignment="{Binding BasicUrlTextAlignment, Mode=OneWay}"
+						GotFocus="basicUrlText_TextManipulation"
+						LostFocus="basicUrlText_TextManipulation"
+						Grid.Column="0"
+						Grid.Row="0"
+						HorizontalAlignment="Right"
+						VerticalAlignment="Top"
+						Margin="0,8,8,0"
+						Width="487.79999999999995"
+						Height="22" />
+					<TextBlock
+						x:Name="urlTextBlock"
+						Text="Url:"
+						Grid.Column="0"
+						Grid.Row="0"
+						HorizontalAlignment="Left"
+						VerticalAlignment="Top"
+						Margin="8,7,0,0"
+						Width="29"
+						Height="20" />
+					<TextBlock
+						x:Name="urlTextBlock_Copy"
+						Text="Format:"
+						TextAlignment="Justify"
+						Grid.Column="0"
+						Grid.Row="0"
+						HorizontalAlignment="Left"
+						VerticalAlignment="Top"
+						Margin="8,33,0,0"
+						Width="55"
+						Height="22" />
+					<ComboBox
+						x:Name="formatComboBox"
+						ItemsSource="{Binding FormatList, Mode=OneWay}"
+						Text=""
+						FontSize="11"
+						Grid.Column="0"
+						Grid.Row="0"
+						HorizontalAlignment="Right"
+						VerticalAlignment="Top"
+						Margin="0,34,380.8,0"
+						Width="81"
+						Height="22"
+						SelectedIndex="{Binding SelectedFormat, Mode=TwoWay}"></ComboBox>
+					<Button
+						x:Name="basicManipulateUrlButton"
+						Content=""
+						Click="basicManipulateUrlButton_Click"
+						Grid.Column="0"
+						Grid.Row="0"
+						HorizontalAlignment="Stretch"
+						VerticalAlignment="Top"
+						Margin="8,94.4,8,0"
+						Height="28" />
+					<TextBlock
+						x:Name="urlTextBlock_Copy1"
+						TextAlignment="Justify"
+						Text="Quality:"
+						Width="58"
+						Height="22"
+						Grid.Column="0"
+						Grid.Row="0"
+						HorizontalAlignment="Left"
+						VerticalAlignment="Top"
+						Margin="166,33,0,0" />
+					<xctk:IntegerUpDown
+						Maximum="600"
+						MouseWheelActiveTrigger="Focused"
+						Value="{Binding SelectedResolution, Mode=TwoWay}"
+						FontSize="14"
+						x:Name="basicResolution"
+						Grid.Column="0"
+						Grid.Row="0"
+						VerticalAlignment="Top"
+						Height="22"
+						Width="49.6"
+						HorizontalAlignment="Left"
+						Margin="232,34,0,0"
+						Minimum="24"
+						Increment="120" />
+					<TextBlock
+						Foreground="#FF000000"
+						x:Name="basicUserInfoText"
+						IsEnabled="False"
+						FontWeight="Medium"
+						FontFamily="Times New Roman"
+						FontStyle="Oblique"
+						FontStretch="Normal"
+						IsHyphenationEnabled="False"
+						TextAlignment="Center"
+						Text=""
+						Grid.Column="0"
+						Grid.Row="0"
+						HorizontalAlignment="Right"
+						VerticalAlignment="Top"
+						Margin="0,64,8,0"
+						Width="516.8"
+						Height="22" />
+					<CheckBox
+						Content="Audio Only"
+						FontSize="14"
+						IsChecked="{Binding AudioOnlyEnabled, Mode=TwoWay}"
+						x:Name="basicAudioOnlyCheckBox"
+						Grid.Column="0"
+						Grid.Row="0"
+						HorizontalAlignment="Left"
+						VerticalAlignment="Top"
+						Margin="290,33.6,0,0"
+						Width="99"
+						Height="22.400000000000034" />
+					<CheckBox
+						Content="Channel/Playlist Link"
+						VerticalContentAlignment="Center"
+						HorizontalContentAlignment="Center"
+						x:Name="checkForURLsInLinkCheckBox"
+						ToolTip="This is a channel or playlist link and should be checked for URLs instead of being housed as a URL."
+						IsEnabled="True"
+						Grid.Column="0"
+						Grid.Row="0"
+						HorizontalAlignment="Right"
+						VerticalAlignment="Top"
+						Margin="0,34,8.79999999999995,0"
+						Width="141"
+						Height="21"
+						FontSize="13"
+						Visibility="{Binding ChannelCheckBoxVisibility}" />
+				</Grid>
+			</TabItem>
+			<TabItem
+				x:Name="advancedView"
+				Header="Advanced View">
+				<Grid
+					x:Name="avGrid">
+					<TextBox
+						HorizontalAlignment="Stretch"
+						VerticalAlignment="Stretch"
+						Margin="0,0,-0.200000000000045,0.400000000000006"
+						x:Name="avTextBox"
+						Grid.Row="3"
+						Grid.Column="0"
+						AcceptsReturn="True"
+						VerticalScrollBarVisibility="Auto"
+						HorizontalScrollBarVisibility="Auto"
+						TextWrapping="NoWrap" />
+				</Grid>
+			</TabItem>
+		</TabControl>
+	</Grid>
+</Window>

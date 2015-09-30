@@ -1,0 +1,229 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Window
+	x:Class="YoutubeDownloadHelper.Gui.Options" xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation" xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml" xmlns:xctk="http://schemas.xceed.com/wpf/xaml/toolkit"
+	x:Name="window1"
+	Closed="window1_Closed"
+	Background="#FFF0F0F0"
+	BorderBrush="#FFF0F0F0"
+	Title="Options Menu"
+	Icon="C:\Users\Erik\Documents\GitHub\Youtube-Download-Helper\YoutubeDownloadHelper\Icons and Images\YDHIcon.ico" xmlns:d="http://schemas.microsoft.com/expression/blend/2008" xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+	mc:Ignorable="d"
+	ResizeMode="NoResize"
+	Width="553"
+	Height="226">
+	<Grid>
+		<GroupBox
+			Header="Scheduler"
+			Background="#FFF0F0F0"
+			BorderBrush="#FF000000"
+			Margin="0,0,0.399999999999977,0"
+			VerticalAlignment="Top"
+			HorizontalAlignment="Stretch"
+			Grid.Row="0"
+			Grid.Column="0"
+			Height="56.800000000000033"
+			x:Name="schedualGroupBox">
+			<Grid
+				x:Name="schedulerGrid"
+				Visibility="Visible">
+				<xctk:TimePicker
+					Kind="Local"
+					StartTime="00:00:00"
+					x:Name="startSchedule"
+					Value="{Binding Schedule[0]}"
+					Watermark=""
+					Format="Custom"
+					FormatString="hh:mm:ss tt"
+					Text="12:00:00 PM"
+					Grid.Column="0"
+					Grid.ColumnSpan="2"
+					Grid.Row="0"
+					Width="197.6"
+					Height="25.6"
+					HorizontalAlignment="Stretch"
+					VerticalAlignment="Stretch"
+					Margin="-150,0,0,0"
+					Visibility="Hidden" />
+				<CheckBox
+					HorizontalContentAlignment="Stretch"
+					VerticalContentAlignment="Stretch"
+					ClipToBounds="False"
+					x:Name="schedulerEnabled"
+					Content="Enabled"
+					IsEnabled="False"
+					IsChecked="{Binding Scheduling}"
+					Canvas.Top="10.3"
+					Canvas.Left="232.8"
+					Grid.Column="0"
+					Grid.Row="0"
+					HorizontalAlignment="Left"
+					VerticalAlignment="Stretch"
+					Margin="7,2.39999999999998,0,0"
+					Width="77" />
+				<TextBlock
+					Text="to"
+					RenderTransformOrigin="0.5526,0.5714"
+					TextWrapping="WrapWithOverflow"
+					Grid.Column="1"
+					Grid.Row="0"
+					HorizontalAlignment="Stretch"
+					VerticalAlignment="Stretch"
+					Margin="162.4,1,198.6,1"
+					FontStretch="Normal"
+					IsHitTestVisible="False"
+					TextAlignment="Center"
+					Visibility="Hidden" />
+				<xctk:TimePicker
+					Kind="Local"
+					StartTime="00:00:00"
+					x:Name="endSchedule"
+					Watermark=""
+					Format="Custom"
+					FormatString="hh:mm:ss tt"
+					Text="12:00:00 PM"
+					Height="25.6"
+					Width="193.6"
+					VerticalAlignment="Stretch"
+					Grid.Row="0"
+					Grid.Column="1"
+					HorizontalAlignment="Stretch"
+					Margin="200,0,0,0"
+					Visibility="Hidden"
+					Value="07/23/2015 12:00:00" />
+				<Grid.ColumnDefinitions>
+					<ColumnDefinition
+						Width="0.238670694864048*" />
+					<ColumnDefinition
+						Width="0.761329305135952*" />
+				</Grid.ColumnDefinitions>
+			</Grid>
+		</GroupBox>
+		<Button
+			Background="#FFF0F0F0"
+			x:Name="folderSelectButton"
+			RenderTransformOrigin="0.5,0.5"
+			Click="folderSelectButton_Click"
+			ToolTip="Change the folder(s) of the currently selected location/directory tab."
+			Margin="8,0,0,58.4"
+			VerticalAlignment="Bottom"
+			HorizontalAlignment="Left"
+			Grid.Row="0"
+			Grid.Column="0"
+			Height="49.599999999999994"
+			Width="59"
+			BorderBrush="#FF000000">
+			<Grid
+				x:Name="selectFolderGrid"
+				Background="{x:Null}"
+				IsHitTestVisible="True"
+				IsEnabled="True"
+				Opacity="1"
+				Visibility="Visible"
+				Width="54"
+				Height="44">
+				<Image
+					x:Name="folderImage"
+					Source="C:\Users\Erik\Documents\GitHub\Youtube-Download-Helper\YoutubeDownloadHelper\Icons and Images\FolderIcon.ico"
+					Margin="0,0,0,0"
+					VerticalAlignment="Center"
+					HorizontalAlignment="Center"
+					Grid.Row="0"
+					Grid.Column="0"
+					Height="37"
+					Width="87" />
+			</Grid>
+		</Button>
+		<TabControl
+			BorderBrush="#FF000000"
+			Background="#FFFFFFFF"
+			x:Name="saveLocationsTabControl"
+			FontSize="13"
+			Margin="75,0,0,58.4"
+			VerticalAlignment="Bottom"
+			HorizontalAlignment="Left"
+			Grid.Row="0"
+			Grid.Column="0"
+			Height="73"
+			Width="459">
+			<TabItem
+				x:Name="mainTab"
+				Header="Main Save Location"
+				ToolTip="This tab contains the location of the folder where the videos will be stored once downloaded. This folder is also used for validation of previously downloaded videos and does not need to be included in any secondary validation list.">
+				<TextBox
+					TextWrapping="WrapWithOverflow"
+					Height="NaN"
+					Width="NaN"
+					x:Name="mainSaveTextBox"
+					Background="#FFFFFFFF"
+					Text="{Binding MainSaveLocation}"
+					FontSize="11"
+					ClipToBounds="False"></TextBox>
+			</TabItem>
+			<TabItem
+				x:Name="tempSaveLocation"
+				Header="Temporary Save Location"
+				ToolTip="This tab contains the location of the folder that the download will initially be downloaded to.">
+				<TextBox
+					TextWrapping="WrapWithOverflow"
+					Height="NaN"
+					Width="NaN"
+					x:Name="tempSaveTextBox"
+					Background="#FFFFFFFF"
+					Text="{Binding TemporarySaveLocation}"
+					FontSize="11"></TextBox>
+			</TabItem>
+			<TabItem
+				x:Name="validationDirectories"
+				Header="Validation Directories"
+				ToolTip="Contains the locations of all folders which will be checked for files whose names match the name of downloads as they are downloaded. Files checked are also checked for the appropriate extension. ">
+				<ListView
+					x:Name="validationDirListView"
+					ItemsSource="{Binding ValidationLocations}"
+					SelectionMode="Single"
+					FontSize="11" />
+			</TabItem>
+		</TabControl>
+		<CheckBox
+			Content="Do not save settings on close. (one time only)"
+			x:Name="doNotSaveOnClose"
+			Foreground="#FFFF0000"
+			Grid.Column="0"
+			Grid.Row="0"
+			HorizontalAlignment="Stretch"
+			VerticalAlignment="Bottom"
+			Margin="111,0,90.4,-0.199999999999989"
+			Height="24" />
+		<CheckBox
+			Content="Continue Download On Fail/Error"
+			HorizontalContentAlignment="Left"
+			VerticalContentAlignment="Center"
+			IsChecked="{Binding ContinueOnFail, Mode=TwoWay}"
+			x:Name="continueOnFailCheckBox"
+			ToolTip="If this option is enabled (checked), when downloading videos the downloading process will continue through errors, whether fatal or non-fatal."
+			Grid.Column="0"
+			Grid.Row="0"
+			HorizontalAlignment="Stretch"
+			VerticalAlignment="Stretch"
+			Margin="8,144,278.4,27.2"
+			BorderBrush="#FF8E8F8F"
+			RenderOptions.BitmapScalingMode="Unspecified" />
+		<Button
+			FontWeight="SemiBold"
+			FontStretch="Normal"
+			BorderBrush="#FF000000"
+			Content="Reset Tag Widths"
+			x:Name="resetTagsButton"
+			ToolTip="Resets the widths of all &quot;description tags&quot; located on the main program window."
+			Click="resetTagsButton_Click"
+			FontSize="13"
+			Margin="0,0,7.39999999999998,27.2"
+			VerticalAlignment="Bottom"
+			HorizontalAlignment="Right"
+			Grid.Row="0"
+			Grid.Column="0"
+			Height="23.199999999999989"
+			Width="263" />
+		<Grid.ColumnDefinitions></Grid.ColumnDefinitions>
+		<Grid.RowDefinitions></Grid.RowDefinitions>
+	</Grid>
+</Window>

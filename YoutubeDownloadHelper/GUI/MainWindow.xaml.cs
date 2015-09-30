@@ -307,15 +307,18 @@ namespace YoutubeDownloadHelper.Gui
             get
             {
             	int returnValue = 0;
-            	this.main.queueListView.Dispatcher.Invoke((Action)(() => returnValue = this.Videos.Any() ? this.selectedQueue <= this.Videos.All() ? this.selectedQueue : this.Videos.All() : -1));
+            	this.main.queueListView.Dispatcher.Invoke((Action)(() => returnValue = this.selectedQueue));
                 return returnValue;
             }
             set
             {
             	this.main.queueListView.Dispatcher.Invoke((Action)(() =>
             	{
-	                this.selectedQueue = value;
-                	this.main.queueListView.ScrollIntoView(this.main.queueListView.Items.GetItemAt(value));
+	                this.selectedQueue = this.Videos.Any() ? value <= this.Videos.All() ? value : this.Videos.All() : -1;
+	                if(selectedQueue >= 0)
+	                {
+	                	this.main.queueListView.ScrollIntoView(this.Videos[this.selectedQueue]);
+	                }
             	}));
                 RaisePropertyChanged("CurrentlySelectedQueueIndex");
             }

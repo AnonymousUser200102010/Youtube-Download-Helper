@@ -8,7 +8,7 @@
 	ResizeMode="NoResize"
 	Height="359"
 	Width="732"
-	Icon="C:\Users\Erik\Documents\GitHub\Youtube-Download-Helper\YoutubeDownloadHelper\Icons and Images\YDHIcon.ico"
+	Icon="/YoutubeDownloadHelper;component/Icons and Images/YDHIcon.ico"
 	x:Name="window1"
 	Closed="window1_Closed">
 	<Grid
@@ -22,7 +22,7 @@
 			Margin="0,0,0,0"
 			Width="271.20000000000005"
 			Height="328"
-			Source="C:\Users\Erik\Documents\GitHub\Youtube-Download-Helper\YoutubeDownloadHelper\Icons and Images\YDHIcon.ico" />
+			Source="/YoutubeDownloadHelper;component/Icons and Images/YDHIcon.ico" />
 		<TextBlock
 			x:Name="programName"
 			Text="{Binding ProjectName}"
@@ -33,9 +33,9 @@
 			Grid.Row="0"
 			HorizontalAlignment="Right"
 			VerticalAlignment="Top"
-			Margin="0,0,0.600000000000023,0"
-			Width="343.4"
-			Height="34"
+			Margin="0,6,0.600000000000023,0"
+			Width="343"
+			Height="30.799999999999955"
 			Background="{x:Null}"></TextBlock>
 		<TextBlock
 			d1p1:Name="programCopyright" xmlns:d1p1="http://schemas.microsoft.com/winfx/2006/xaml"
@@ -47,24 +47,24 @@
 			Grid.Row="0"
 			HorizontalAlignment="Right"
 			VerticalAlignment="Top"
-			Margin="0,34,0.600000000000023,0"
-			Width="344.19999999999993"
-			Height="34"
-			Background="{d1p1:Null}" />
+			Margin="0,37,0.600000000000023,0"
+			Width="344"
+			Height="26.999999999999957"
+			Background="{x:Null}" />
 		<TextBlock
 			d1p1:Name="programDescription" xmlns:d1p1="http://schemas.microsoft.com/winfx/2006/xaml"
 			Text="{Binding Goal}"
 			TextAlignment="Center"
 			TextWrapping="WrapWithOverflow"
 			FontSize="16"
-			Background="{d1p1:Null}"
 			Grid.Column="0"
 			Grid.Row="0"
 			HorizontalAlignment="Right"
 			VerticalAlignment="Top"
-			Margin="0,67,0.600000000000023,0"
+			Margin="0,64,0.600000000000023,0"
 			Width="344"
-			Height="54.599999999999966"></TextBlock>
+			Height="57.599999999999966"
+			Background="{x:Null}"></TextBlock>
 		<ScrollViewer
 			Name="programDisclaimerScrollViewer"
 			HorizontalContentAlignment="Stretch"
@@ -102,8 +102,8 @@
 			Grid.Row="0"
 			HorizontalAlignment="Left"
 			VerticalAlignment="Top"
-			Margin="305,6,0,0"
-			Width="74"
+			Margin="279.2,6,0,0"
+			Width="99.800000000000068"
 			Height="28" />
 		<TextBlock
 			TextAlignment="Center"
@@ -120,24 +120,24 @@
 			FontSize="18"
 			TextAlignment="Center"
 			Text="Goal:"
-			Grid.Column="0"
-			Grid.Row="0"
-			HorizontalAlignment="Left"
+			Margin="279,75,0,0"
 			VerticalAlignment="Top"
-			Margin="318,75,0,0"
-			Width="60.399999999999977"
-			Height="37" />
+			HorizontalAlignment="Left"
+			Grid.Row="0"
+			Grid.Column="0"
+			Height="38.599999999999966"
+			Width="99" />
 		<TextBlock
 			FontSize="18"
 			TextAlignment="Center"
-			Grid.Column="0"
-			Grid.Row="0"
-			HorizontalAlignment="Left"
-			VerticalAlignment="Top"
+			Text="Disclaimer:"
 			Margin="279.2,122,0,0"
-			Width="98.799999999999955"
+			VerticalAlignment="Top"
+			HorizontalAlignment="Left"
+			Grid.Row="0"
+			Grid.Column="0"
 			Height="146.8"
-			Text="Disclaimer:" />
+			Width="98.799999999999955" />
 		<GroupBox
 			BorderThickness="2,2,2,2"
 			BorderBrush="#FF000000"
@@ -158,9 +158,9 @@
 			Grid.Column="0"
 			Grid.Row="0"
 			HorizontalAlignment="Left"
-			VerticalAlignment="Top"
-			Margin="295,276.8,0,0"
-			Width="82"
+			VerticalAlignment="Bottom"
+			Margin="279,0,0,0"
+			Width="98"
 			Height="51.200000000000045" />
 		<ScrollViewer
 			HorizontalContentAlignment="Stretch"
@@ -200,9 +200,10 @@
 			d1p1:Name="programVersionsScrollView" xmlns:d1p1="http://schemas.microsoft.com/winfx/2006/xaml"
 			Grid.Column="0"
 			Grid.Row="0"
-			HorizontalAlignment="Stretch"
+			HorizontalAlignment="Right"
 			VerticalAlignment="Stretch"
-			Margin="377,276.8,0.600000000000023,-1">
+			Margin="0,277,2.60000000000002,0"
+			Width="349">
 			<TextBlock
 				d1p1:Name="programDisclaimer_Copy2" xmlns:d1p1="http://schemas.microsoft.com/winfx/2006/xaml"
 				Text="{Binding Version}"
@@ -213,13 +214,13 @@
 				HorizontalAlignment="Stretch"
 				Margin="0,0,0,0"
 				FontSize="14"
-				Width="NaN"
-				Height="NaN"
 				FontStyle="Oblique"
 				TextAlignment="Left"
 				FontWeight="Medium"
 				Background="{x:Null}"
-				AllowDrop="False"></TextBlock>
+				AllowDrop="False"
+				Height="NaN"
+				Width="NaN"></TextBlock>
 		</ScrollViewer>
 		<Grid.ColumnDefinitions></Grid.ColumnDefinitions>
 	</Grid>

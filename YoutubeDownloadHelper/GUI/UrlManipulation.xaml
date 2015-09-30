@@ -4,7 +4,7 @@
 	Background="#FFF0F0F0"
 	BorderBrush="#FF000000"
 	Title=""
-	Icon="C:\Users\Erik\Documents\GitHub\Youtube-Download-Helper\YoutubeDownloadHelper\Icons and Images\YDHIcon.ico"
+	Icon="/YoutubeDownloadHelper;component/Icons and Images/YDHIcon.ico"
 	Width="553"
 	x:Name="window1"
 	Closed="window1_Closed"

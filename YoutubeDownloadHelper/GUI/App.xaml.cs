@@ -44,28 +44,28 @@ namespace YoutubeDownloadHelper
         [STAThread]
         private static void Main (string[] args)
         {
-            HandleArgs(args);
-            string programName = System.Reflection.Assembly.GetExecutingAssembly().GetName().Name;
-            
+        	string programName = System.Reflection.Assembly.GetExecutingAssembly().GetName().Name;
+        	
             if (BackEnd.CheckBeginningParameters(programName, IsDebugging))
             {
+            	YoutubeDownloadHelper.Code.EnumDictionaries.Initiate();
+            	HandleArgs(args.ToList().AsReadOnly());
+            	
                 (new Application ()).Run(new YoutubeDownloadHelper.Gui.MainWindow (downloadImmediately));
             }
             else
             {
                 Xceed.Wpf.Toolkit.MessageBox.Show(string.Format(System.Globalization.CultureInfo.CurrentCulture, "{0} is already running!", programName), "Application Failed to Launch", MessageBoxButton.OK, MessageBoxImage.Warning, MessageBoxResult.OK);
+                Environment.Exit(0);
             }
         }
 
-        private static void HandleArgs (string[] args)
+        private static void HandleArgs (System.Collections.ObjectModel.ReadOnlyCollection<string> args)
         {
-            for (int position = 0, argsLength = args.Length; position < argsLength; position++)
+        	for (var position = args.GetEnumerator(); position.MoveNext();)
             {
-                string arg = args[position];
-				if (arg.Contains("start", StringComparison.OrdinalIgnoreCase))
-				{
-					downloadImmediately = true;
-				}
+        		string arg = position.Current;
+				downloadImmediately = arg.Contains("start", StringComparison.OrdinalIgnoreCase);
             }
         }
     }

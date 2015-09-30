@@ -73,7 +73,11 @@ namespace YoutubeDownloadHelper.Gui
                         "\n",
                         Environment.NewLine
                     }, StringSplitOptions.RemoveEmptyEntries));
-                    var newItems = urlList.ConvertToVideoCollection(add ? videoQueue.Count : 0);
+                	var newItems = urlList.ConvertToVideoCollection(add ? videoQueue.Count() : 0);
+                	if (add && newItems.Count() > videoQueue.Count())
+                    {
+                		this.persistantUrlIndex = newItems.Count();
+                    }
                     videoQueue.Replace(add ? new ObservableCollection<Video> (videoQueue.Union(newItems)) : newItems);
                 }
                 catch (Exception ex) 
@@ -95,7 +99,7 @@ namespace YoutubeDownloadHelper.Gui
                 try
                 {
                     Collection<Video> finalizedCollection = videoQueue;
-                    var resultantVideo = !this.urlShapingVars.AudioOnlyEnabled ? new Video(add ? finalizedCollection.Count : persistantUrlIndex, this.urlShapingVars.BasicText, selectedQualityValue, (VideoType)Enum.Parse(typeof(VideoType), Enum.GetNames(typeof(VideoType)).First(name => name.Contains(this.formatComboBox.SelectedItem.ToString(), StringComparison.OrdinalIgnoreCase)))) : new Video(add ? finalizedCollection.Count : persistantUrlIndex, this.urlShapingVars.BasicText, selectedQualityValue, (AudioType)Enum.Parse(typeof(AudioType), Enum.GetNames(typeof(AudioType)).First(name => name.Contains(this.formatComboBox.SelectedItem.ToString(), StringComparison.OrdinalIgnoreCase))));
+                    var resultantVideo = !this.urlShapingVars.AudioOnlyEnabled ? new Video(add ? finalizedCollection.Count : persistantUrlIndex, this.urlShapingVars.BasicText, selectedQualityValue, EnumDictionaries.VideoDictionary.AtValue(this.formatComboBox.SelectedItem.ToString())) : new Video(add ? finalizedCollection.Count : persistantUrlIndex, this.urlShapingVars.BasicText, selectedQualityValue, EnumDictionaries.AudioDictionary.AtValue(this.formatComboBox.SelectedItem.ToString()));
                     
                     if (add)
                     {
@@ -162,8 +166,8 @@ namespace YoutubeDownloadHelper.Gui
 
     public class UrlShaping : INotifyPropertyChanged
     {
-    	private readonly IEnumerable<string> VideoFormats = Enum.GetNames(typeof(VideoType)).Where(name => !name.Equals(VideoType.Unknown.ToString())).OrderBy(o => o).OrderByDescending(subO => subO.Equals(VideoType.Mp4.ToString()));
-    	private readonly IEnumerable<string> AudioFormats = Enum.GetNames(typeof(AudioType)).Where(name => !name.Equals(AudioType.Unknown.ToString())).OrderBy(o => o).OrderByDescending(subO => subO.Equals(AudioType.Mp3.ToString()));
+    	private readonly IEnumerable<string> VideoFormats = EnumDictionaries.VideoDictionary.OrderByDescending(subO => subO.Key == VideoType.Mp4).Select(item => item.Value);
+    	private readonly IEnumerable<string> AudioFormats = EnumDictionaries.AudioDictionary.OrderByDescending(subO => subO.Key == AudioType.Mp3).Select(item => item.Value);
         
         private bool audioOnlyCheckBoxChecked = false;
         private TextAlignment basicTextAlign = TextAlignment.Center;

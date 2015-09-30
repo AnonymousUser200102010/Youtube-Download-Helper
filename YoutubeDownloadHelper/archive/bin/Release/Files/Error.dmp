@@ -1,0 +1,91 @@
+[September 23 02:58:27 AM:
+
+Exception Message:
+
+Could not parse the Youtube page for URL http://youtube.com/watch?v=a8zr9_nUlmo
+This may be due to a change of the Youtube page structure.
+Please report this bug at www.github.com/flagbug/YoutubeExtractor/issues
+
+Exception Stack Trace:
+
+   at YoutubeDownloadHelper.Code.Download.DownloadHandler(MainProgramElements mainWindow)Inner Exception Message:
+
+Result cannot be called on a failed Match.
+
+Inner Exception Stack Trace:
+
+   at System.Text.RegularExpressions.Match.Result(String replacement)
+   at YoutubeExtractor.DownloadUrlResolver.LoadJson(String url) in c:\Users\Erik\Documents\GitHub\Youtube-Download-Helper\YoutubeExtractor\YoutubeExtractor\YoutubeExtractor\DownloadUrlResolver.cs:line 315
+   at YoutubeExtractor.DownloadUrlResolver.GetDownloadUrls(String videoUrl, Boolean decryptSignature) in c:\Users\Erik\Documents\GitHub\Youtube-Download-Helper\YoutubeExtractor\YoutubeExtractor\YoutubeExtractor\DownloadUrlResolver.cs:line 89]
+
+[September 23 02:53:58 AM:
+
+Exception Message:
+
+Could not parse the Youtube page for URL http://youtube.com/watch?v=a8zr9_nUlmo
+
+This may be due to a change of the Youtube page structure.
+
+Please report this bug at www.github.com/flagbug/YoutubeExtractor/issues
+
+Exception Stack Trace:
+
+   at YoutubeDownloadHelper.Code.Download.DownloadHandler(MainProgramElements mainWindow)Inner Exception Message:
+
+Result cannot be called on a failed Match.
+
+Inner Exception Stack Trace:
+
+   at System.Text.RegularExpressions.Match.Result(String replacement)
+
+   at YoutubeExtractor.DownloadUrlResolver.LoadJson(String url) in c:\Users\Erik\Documents\GitHub\Youtube-Download-Helper\YoutubeExtractor\YoutubeExtractor\YoutubeExtractor\DownloadUrlResolver.cs:line 315
+
+   at YoutubeExtractor.DownloadUrlResolver.GetDownloadUrls(String videoUrl, Boolean decryptSignature) in c:\Users\Erik\Documents\GitHub\Youtube-Download-Helper\YoutubeExtractor\YoutubeExtractor\YoutubeExtractor\DownloadUrlResolver.cs:line 89]
+
+[September 23 02:50:12 AM:
+
+Exception Message:
+
+Could not parse the Youtube page for URL http://youtube.com/watch?v=0SylqGX-ato
+
+This may be due to a change of the Youtube page structure.
+
+Please report this bug at www.github.com/flagbug/YoutubeExtractor/issues
+
+Exception Stack Trace:
+
+   at YoutubeDownloadHelper.Code.Download.DownloadHandler(MainProgramElements mainWindow)Inner Exception Message:
+
+Result cannot be called on a failed Match.
+
+Inner Exception Stack Trace:
+
+   at System.Text.RegularExpressions.Match.Result(String replacement)
+
+   at YoutubeExtractor.DownloadUrlResolver.LoadJson(String url) in c:\Users\Erik\Documents\GitHub\Youtube-Download-Helper\YoutubeExtractor\YoutubeExtractor\YoutubeExtractor\DownloadUrlResolver.cs:line 315
+
+   at YoutubeExtractor.DownloadUrlResolver.GetDownloadUrls(String videoUrl, Boolean decryptSignature) in c:\Users\Erik\Documents\GitHub\Youtube-Download-Helper\YoutubeExtractor\YoutubeExtractor\YoutubeExtractor\DownloadUrlResolver.cs:line 89]
+
+[September 23 02:05:49 AM:
+
+Exception Message:
+
+Could not parse the Youtube page for URL http://youtube.com/watch?v=0SylqGX-ato
+
+This may be due to a change of the Youtube page structure.
+
+Please report this bug at www.github.com/flagbug/YoutubeExtractor/issues
+
+Exception Stack Trace:
+
+   at YoutubeDownloadHelper.Code.Download.DownloadHandler(MainProgramElements mainWindow)Inner Exception Message:
+
+Result cannot be called on a failed Match.
+
+Inner Exception Stack Trace:
+
+   at System.Text.RegularExpressions.Match.Result(String replacement)
+
+   at YoutubeExtractor.DownloadUrlResolver.LoadJson(String url) in c:\Users\Erik\Documents\GitHub\Youtube-Download-Helper\YoutubeExtractor\YoutubeExtractor\YoutubeExtractor\DownloadUrlResolver.cs:line 315
+
+   at YoutubeExtractor.DownloadUrlResolver.GetDownloadUrls(String videoUrl, Boolean decryptSignature) in c:\Users\Erik\Documents\GitHub\Youtube-Download-Helper\YoutubeExtractor\YoutubeExtractor\YoutubeExtractor\DownloadUrlResolver.cs:line 89]

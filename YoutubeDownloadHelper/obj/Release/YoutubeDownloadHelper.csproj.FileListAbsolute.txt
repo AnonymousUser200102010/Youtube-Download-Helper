@@ -42,7 +42,6 @@ C:\Users\Erik\Documents\GitHub\Youtube-Download-Helper\YoutubeDownloadHelper\bin
 C:\Users\Erik\Documents\GitHub\Youtube-Download-Helper\YoutubeDownloadHelper\bin\Release\Newtonsoft.Json.dll
 C:\Users\Erik\Documents\GitHub\Youtube-Download-Helper\YoutubeDownloadHelper\bin\Release\YoutubeExtractor.dll
 C:\Users\Erik\Documents\GitHub\Youtube-Download-Helper\YoutubeDownloadHelper\bin\Release\Newtonsoft.Json.xml
-C:\Users\Erik\Documents\GitHub\Youtube-Download-Helper\YoutubeDownloadHelper\bin\Release\UniversalHandlersLibrary.xml
 C:\Users\Erik\Documents\GitHub\Youtube-Download-Helper\YoutubeDownloadHelper\bin\Release\YoutubeExtractor.pdb
 C:\Users\Erik\Documents\GitHub\Youtube-Download-Helper\YoutubeDownloadHelper\bin\Release\UniversalHandlersLibrary.dll
 C:\Users\Erik\Documents\GitHub\Youtube-Download-Helper\YoutubeDownloadHelper\bin\Release\Xceed.Wpf.Toolkit.dll
@@ -50,7 +49,8 @@ C:\Users\Erik\Documents\GitHub\Youtube-Download-Helper\YoutubeDownloadHelper\bin
 C:\Users\Erik\Documents\GitHub\Youtube-Download-Helper\YoutubeDownloadHelper\bin\Release\Fody.dll
 C:\Users\Erik\Documents\GitHub\Youtube-Download-Helper\YoutubeDownloadHelper\bin\Release\Costura.Fody.pdb
 C:\Users\Erik\Documents\GitHub\Youtube-Download-Helper\YoutubeDownloadHelper\bin\Release\Fody.pdb
-C:\Users\Erik\Documents\GitHub\Youtube-Download-Helper\YoutubeDownloadHelper\obj\Release\YoutubeDownloadHelper.csproj.YoutubeDownloadHelper.exe.config
 C:\Users\Erik\Documents\GitHub\Youtube-Download-Helper\YoutubeDownloadHelper\bin\Release\Microsoft.WindowsAPICodePack.dll
 C:\Users\Erik\Documents\GitHub\Youtube-Download-Helper\YoutubeDownloadHelper\bin\Release\Mono.Cecil.dll
 C:\Users\Erik\Documents\GitHub\Youtube-Download-Helper\YoutubeDownloadHelper\bin\Release\Microsoft.WindowsAPICodePack.pdb
+C:\Users\Erik\Documents\GitHub\Youtube-Download-Helper\YoutubeDownloadHelper\bin\Release\FodyCommon.dll
+C:\Users\Erik\Documents\GitHub\Youtube-Download-Helper\YoutubeDownloadHelper\bin\Release\FodyCommon.pdb
