@@ -55,40 +55,46 @@ namespace YoutubeDownloadHelper.Gui
             if (downloadImmediately) this.DownloadButton_Click(this.startDownloadingButton, new RoutedEventArgs ());
         }
 
-        void optionsMenu_Click (object sender, RoutedEventArgs e)
+        private void optionsMenu_Click (object sender, RoutedEventArgs e)
         {
             (new Options (this)).Show();
             this.MainProgramElements.WindowEnabled = false;
         }
 
-        void mainWindow_Closed (object sender, EventArgs e)
+        private void mainWindow_Closed (object sender, EventArgs e)
         {
             Environment.Exit(0);
         }
 
-        void UrlButton_Click (object sender, RoutedEventArgs e)
+        private void UrlButton_Click (object sender, RoutedEventArgs e)
         {
         	(new UrlManipulation (((Control)sender).Name.Contains("add", StringComparison.OrdinalIgnoreCase), this)).Show();
             this.MainProgramElements.WindowEnabled = false;
         }
 
-        void moveQueuedItem_Click (object sender, RoutedEventArgs e)
+        private void moveQueuedItem_Click (object sender, RoutedEventArgs e)
         {
-            var finalizedCollection = videoQueue.Items;
+        	var finalizedCollection = this.MainProgramElements.Videos.ToList().AsReadOnly();
+            var selectedQueueIndex = this.MainProgramElements.CurrentlySelectedQueueIndex;
+			var isDownAction = ((Control)sender).Name.Contains("down", StringComparison.OrdinalIgnoreCase);
+            this.moveItemInQueue(isDownAction 
+			                     ? 
+			                     	selectedQueueIndex + 1 < finalizedCollection.All() ? selectedQueueIndex + 1 : finalizedCollection.All() 
+			                     : 
+			                     	selectedQueueIndex - 1 >= 0 ? selectedQueueIndex - 1 : 0);
+        }
+        
+        private void moveItemInQueue(int newlySelectedIndex)
+        {
+        	var finalizedCollection = this.MainProgramElements.Videos;
             var selectedQueueIndex = this.queueListView.SelectedIndex;
-            int newlySelectedIndex = ((Control)sender).Name.Contains("down", StringComparison.OrdinalIgnoreCase) 
-				?
-            		selectedQueueIndex + 1 < finalizedCollection.All() ? selectedQueueIndex + 1 : finalizedCollection.All()
-				: 
-					selectedQueueIndex - 1 >= 0 ? selectedQueueIndex - 1 : 0;
             
-            finalizedCollection.Move(selectedQueueIndex, newlySelectedIndex);
-            finalizedCollection[selectedQueueIndex].Position = selectedQueueIndex;
-            finalizedCollection[newlySelectedIndex].Position = newlySelectedIndex;
+        	finalizedCollection.Move(selectedQueueIndex, newlySelectedIndex);
+        	finalizedCollection.Sort();
             RefreshQueue(finalizedCollection, newlySelectedIndex);
         }
 
-        void queueListView_KeyUp (object sender, KeyEventArgs e)
+        private void queueListView_KeyUp (object sender, KeyEventArgs e)
         {
         	if(this.MainProgramElements.Videos.Count >= 2)
         	{
@@ -110,13 +116,11 @@ namespace YoutubeDownloadHelper.Gui
 	                    if (messageBox == MessageBoxResult.Yes)
 	                    {
 		                    finalizedCollection.RemoveAt(previouslySelectedIndex);
-		                    for (int videoPosition = previouslySelectedIndex; videoPosition < finalizedCollection.Count; videoPosition++)
-		                    {
-		                    	finalizedCollection[videoPosition].Position = videoPosition;
-		                    }
+		                    finalizedCollection.Sort();
 		                    RefreshQueue(finalizedCollection, previouslySelectedIndex < this.MainProgramElements.Videos.All() ? previouslySelectedIndex : this.MainProgramElements.Videos.All());
 	                    }
 	                    break;
+	                    
 	            }
         	}
         	else if (e.Key == Key.Delete || e.Key == Key.Back)
@@ -125,12 +129,12 @@ namespace YoutubeDownloadHelper.Gui
 	        }
         }
 
-        void DownloadButton_Click (object sender, RoutedEventArgs e)
+        private void DownloadButton_Click (object sender, RoutedEventArgs e)
         {
 	    	Task.Run(() => { (new ClassContainer ()).DownloadingCode.DownloadHandler(this.MainProgramElements); });
         }
 
-        void aboutMenuItem_Click (object sender, RoutedEventArgs e)
+        private void aboutMenuItem_Click (object sender, RoutedEventArgs e)
         {
 			this.embeddedLibraries = this.embeddedLibraries ?? new ProjectAssemblies(true);
 			(new About (this, FileVersionInfo.GetVersionInfo(System.Reflection.Assembly.GetExecutingAssembly().Location), this.embeddedLibraries)).Show();

@@ -13,61 +13,44 @@ using UniversalHandlersLibrary;
 
 namespace YoutubeDownloadHelper.Code
 {
-	public static class EnumDictionaries
+	public class EnumeratorDictionaries
 	{
-		private readonly static Dictionary<VideoType, string> videoDictionary = new Dictionary<VideoType, string>();
+		private readonly Dictionary<VideoType, string> videoDictionary = new Dictionary<VideoType, string>();
 		
 		/// <summary>
 		/// A dictionary equivalent of the VideoType Enum.
 		/// </summary>
-		public static Dictionary<VideoType, string> VideoDictionary { get { return EnumDictionaries.videoDictionary; } }
+		public Dictionary<VideoType, string> VideoDictionary { get { return this.videoDictionary; } }
 		
-		private readonly static Dictionary<AudioType, string> audioDictionary = new Dictionary<AudioType, string>();
+		private readonly Dictionary<AudioType, string> audioDictionary = new Dictionary<AudioType, string>();
 		
 		/// <summary>
 		/// A dictionary equivalent of the AudioType Enum.
 		/// </summary>
-		public static Dictionary<AudioType, string> AudioDictionary { get { return EnumDictionaries.audioDictionary; } }
+		public Dictionary<AudioType, string> AudioDictionary { get { return this.audioDictionary; } }
 		
 		/// <summary>
 		/// Fills the dictionaries held within with valid entires.
 		/// </summary>
-		public static void Initiate()
+		public EnumeratorDictionaries()
 		{
 			foreach(VideoType video in Enum.GetValues(typeof(VideoType)))
 			{
 				if (video != VideoType.Unknown)
 				{
-					VideoDictionary.Add(video, video.ToString());
+					this.VideoDictionary.Add(video, video.ToString());
 				}
 			}
-			VideoDictionary.OrderBy(o => o.Value);
+			this.VideoDictionary.OrderBy(o => o.Value);
 			
 			foreach(AudioType audio in Enum.GetValues(typeof(AudioType)))
 			{
 				if (audio != AudioType.Unknown)
 				{
-					AudioDictionary.Add(audio, audio.ToString());
+					this.AudioDictionary.Add(audio, audio.ToString());
 				}
 			}
-			AudioDictionary.OrderBy(o => o.Value);
-		}
-		
-		/// <summary>
-		/// Find a key by it's value.
-		/// </summary>
-		/// <param name="dictionaryToSearch">
-		/// The dictionary whose key you wish to find with the value.
-		/// </param>
-		/// <param name="value">
-		/// The value to use in the search.
-		/// </param>
-		/// <returns>
-		/// Returns the key associated with the value provided, if it exists. If it does not exist, the default will be returned.
-		/// </returns>
-		public static T AtValue<T>(this Dictionary<T, string> dictionaryToSearch, string value)
-		{
-			return dictionaryToSearch.FirstOrDefault(name => name.Value.Contains(value, StringComparison.OrdinalIgnoreCase)).Key;
+			this.AudioDictionary.OrderBy(o => o.Value);
 		}
 	}
 	
@@ -126,12 +109,12 @@ namespace YoutubeDownloadHelper.Code
         /// <summary>
         /// The video format for this video.
         /// </summary>
-        public VideoType VideoFormat { get { return EnumDictionaries.VideoDictionary.AtValue(this.Format); } }
+        public VideoType VideoFormat { get { return App.EnumDictionaries.VideoDictionary.AtValue(this.Format); } }
         
         /// <summary>
         /// The audio format for this video.
         /// </summary>
-        public AudioType AudioFormat { get { return EnumDictionaries.AudioDictionary.AtValue(this.Format); } }
+        public AudioType AudioFormat { get { return App.EnumDictionaries.AudioDictionary.AtValue(this.Format); } }
 
         /// <summary>
         /// The download process for this video will only return an audio track.
@@ -211,6 +194,9 @@ namespace YoutubeDownloadHelper.Code
         }
     }
     
+    /// <summary>
+    /// Return condition for certain settings functions.
+    /// </summary>
     public enum SettingsReturnType
     {
 	    /// <summary>
@@ -733,7 +719,9 @@ namespace YoutubeDownloadHelper.Code
         {
         	var librariesToCheck = new List<string> { "UniversalHandlersLibrary" }.AsReadOnly();
             string returnString = string.Empty;
+            
             var compiledParties = this.Assemblies.Where(item => partyToGet == Party.Third ? !librariesToCheck.Any(checkedItem => item.Name.Contains(checkedItem, StringComparison.OrdinalIgnoreCase)) : librariesToCheck.Any(checkedItem => item.Name.Contains(checkedItem, StringComparison.OrdinalIgnoreCase)));
+            
             for (var position = compiledParties.GetEnumerator(); position.MoveNext();)
             {
                 var currentLibrary = position.Current;

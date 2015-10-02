@@ -11,6 +11,7 @@ namespace YoutubeDownloadHelper
     public partial class App : Application
     {
         private static bool downloadImmediately;
+        public static readonly string Name = System.Reflection.Assembly.GetExecutingAssembly().GetName().Name;
 
         /// <summary>
         /// The (whole) application is currently debugging.
@@ -30,13 +31,14 @@ namespace YoutubeDownloadHelper
         /// <summary>
         /// The current operating system is a version of Windows.
         /// </summary>
-        public static bool IsWindowsMachine
-        {
-        	get
-        	{
-        		return Environment.OSVersion.Platform.ToString().StartsWith("win", StringComparison.OrdinalIgnoreCase);
-        	}
-        }
+        public static readonly bool IsWindowsMachine = Environment.OSVersion.Platform.ToString().StartsWith("win", StringComparison.OrdinalIgnoreCase);
+
+        private static YoutubeDownloadHelper.Code.EnumeratorDictionaries backingEnumDictionaries;
+        
+        /// <summary>
+        /// A dictionary of enumerator values used within this program.
+        /// </summary>
+        public static YoutubeDownloadHelper.Code.EnumeratorDictionaries EnumDictionaries { get { return backingEnumDictionaries; } }
 
         /// <summary>
         /// Program entry point.
@@ -44,18 +46,16 @@ namespace YoutubeDownloadHelper
         [STAThread]
         private static void Main (string[] args)
         {
-        	string programName = System.Reflection.Assembly.GetExecutingAssembly().GetName().Name;
-        	
-            if (BackEnd.CheckBeginningParameters(programName, IsDebugging))
+            if (BackEnd.CheckBeginningParameters(App.Name, IsDebugging))
             {
-            	YoutubeDownloadHelper.Code.EnumDictionaries.Initiate();
+            	backingEnumDictionaries = new YoutubeDownloadHelper.Code.EnumeratorDictionaries();
             	HandleArgs(args.ToList().AsReadOnly());
             	
                 (new Application ()).Run(new YoutubeDownloadHelper.Gui.MainWindow (downloadImmediately));
             }
             else
             {
-                Xceed.Wpf.Toolkit.MessageBox.Show(string.Format(System.Globalization.CultureInfo.CurrentCulture, "{0} is already running!", programName), "Application Failed to Launch", MessageBoxButton.OK, MessageBoxImage.Warning, MessageBoxResult.OK);
+                Xceed.Wpf.Toolkit.MessageBox.Show(string.Format(System.Globalization.CultureInfo.CurrentCulture, "{0} is already running!", App.Name), "Application Failed to Launch", MessageBoxButton.OK, MessageBoxImage.Warning, MessageBoxResult.OK);
                 Environment.Exit(0);
             }
         }

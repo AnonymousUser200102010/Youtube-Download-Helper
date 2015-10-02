@@ -80,7 +80,7 @@
     </Reference>
     <Reference Include="Microsoft.WindowsAPICodePack.Shell">
       <HintPath>packages\Windows7APICodePack-Shell.1.1.0.0\lib\Microsoft.WindowsAPICodePack.Shell.dll</HintPath>
-      <Private>False</Private>
+      <Private>True</Private>
     </Reference>
     <Reference Include="Newtonsoft.Json">
       <HintPath>C:\Users\Erik\Documents\GitHub\YoutubeExtractor\YoutubeExtractor\YoutubeExtractor\bin\Debug\Full\Newtonsoft.Json.dll</HintPath>

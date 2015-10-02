@@ -35,7 +35,7 @@ namespace YoutubeDownloadHelper.Code
             }
         }
         
-        private const string registryRootValue = "Wow6432Node\\YDH";
+        private const string registryRootBacking = "Wow6432Node\\YDH";
         /// <summary>
         /// The registry root key to be used with the Windows Registry.
         /// </summary>
@@ -43,14 +43,14 @@ namespace YoutubeDownloadHelper.Code
         {
         	get
         	{
-        		return registryRootValue;
+        		return registryRootBacking;
         	}
         }
         
         public Settings RegistryRead (Settings settings)
         {
 			var settingsInformation = new List<RegistryEntry>();
-			if (App.IsWindowsMachine) settingsInformation = (new Settings()).AsEnumerable(SettingsReturnType.Essential).ReadFromRegistry(registryRootValue, App.IsDebugging).ToList();
+			if (App.IsWindowsMachine) settingsInformation = (new Settings()).AsEnumerable(SettingsReturnType.Essential).ReadFromRegistry(RegistryRoot, App.IsDebugging).ToList();
 			else
 			{
 				var settingsFromFile = new System.Collections.ObjectModel.Collection<string>().AddFileContents(RegistryFile);
@@ -68,7 +68,7 @@ namespace YoutubeDownloadHelper.Code
 
         public void RegistryWrite (IEnumerable<RegistryEntry> settings)
         {
-			if (App.IsWindowsMachine) settings.WriteToRegistry(registryRootValue, App.IsDebugging);
+			if (App.IsWindowsMachine) settings.WriteToRegistry(RegistryRoot, App.IsDebugging);
 			else
 			{
 				var linesToWrite = new List<string>();

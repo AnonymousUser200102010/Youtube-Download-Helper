@@ -99,7 +99,7 @@ namespace YoutubeDownloadHelper.Gui
                 try
                 {
                     Collection<Video> finalizedCollection = videoQueue;
-                    var resultantVideo = !this.urlShapingVars.AudioOnlyEnabled ? new Video(add ? finalizedCollection.Count : persistantUrlIndex, this.urlShapingVars.BasicText, selectedQualityValue, EnumDictionaries.VideoDictionary.AtValue(this.formatComboBox.SelectedItem.ToString())) : new Video(add ? finalizedCollection.Count : persistantUrlIndex, this.urlShapingVars.BasicText, selectedQualityValue, EnumDictionaries.AudioDictionary.AtValue(this.formatComboBox.SelectedItem.ToString()));
+                    var resultantVideo = !this.urlShapingVars.AudioOnlyEnabled ? new Video(add ? finalizedCollection.Count : persistantUrlIndex, this.urlShapingVars.BasicText, selectedQualityValue, App.EnumDictionaries.VideoDictionary.AtValue(this.formatComboBox.SelectedItem.ToString())) : new Video(add ? finalizedCollection.Count : persistantUrlIndex, this.urlShapingVars.BasicText, selectedQualityValue, App.EnumDictionaries.AudioDictionary.AtValue(this.formatComboBox.SelectedItem.ToString()));
                     
                     if (add)
                     {
@@ -166,8 +166,8 @@ namespace YoutubeDownloadHelper.Gui
 
     public class UrlShaping : INotifyPropertyChanged
     {
-    	private readonly IEnumerable<string> VideoFormats = EnumDictionaries.VideoDictionary.OrderByDescending(subO => subO.Key == VideoType.Mp4).Select(item => item.Value);
-    	private readonly IEnumerable<string> AudioFormats = EnumDictionaries.AudioDictionary.OrderByDescending(subO => subO.Key == AudioType.Mp3).Select(item => item.Value);
+    	private readonly IEnumerable<string> VideoFormats = App.EnumDictionaries.VideoDictionary.OrderByDescending(subO => subO.Key == VideoType.Mp4).Select(item => item.Value);
+    	private readonly IEnumerable<string> AudioFormats = App.EnumDictionaries.AudioDictionary.OrderByDescending(subO => subO.Key == AudioType.Mp3).Select(item => item.Value);
         
         private bool audioOnlyCheckBoxChecked = false;
         private TextAlignment basicTextAlign = TextAlignment.Center;

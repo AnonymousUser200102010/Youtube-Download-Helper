@@ -39,11 +39,28 @@ namespace YoutubeDownloadHelper.Code
         public static System.Collections.Generic.IEnumerable<Video> Sort (this System.Collections.Generic.IEnumerable<Video> collectionToSort)
         {
         	var readOnlySortCollection = collectionToSort.ToList().AsReadOnly();
-        	for (var position = collectionToSort.GetEnumerator(); position.MoveNext();)
+        	for (var video = collectionToSort.GetEnumerator(); video.MoveNext();)
 			{
-        		position.Current.Position = readOnlySortCollection.IndexOf(position.Current);
+        		video.Current.Position = readOnlySortCollection.IndexOf(video.Current);
 			}
 			return collectionToSort;
         }
+        
+        /// <summary>
+		/// Find a key by it's value in a dictionary.
+		/// </summary>
+		/// <param name="dictionaryToSearch">
+		/// The dictionary whose key you wish to find with the value.
+		/// </param>
+		/// <param name="value">
+		/// The value to use in the search.
+		/// </param>
+		/// <returns>
+		/// Returns the key associated with the value provided, if it exists. If it does not exist, the default will be returned.
+		/// </returns>
+		public static T AtValue<T>(this System.Collections.Generic.Dictionary<T, string> dictionaryToSearch, string value)
+		{
+			return dictionaryToSearch.FirstOrDefault(name => name.Value.Contains(value, StringComparison.OrdinalIgnoreCase)).Key;
+		}
 	}
 }

@@ -191,6 +191,22 @@ namespace UniversalHandlersLibrary
     		return allCount >= 0 ? allCount : 0;
     	}
     	
+    	/// <summary>
+    	/// Change a string into an enumeration value of a specified enumerator.
+    	/// </summary>
+    	/// <param name="value"></param>
+    	/// <returns></returns>
+    	public static T ToEnum<T>(this string value)
+		{
+    		if (string.IsNullOrEmpty(value))
+		    {
+		        return default(T);
+		    }
+    		
+    		T result;
+    		return Enum.GetNames(typeof(T)).FirstOrDefault(name => name.Contains(value, StringComparison.OrdinalIgnoreCase));
+		}
+    	
         /// <summary>
         /// Returns a value indicating if the provided String object occurs within the string.
         /// </summary>
