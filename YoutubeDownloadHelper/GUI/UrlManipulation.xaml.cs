@@ -17,11 +17,14 @@ namespace YoutubeDownloadHelper.Gui
     /// </summary>
     public partial class UrlManipulation : Window
     {
-        private readonly MainWindow MainWindow;
+        private readonly MainProgramElements MainWindow;
         private readonly UrlShaping urlShapingVars = new UrlShaping ();
         private Collection<Video> videoQueue;
         private readonly bool add;
         private int persistantUrlIndex;
+        
+        private readonly double defaultHeight;
+        private readonly double defaultWidth;
 
         /// <summary>
         /// Url Manipulation window.
@@ -32,13 +35,15 @@ namespace YoutubeDownloadHelper.Gui
         /// <param name="mainWindow">
         /// The parent window.
         /// </param>
-        public UrlManipulation (bool add, MainWindow mainWindow)
+        public UrlManipulation (bool add, MainProgramElements mainWindow)
         {
             this.DataContext = this.urlShapingVars;
             InitializeComponent();
-            this.videoQueue = mainWindow.MainProgramElements.Videos;
+            this.defaultHeight = this.Height;
+            this.defaultWidth = this.Width;
+            this.videoQueue = mainWindow.Videos;
             this.MainWindow = mainWindow;
-            this.persistantUrlIndex = mainWindow.MainProgramElements.CurrentlySelectedQueueIndex;
+            this.persistantUrlIndex = mainWindow.CurrentlySelectedQueueIndex;
             this.add = add;
             this.Title = string.Format(CultureInfo.CurrentCulture, "{0} the Queue", add ? "Add Url(s) to" : "Modify Url(s) in");
             this.basicManipulateUrlButton.Content = add ? "Add Url to the Queue" : "Modify Current Url";
@@ -60,7 +65,7 @@ namespace YoutubeDownloadHelper.Gui
         	{
         		this.MainWindow.RefreshQueue(videoQueue, persistantUrlIndex >= 0 ? persistantUrlIndex : 0);
         	}
-            this.MainWindow.MainProgramElements.WindowEnabled = true;
+            this.MainWindow.WindowEnabled = true;
         }
 
         private void window1_Closing (object sender, EventArgs e)
@@ -162,12 +167,30 @@ namespace YoutubeDownloadHelper.Gui
                 this.urlShapingVars.BasicText = UrlShaping.ExampleText;
             }
         }
+        
+		private void urlTabControl_SelectionChanged(object sender, System.Windows.Controls.SelectionChangedEventArgs e)
+		{
+			if (this.IsInitialized)
+			{
+				if (this.basicView.IsSelected)
+				{
+					this.ResizeMode = ResizeMode.NoResize;
+					this.WindowState = WindowState.Normal;
+					this.Height = defaultHeight;
+					this.Width = defaultWidth;
+				}
+				else
+				{
+					this.ResizeMode = ResizeMode.CanResizeWithGrip;
+				}
+			}
+		}
     }
 
     public class UrlShaping : INotifyPropertyChanged
     {
-    	private readonly IEnumerable<string> VideoFormats = App.EnumDictionaries.VideoDictionary.OrderByDescending(subO => subO.Key == VideoType.Mp4).Select(item => item.Value);
-    	private readonly IEnumerable<string> AudioFormats = App.EnumDictionaries.AudioDictionary.OrderByDescending(subO => subO.Key == AudioType.Mp3).Select(item => item.Value);
+    	private readonly IEnumerable<string> VideoFormats = App.EnumDictionaries.VideoDictionary.OrderByDescending(o => o.Key == VideoType.Mp4).Select(item => item.Value);
+    	private readonly IEnumerable<string> AudioFormats = App.EnumDictionaries.AudioDictionary.OrderByDescending(o => o.Key == AudioType.Mp3).Select(item => item.Value);
         
         private bool audioOnlyCheckBoxChecked = false;
         private TextAlignment basicTextAlign = TextAlignment.Center;

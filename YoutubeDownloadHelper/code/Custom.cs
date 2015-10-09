@@ -211,6 +211,9 @@ namespace YoutubeDownloadHelper.Code
     
     public class Settings : INotifyPropertyChanged
     {
+    	private bool deleteRegEntry;
+    	public bool DeleteRegistryEntry { get { return this.deleteRegEntry; } }
+    	
         private bool schedulingEnabled;
         private bool continueOnFail;
         private IEnumerable<string> saveLocations = new Collection<string> 
@@ -232,6 +235,7 @@ namespace YoutubeDownloadHelper.Code
         private const string validationDirectory = "Directory To Validate";
         private const string continueDownloadOnFail = "Force Continue Downloading";
         
+        #region Tags
         public const string QueuePositionRegEntry = "Queue: Position Tag Width";
         public const string QueueLocationRegEntry = "Queue: Location Tag Width";
         public const string QueueQualityRegEntry = "Queue: Quality Tag Width";
@@ -338,6 +342,7 @@ namespace YoutubeDownloadHelper.Code
         		this.queueTagWidths[4] = value;
         	}
         }
+        #endregion
 
         /// <summary>
         /// The value indicating whether scheduling within the program is enabled.
@@ -417,7 +422,7 @@ namespace YoutubeDownloadHelper.Code
         	}
         	set
         	{
-        		IOFunc.DeleteRegistrySubkey(Storage.RegistryRoot, App.IsDebugging);
+        		this.deleteRegEntry = true;
         		this.validationLocations = value;
         		RaisePropertyChanged("ValidationLocations");
         	}

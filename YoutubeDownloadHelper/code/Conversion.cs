@@ -70,10 +70,7 @@ namespace YoutubeDownloadHelper.Code
 					VideoType format = VideoType.Mp4;
                     AudioType aFormat = AudioType.Mp3;
                     
-					if (vagueVideoInfo.Count() >= 2)
-					{
-						quality = int.Parse(vagueVideoInfo[1], CultureInfo.InvariantCulture);
-					}
+					if (vagueVideoInfo.Count() >= 2) quality = int.Parse(vagueVideoInfo[1], CultureInfo.InvariantCulture);
 					
 					if (vagueVideoInfo.Count() >= 3)
                     {
@@ -93,7 +90,7 @@ namespace YoutubeDownloadHelper.Code
                 }
                 catch (Exception ex)
                 {
-                	new ParsingException (string.Format(CultureInfo.CurrentCulture, "'{0}' could not be converted to a usable format ({1})", stringPosition, ex.Message)).Log();
+                	new ParsingException (string.Format(CultureInfo.CurrentCulture, "'{0}' could not be converted to a usable format ({1})", stringPosition, ex.Message), ex).Log();
                 }
             }
             return queue;

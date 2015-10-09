@@ -1,5 +1,4 @@
 ﻿using System;
-using YoutubeDownloadHelper.Code;
 
 namespace YoutubeDownloadHelper.Code
 {

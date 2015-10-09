@@ -34,14 +34,16 @@ namespace YoutubeDownloadHelper.Gui
 
         public void ValidateAvailabilityOfSpecialItems (ObservableCollection<Video> collectionToCheck)
         {
-        	if(this.modifyUrlButton != null && this.startDownloadingButton != null && this.moveQueuedItemDown != null && this.moveQueuedItemUp != null)
+        	if(this.IsInitialized)
         	{
 	            this.modifyUrlButton.IsEnabled = collectionToCheck.Any();
 	            this.startDownloadingButton.IsEnabled = collectionToCheck.Any();
 	            
 	            var countCheck = collectionToCheck.Count > 1;
 	            this.moveQueuedItemDown.IsEnabled = countCheck; 
+	            this.downArrowImage.Opacity = countCheck ? 1.0 : .15;
 	            this.moveQueuedItemUp.IsEnabled = countCheck;
+	            this.upArrowImage.Opacity = countCheck ? 1.0 : .15;
         	}
         }
 
@@ -57,7 +59,9 @@ namespace YoutubeDownloadHelper.Gui
 
         private void optionsMenu_Click (object sender, RoutedEventArgs e)
         {
-            (new Options (this)).Show();
+			var optionsWindow = new Options(this.MainProgramElements);
+			optionsWindow.Owner = Window.GetWindow(this);
+			optionsWindow.Show();
             this.MainProgramElements.WindowEnabled = false;
         }
 
@@ -68,7 +72,9 @@ namespace YoutubeDownloadHelper.Gui
 
         private void UrlButton_Click (object sender, RoutedEventArgs e)
         {
-        	(new UrlManipulation (((Control)sender).Name.Contains("add", StringComparison.OrdinalIgnoreCase), this)).Show();
+			var urlManipulationWindow = new UrlManipulation(((Control)sender).Name.Contains("add", StringComparison.OrdinalIgnoreCase), this.MainProgramElements);
+			urlManipulationWindow.Owner = Window.GetWindow(this);
+			urlManipulationWindow.Show();
             this.MainProgramElements.WindowEnabled = false;
         }
 
@@ -137,7 +143,9 @@ namespace YoutubeDownloadHelper.Gui
         private void aboutMenuItem_Click (object sender, RoutedEventArgs e)
         {
 			this.embeddedLibraries = this.embeddedLibraries ?? new ProjectAssemblies(true);
-			(new About (this, FileVersionInfo.GetVersionInfo(System.Reflection.Assembly.GetExecutingAssembly().Location), this.embeddedLibraries)).Show();
+			var aboutWindow = new About(this.MainProgramElements, FileVersionInfo.GetVersionInfo(System.Reflection.Assembly.GetExecutingAssembly().Location), this.embeddedLibraries);
+			aboutWindow.Owner = Window.GetWindow(this);
+			aboutWindow.Show();
 			if (this.embeddedLibraries.RecallIsSafe) this.embeddedLibraries = null;
             this.MainProgramElements.WindowEnabled = false;
         }
@@ -269,6 +277,10 @@ namespace YoutubeDownloadHelper.Gui
             	this.main.Dispatcher.Invoke((Action)(() =>
             	{
 	                this.isWindowEnabled = value;
+	                if (value)
+	                {
+	                	this.main.Focus();
+	                }
                 	this.CurrentDownloadProgress = 0;
             	}));
                 RaisePropertyChanged("WindowEnabled");
